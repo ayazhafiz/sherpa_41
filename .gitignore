@@ -1,0 +1,5 @@
+.gitmodules
+.DS_Store
+
+bin/
+cmake-build-debug/
