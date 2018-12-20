@@ -1,5 +1,6 @@
 *.a
 *.o
+*.cbp
 .idea
 .DS_Store
 
@@ -10,4 +11,5 @@ Makefile
 .idea/
 bin/
 cmake-build-debug/
+cmake-build-coverage/
 CMakeFiles/

@@ -1,3 +1,8 @@
+# `sherpa_41` :sheep:
+
+[![Build Status](https://travis-ci.com/ayazhafiz/sherpa_41.svg?branch=master)](https://travis-ci.com/ayazhafiz/sherpa_41)
+[![Coverage Status](https://coveralls.io/repos/github/ayazhafiz/sherpa_41/badge.svg?branch=testing%2Ftravis-and-coveralls)](https://coveralls.io/github/ayazhafiz/sherpa_41?branch=testing%2Ftravis-and-coveralls)
+
 `sherpa_41` ia toy browser engine, built loosely from [Limpet's _Let's build a browser engine!_](https://limpet.net/mbrubeck/2014/08/08/toy-layout-engine-1.html)
 with architectures introduced in [CS3251](https://vuse-cs3251.github.io).
 

@@ -3,6 +3,7 @@
 
 #include "parser.hpp"
 
+#include <memory>
 #include <numeric>
 #include <set>
 #include <unordered_set>

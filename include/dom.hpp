@@ -22,11 +22,6 @@ typedef std::vector<NodePtr>  NodeVector;
 class AttributeMap : public std::map<std::string, std::string> {
    public:
     /**
-     * Creates an Attribute Map
-     */
-    AttributeMap() = default;
-
-    /**
      * Inserts an attribute
      * @param attribute attribute to add
      * @param value value of attribute
