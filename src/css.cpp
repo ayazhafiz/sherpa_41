@@ -33,7 +33,7 @@ std::string CSS::TextValue::print() const {
  * @return units as strings
  */
 std::vector<std::string> CSS::UnitRaw() {
-    return {"px", "em", "rem", "vw", "vh"};
+    return {"px", "em", "rem", "vw", "vh", "%"};
 }
 
 /**

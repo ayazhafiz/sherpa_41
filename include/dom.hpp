@@ -16,6 +16,9 @@ class Node;
 typedef std::unique_ptr<Node> NodePtr;
 typedef std::vector<NodePtr>  NodeVector;
 
+/**
+ * A map of DOM attributes, adapted to allow visitors
+ */
 class AttributeMap : public std::map<std::string, std::string> {
    public:
     /**
@@ -40,6 +43,9 @@ class AttributeMap : public std::map<std::string, std::string> {
     std::vector<std::string> order;
 };
 
+/**
+ * An abstract DOM node
+ */
 class Node {
    public:
     /**
@@ -82,6 +88,9 @@ class Node {
     std::string tag;
 };
 
+/**
+ * A node of text in the DOM
+ */
 class TextNode : public Node {
    public:
     /**
@@ -119,6 +128,9 @@ class TextNode : public Node {
     std::string text;
 };
 
+/**
+ * A comment in the DOM
+ */
 class CommentNode : public Node {
    public:
     /**
@@ -156,6 +168,9 @@ class CommentNode : public Node {
     std::string comment;
 };
 
+/**
+ * An element in the DOM
+ */
 class ElementNode : public Node {
    public:
     /**

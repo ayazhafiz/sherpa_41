@@ -73,7 +73,7 @@ struct TextValue : public Value {
     std::string value;
 };
 
-enum Unit { px, em, rem, vw, vh };
+enum Unit { px, em, rem, vw, vh, percent };
 std::vector<std::string> UnitRaw();
 /**
  * A unit declaration value

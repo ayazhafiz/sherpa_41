@@ -4,6 +4,10 @@
 #include <functional>
 #include <string>
 
+/**
+ * A basic parser, not meant to evaluate anything on its own.
+ * @tparam EvalType type of program to evaluate to
+ */
 template <typename EvalType>
 class Parser {
    public:

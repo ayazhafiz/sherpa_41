@@ -23,6 +23,7 @@ include_directories(./include)
 set(SOURCE_FILES
     src/css.cpp
     src/dom.cpp
+    src/layout.cpp
     src/parser.cpp
     src/parser_css.cpp
     src/parser_html.cpp

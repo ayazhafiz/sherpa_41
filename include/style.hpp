@@ -85,8 +85,8 @@ class StyledNode {
      * @param css style sheet to apply
      * @return map of styles
      */
-    static PropertyMap mapStyles(const DOM::ElementNode * const node,
-                                 const CSS::StyleSheet &        css);
+    static PropertyMap mapStyles(const DOM::ElementNode * node,
+                                 const CSS::StyleSheet &  css);
 
     /**
      * Matches css rules to a DOM node
@@ -94,8 +94,8 @@ class StyledNode {
      * @param css style sheet to apply
      * @return set of rules, ordered by increasing specificity
      */
-    static PriorityRuleSet matchRules(const DOM::ElementNode * const node,
-                                      const CSS::StyleSheet &        css);
+    static PriorityRuleSet matchRules(const DOM::ElementNode * node,
+                                      const CSS::StyleSheet &  css);
 
     /**
      * Determines if a selector matches a node
@@ -103,8 +103,8 @@ class StyledNode {
      * @param node DOM node to match
      * @return whether selector matches node
      */
-    static bool selectorMatches(const CSS::Selector &          selector,
-                                const DOM::ElementNode * const node);
+    static bool selectorMatches(const CSS::Selector &    selector,
+                                const DOM::ElementNode * node);
 
     DOM::NodePtr     node;
     PropertyMap      props;

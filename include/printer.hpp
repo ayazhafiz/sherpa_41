@@ -6,6 +6,9 @@
 
 #include <sstream>
 
+/**
+ * Allows for printing various classes in the browser
+ */
 class Printer : public Visitor {
    public:
     Printer()           = default;

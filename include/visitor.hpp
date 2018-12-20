@@ -4,6 +4,10 @@
 #include "css.hpp"
 #include "dom.hpp"
 
+/**
+ * A visitor interface for other iterators and applications to extend.
+ * Allows for visiting various classes in the browser.
+ */
 class Visitor {
    public:
     Visitor()          = default;
