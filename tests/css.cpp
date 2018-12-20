@@ -38,6 +38,16 @@ TEST_F(CSSParserTest, ClassSelector) {
 )");
 }
 
+TEST_F(CSSParserTest, UniversalSelector) {
+    CSSParser parser("* {}");
+    auto      eval = parser.evaluate();
+    ASSERT_PRINT(&eval, R"(
+* {
+}
+
+)");
+}
+
 TEST_F(CSSParserTest, CombinedSelectors) {
     CSSParser parser("span#solo.class1.class2 {}");
     auto      eval = parser.evaluate();

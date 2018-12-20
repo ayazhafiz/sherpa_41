@@ -125,11 +125,11 @@ std::string CSS::Selector::print() const {
     if (!id.empty()) {
         res += "#" + id;
     }
-    return res +
-           std::accumulate(klass.begin(),
+    res += std::accumulate(klass.begin(),
                            klass.end(),
                            std::string(),
                            [](auto acc, auto cl) { return acc + "." + cl; });
+    return res.empty() ? "*" : res;
 }
 
 /**
