@@ -1,8 +1,42 @@
-#ifndef DOM_NODE_CPP
-#define DOM_NODE_CPP
+#ifndef DOM_CPP
+#define DOM_CPP
 
 #include "dom.hpp"
+
 #include "visitor.hpp"
+
+#include <iterator>
+#include <sstream>
+
+/**
+ * Inserts an attribute
+ * @param attribute attribute to add
+ * @param value value of attribute
+ */
+void DOM::AttributeMap::insert(const std::string & attribute,
+                               const std::string & value) {
+    if (this->find(attribute) == end()) {
+        (*this)[attribute] = value;
+        order.push_back(attribute);
+    }
+}
+
+std::string DOM::AttributeMap::print() const {
+    if (size() == 0) {
+        return "";
+    }
+    auto        start = order.begin();
+    std::string first = order.front();
+    return std::accumulate(std::next(start),
+                           order.end(),
+                           first + "=\"" +
+                               const_cast<AttributeMap &>(*this)[first] + "\"",
+                           [this](auto acc, auto attr) {
+                               return acc + " " + attr + "=\"" +
+                                      const_cast<AttributeMap &>(*this)[attr] +
+                                      "\"";
+                           });
+}
 
 /**
  * Creates a DOM Node
@@ -104,10 +138,10 @@ DOM::NodePtr DOM::CommentNode::clone() {
  * @param attributes node attributes
  * @param children children nodes
  */
-DOM::ElementNode::ElementNode(const std::string &  tag,
-                              const AttributeMap & attributes,
-                              const NodeVector &   children)
-    : Node(tag), attributes(attributes), children() {
+DOM::ElementNode::ElementNode(std::string        tag,
+                              AttributeMap       attributes,
+                              const NodeVector & children)
+    : Node(std::move(tag)), attributes(std::move(attributes)), children() {
     this->children.reserve(children.size());
     std::for_each(children.begin(), children.end(), [this](const auto & child) {
         this->children.push_back(child->clone());
@@ -118,12 +152,12 @@ DOM::ElementNode::ElementNode(const std::string &  tag,
  * Returns pointers to children nodes
  * @return children nodes
  */
-std::vector<DOM::Node *> DOM::ElementNode::getChildren() const {
-    std::vector<DOM::Node *> nodes;
+DOM::NodeVector DOM::ElementNode::getChildren() const {
+    NodeVector nodes;
     std::transform(children.begin(),
                    children.end(),
                    std::back_inserter(nodes),
-                   [](auto & child) { return child.get(); });
+                   [](const auto & child) { return child->clone(); });
     return nodes;
 }
 
@@ -133,6 +167,29 @@ std::vector<DOM::Node *> DOM::ElementNode::getChildren() const {
  */
 std::string DOM::ElementNode::getAttributes() const {
     return attributes.print();
+}
+
+/**
+ * Returns id of element
+ * @return id
+ */
+std::string DOM::ElementNode::getId() const {
+    auto id = attributes.find("id");
+    return id != attributes.end() ? id->second : "";
+}
+
+/**
+ * Returns classes of element
+ * @return classes
+ */
+std::vector<std::string> DOM::ElementNode::getClasses() const {
+    auto classes = attributes.find("class");
+    if (classes == attributes.end()) {
+        return {};
+    }
+    std::istringstream iss(classes->second);
+    return {std::istream_iterator<std::string>{iss},
+            std::istream_iterator<std::string>{}};
 }
 
 /**
@@ -151,4 +208,4 @@ DOM::NodePtr DOM::ElementNode::clone() {
     return NodePtr(new ElementNode(tagName(), attributes, children));
 }
 
-#endif  // DOM_NODE_CPP
+#endif

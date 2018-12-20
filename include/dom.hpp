@@ -90,6 +90,8 @@ class TextNode : public Node {
      */
     explicit TextNode(const std::string & text);
 
+    TextNode(const TextNode & rhs) = delete;
+
     /**
      * Default dtor
      */
@@ -124,6 +126,8 @@ class CommentNode : public Node {
      * @param comment node content
      */
     explicit CommentNode(const std::string & comment);
+
+    CommentNode(const CommentNode & rhs) = delete;
 
     /**
      * Default dtor
@@ -160,9 +164,11 @@ class ElementNode : public Node {
      * @param attributes node attributes
      * @param children children nodes
      */
-    explicit ElementNode(const std::string &  tag,
-                         const AttributeMap & attributes = AttributeMap(),
-                         const NodeVector &   children   = NodeVector());
+    explicit ElementNode(std::string        tag,
+                         AttributeMap       attributes = AttributeMap(),
+                         const NodeVector & children   = NodeVector());
+
+    ElementNode(const ElementNode & rhs) = delete;
 
     /**
      * Default dtor
@@ -173,13 +179,25 @@ class ElementNode : public Node {
      * Returns pointers to children nodes
      * @return children nodes
      */
-    std::vector<Node *> getChildren() const;
+    NodeVector getChildren() const;
 
     /**
      * Returns pretty-printed attributes
      * @return attributes
      */
     std::string getAttributes() const;
+
+    /**
+     * Returns id of element
+     * @return id
+     */
+    std::string getId() const;
+
+    /**
+     * Returns classes of element
+     * @return classes
+     */
+    std::vector<std::string> getClasses() const;
 
     /**
      * Accepts a visitor to the node

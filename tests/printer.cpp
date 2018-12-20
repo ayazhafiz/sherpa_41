@@ -1,5 +1,6 @@
 #include "printer.hpp"
 
+#include "css.hpp"
 #include "dom.hpp"
 
 #include "./util.hpp"
@@ -75,5 +76,78 @@ TEST_F(PrinterTest, NestedElements) {
 		This is an intro paragraph.
 	</p>
 </body>
+)");
+}
+
+TEST_F(PrinterTest, CSSRule) {
+    using namespace CSS;
+    std::vector<Declaration> decls;
+    decls.emplace_back(
+        Declaration("font-size", ValuePtr(new UnitValue(15.4, px))));
+    decls.emplace_back(
+        Declaration("text-decoration", ValuePtr(new TextValue("none"))));
+    decls.emplace_back(
+        Declaration("color", ValuePtr(new ColorValue(155, 202, 187, 92))));
+    Rule       rule({Selector("span", "myId", {"class1", "class2"}),
+               Selector("a"),
+               Selector("", "id"),
+               Selector("", "", {"klass"})},
+              std::move(decls));
+    StyleSheet ss;
+    ss.emplace_back(std::move(rule));
+
+    ASSERT_PRINT(&ss, R"(
+span#myId.class1.class2, #id, .klass, a {
+	font-size: 15.4px;
+	text-decoration: none;
+	color: rgba(155, 202, 187, 92);
+}
+
+)");
+}
+
+TEST_F(PrinterTest, CSSRules) {
+    using namespace CSS;
+    std::vector<Declaration> decls1;
+    decls1.emplace_back(
+        Declaration("font-size", ValuePtr(new UnitValue(15.4, px))));
+    decls1.emplace_back(
+        Declaration("text-decoration", ValuePtr(new TextValue("none"))));
+    decls1.emplace_back(
+        Declaration("color", ValuePtr(new ColorValue(155, 202, 187, 92))));
+    Rule rule1({Selector("span", "myId", {"class1", "class2"}),
+                Selector("a"),
+                Selector("", "id"),
+                Selector("", "", {"klass"})},
+               std::move(decls1));
+    std::vector<Declaration> decls2;
+    decls2.emplace_back(
+        Declaration("font-size", ValuePtr(new UnitValue(15.4, px))));
+    decls2.emplace_back(
+        Declaration("text-decoration", ValuePtr(new TextValue("none"))));
+    decls2.emplace_back(
+        Declaration("color", ValuePtr(new ColorValue(155, 202, 187, 92))));
+    Rule       rule2({Selector("span", "myId", {"class1", "class2"}),
+                Selector("a"),
+                Selector("", "id"),
+                Selector("", "", {"klass"})},
+               std::move(decls2));
+    StyleSheet ss;
+    ss.emplace_back(std::move(rule1));
+    ss.emplace_back(std::move(rule2));
+
+    ASSERT_PRINT(&ss, R"(
+span#myId.class1.class2, #id, .klass, a {
+	font-size: 15.4px;
+	text-decoration: none;
+	color: rgba(155, 202, 187, 92);
+}
+
+span#myId.class1.class2, #id, .klass, a {
+	font-size: 15.4px;
+	text-decoration: none;
+	color: rgba(155, 202, 187, 92);
+}
+
 )");
 }

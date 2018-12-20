@@ -21,16 +21,21 @@ include(gtest.cmake)
 include_directories(./include)
 # Define the source files and dependencies for the executable
 set(SOURCE_FILES
-    src/dom_data.cpp
-    src/dom_node.cpp
-    src/html.cpp
+    src/css.cpp
+    src/dom.cpp
+    src/parser.cpp
+    src/parser_css.cpp
+    src/parser_html.cpp
     src/printer.cpp
+    src/style.cpp
 )
 
 set(TEST_FILES
-    tests/main.cpp
+    tests/css.cpp
     tests/html.cpp
+    tests/main.cpp
     tests/printer.cpp
+    tests/style.cpp
 )
 
 # Make the project root directory the working directory when we run

@@ -1,18 +1,15 @@
-#include "html.hpp"
-
+#include "parser_html.hpp"
 #include "printer.hpp"
 
 #include "./util.hpp"
 
 #include <gtest/gtest.h>
 
-using namespace HTML;
-
 // The fixture for testing the vector class
 class HTMLParserTest : public ::testing::Test {};
 
 TEST_F(HTMLParserTest, RootHTMLTag) {
-    Parser parser("<html></html>");
+    HTMLParser parser("<html></html>");
     ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 </html>
@@ -20,7 +17,7 @@ TEST_F(HTMLParserTest, RootHTMLTag) {
 }
 
 TEST_F(HTMLParserTest, NoRootHTMLTag) {
-    Parser parser("");
+    HTMLParser parser("");
     ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 </html>
@@ -28,7 +25,7 @@ TEST_F(HTMLParserTest, NoRootHTMLTag) {
 }
 
 TEST_F(HTMLParserTest, Text) {
-    Parser parser("Hello, world!");
+    HTMLParser parser("Hello, world!");
     ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 	Hello, world!
@@ -37,7 +34,7 @@ TEST_F(HTMLParserTest, Text) {
 }
 
 TEST_F(HTMLParserTest, Comment) {
-    Parser parser("<!--  \t\t\nThis is a <span>\n     comment      -->");
+    HTMLParser parser("<!--  \t\t\nThis is a <span>\n     comment      -->");
     ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 	<!-- This is a <span>
@@ -52,7 +49,7 @@ TEST_F(HTMLParserTest, Attributes) {
 </html>
 )";
 
-    ASSERT_PRINT(Parser(html).evaluate(), html);
+    ASSERT_PRINT(HTMLParser(html).evaluate(), html);
 }
 
 TEST_F(HTMLParserTest, NestedElements) {
@@ -78,11 +75,11 @@ TEST_F(HTMLParserTest, NestedElements) {
 </html>
 )";
 
-    ASSERT_PRINT(Parser(html).evaluate(), html);
+    ASSERT_PRINT(HTMLParser(html).evaluate(), html);
 }
 
 TEST_F(HTMLParserTest, TagWhitespace) {
-    Parser parser("<  html       >   </ html     >");
+    HTMLParser parser("<  html       >   </ html     >");
     ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 </html>
@@ -90,7 +87,7 @@ TEST_F(HTMLParserTest, TagWhitespace) {
 }
 
 TEST_F(HTMLParserTest, TextWhitespace) {
-    Parser parser("<html>  \n  Hel     lo    \t   </html>");
+    HTMLParser parser("<html>  \n  Hel     lo    \t   </html>");
     ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 	Hel     lo

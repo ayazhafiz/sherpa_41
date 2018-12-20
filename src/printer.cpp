@@ -32,12 +32,38 @@ void Printer::visit(const DOM::ElementNode & node) {
 
     ++tabIndent;
     auto children = node.getChildren();
-    std::for_each(children.begin(), children.end(), [this](auto child) {
+    std::for_each(children.begin(), children.end(), [this](const auto & child) {
         child->acceptVisitor(*this);
     });
     --tabIndent;
 
     openTag() << "/" << node.tagName() << closeTag();
+}
+
+/**
+ * Prints a style sheet
+ * @param ss style sheet
+ */
+void Printer::visit(const CSS::StyleSheet & ss) {
+    std::for_each(ss.begin(), ss.end(), [this](const auto & rule) {
+        const auto & sels     = rule.selectors;
+        const auto & decls    = rule.declarations;
+        const auto & firstSel = sels.begin();
+        tabs() << std::accumulate(std::next(firstSel),
+                                  sels.end(),
+                                  firstSel->print(),
+                                  [](auto acc, const auto & sel) {
+                                      return acc + ", " + sel.print();
+                                  });
+
+        tree << " {" << std::endl;
+        ++tabIndent;
+        std::for_each(decls.begin(), decls.end(), [this](const auto & decl) {
+            tabs() << decl.print() << std::endl;
+        });
+        --tabIndent;
+        tree << "}\n" << std::endl;
+    });
 }
 
 /**

@@ -1,76 +1,40 @@
-#ifndef HTML_HPP
-#define HTML_HPP
+#ifndef PARSER_HPP
+#define PARSER_HPP
 
-#include "dom.hpp"
-
+#include <functional>
 #include <string>
 
-namespace HTML {
+template <typename EvalType>
 class Parser {
    public:
     /**
      * Constructs a Parser
-     * @param html HTML to parse
+     * @param program program to parse
      */
-    explicit Parser(const std::string & html);
+    explicit Parser(std::string program);
 
     /**
-     * Parses the HTML into a DOM tree
-     * @return DOM tree
+     * Generic evaluation of the parser
+     * @return result of parsing program
      */
-    DOM::NodePtr evaluate();
+    virtual EvalType evaluate() = 0;
 
-    ~Parser() = default;
-
-    Parser() = delete;
-
-    Parser(const Parser &) = delete;
-
-    Parser & operator=(const Parser &) = delete;
-
-   private:
-    /**
-     * Parses children of a DOM Node
-     * @return Node children
-     */
-    DOM::NodeVector parseChildren();
+   protected:
+    typedef std::function<bool(char)> const PrefixComparator;
 
     /**
-     * Parses a single DOM Node
-     * @return parsed Node
+     * Builds a string of some length
+     * @param len length of string to build
+     * @return built string
      */
-    DOM::NodePtr parseNode();
-
-    /**
-     * Parses text in the DOM
-     * @return Text node
-     */
-    DOM::NodePtr parseTextNode();
-
-    /**
-     * Parses a comment in the DOM
-     * @return Comment node
-     */
-    DOM::NodePtr parseCommentNode();
-
-    /**
-     * Parses a DOM Element
-     * @return Element node
-     */
-    DOM::NodePtr parseElementNode();
-
-    /**
-     * Parses Element attributes
-     * @return attributes
-     */
-    DOM::AttributeMap parseAttributes();
+    std::string build(uint64_t len);
 
     /**
      * Builds a string from the program until predicate satisfied
      * @param predicate when to stop building
      * @return built string
      */
-    std::string build_until(std::function<bool(char)> const & predicate);
+    std::string build_until(PrefixComparator & predicate);
 
     /**
      * Ensures that the next characters are as expected, then pushes
@@ -97,7 +61,14 @@ class Parser {
      * @param prefix characters to match program to
      * @return whether program contains `prefix` next
      */
-    bool peek(std::string prefix) const;
+    bool peek(const std::string & prefix) const;
+
+    /**
+     * Determines the next character of the program
+     * @param predicate lambda to match prefix to
+     * @return whether program prefix satisfies lambda
+     */
+    bool peek(PrefixComparator predicate) const;
 
     /**
      * Determines if entire program read
@@ -110,11 +81,19 @@ class Parser {
      * @param str string to trim
      * @return right-trimmed string
      */
-    static inline std::string rtrim(const std::string & str);
+    static inline std::string rtrim(const std::string & str) {
+        auto res(str);
+        res.erase(std::find_if(res.rbegin(),
+                               res.rend(),
+                               [](auto ch) { return !std::isspace(ch); })
+                      .base(),
+                  res.end());
+        return res;
+    }
 
+   private:
     std::string program;
     uint64_t    ptr;
 };
-}  // namespace HTML
 
 #endif

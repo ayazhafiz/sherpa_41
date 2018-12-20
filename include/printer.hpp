@@ -1,6 +1,7 @@
 #ifndef PRINTER_HPP
 #define PRINTER_HPP
 
+#include "css.hpp"
 #include "visitor.hpp"
 
 #include <sstream>
@@ -27,6 +28,12 @@ class Printer : public Visitor {
      * @param node Element node
      */
     void visit(const DOM::ElementNode & node) override;
+
+    /**
+     * Prints a style sheet
+     * @param ss style sheet
+     */
+    void visit(const CSS::StyleSheet & ss) override;
 
     /**
      * Returns pretty-printed DOM tree
