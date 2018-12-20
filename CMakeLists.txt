@@ -26,6 +26,7 @@ set(SOURCE_FILES
 set(TEST_FILES
     tests/css.cpp
     tests/html.cpp
+    tests/layout.cpp
     tests/main.cpp
     tests/printer.cpp
     tests/style.cpp
