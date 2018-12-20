@@ -4,6 +4,8 @@ os:
 
 language: cpp
 
+dist: trusty
+
 addons:
   apt:
     sources:
@@ -17,6 +19,11 @@ before_install:
   - pip install --user cpp-coveralls
 
 script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    export CC=gcc-7 ;
+    export CXX=g++-7 ;
+    source /opt/qt510/bin/qt510-env.sh ;
+    fi
   - CXX==g++-7 CC=gcc-7 cmake -DCOVERAGE=1 .
   - cmake --build .
   - ./testing
