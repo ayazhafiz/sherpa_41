@@ -3,6 +3,8 @@
 
 #include "parser.hpp"
 
+#include <cassert>
+
 /**
  * Constructs a Parser
  * @param program program to parse

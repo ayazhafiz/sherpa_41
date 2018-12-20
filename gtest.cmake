@@ -1,4 +1,4 @@
-set(GOOGLETEST_ROOT ../lib/googletest/googletest CACHE STRING "Google Test source root")
+set(GOOGLETEST_ROOT lib/googletest/googletest CACHE STRING "Google Test source root")
 
 include_directories(SYSTEM
     ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}

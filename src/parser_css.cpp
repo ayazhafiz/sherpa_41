@@ -34,7 +34,10 @@ CSS::StyleSheet CSSParser::evaluate() {
  * @return parsed Rule
  */
 CSS::Rule CSSParser::parseRule() {
-    return CSS::Rule(parseSelectors(), parseDeclarations());
+    // must explicity define order of evaluation
+    auto sels = parseSelectors();
+    auto decls = parseDeclarations();
+    return CSS::Rule(sels, decls);
 }
 
 /**
@@ -176,7 +179,7 @@ CSS::Unit CSSParser::parseUnit() {
 }
 
 void CSSParser::consume_whitespace(const std::string & next) {
-    while (!eof() && (peek(std::isspace) || peek("//"))) {
+    while (!eof() && (peek(cisspace) || peek("//"))) {
         if (peek("//")) {
             build_until([](char c) { return c == '\n'; });
         }

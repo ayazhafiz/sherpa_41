@@ -77,6 +77,7 @@ class CSSParser : public Parser<CSS::StyleSheet> {
         return std::isdigit(c) || c == '.';
     };
     static constexpr auto cisalpha = static_cast<int (*)(int)>(std::isalpha);
+    static constexpr auto cisspace = static_cast<int (*)(int)>(std::isspace);
 };
 
 #endif

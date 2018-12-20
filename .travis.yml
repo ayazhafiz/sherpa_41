@@ -1,0 +1,26 @@
+os:
+  - linux
+  - osx
+
+language: cpp
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-7
+      - g++-7
+
+
+before_install:
+  - pip install --user cpp-coveralls
+
+script:
+  - CXX==g++-7 CC=gcc-7 cmake -DCOVERAGE=1 .
+  - cmake --build .
+  - ./testing
+
+
+after_success:
+  - coveralls --root . -E ".*CMakeFiles.*"
