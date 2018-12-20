@@ -35,7 +35,7 @@ CSS::StyleSheet CSSParser::evaluate() {
  */
 CSS::Rule CSSParser::parseRule() {
     // must explicity define order of evaluation
-    auto sels = parseSelectors();
+    auto sels  = parseSelectors();
     auto decls = parseDeclarations();
     return CSS::Rule(sels, decls);
 }

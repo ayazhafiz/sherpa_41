@@ -1,4 +1,4 @@
-# `sherpa_41` :sheep:
+# `sherpa_41` :mountain:
 
 [![Build Status](https://travis-ci.com/ayazhafiz/sherpa_41.svg?branch=master)](https://travis-ci.com/ayazhafiz/sherpa_41)
 [![Coverage Status](https://coveralls.io/repos/github/ayazhafiz/sherpa_41/badge.svg?branch=testing%2Ftravis-and-coveralls)](https://coveralls.io/github/ayazhafiz/sherpa_41?branch=testing%2Ftravis-and-coveralls)

@@ -10,7 +10,6 @@
  */
 class Visitor {
    public:
-    Visitor()          = default;
     virtual ~Visitor() = default;
 
     virtual void visit(const DOM::TextNode &)    = 0;

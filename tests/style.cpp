@@ -23,6 +23,7 @@ html#id.class1.class2{font-size:15px;}
 .class2{background:green;}
 #id{text-decoration:none;}
 html{display:block;}
+*{font-style:normal;}
 )");
     HTMLParser html(R"(
 <html id="id" class="class1 class2"></html>
@@ -35,6 +36,7 @@ html{display:block;}
     ASSERT_EQ(root.value("background")->print(), "green");
     ASSERT_EQ(root.value("text-decoration")->print(), "none");
     ASSERT_EQ(root.value("display")->print(), "block");
+    ASSERT_EQ(root.value("font-style")->print(), "normal");
 }
 
 TEST_F(StyleTest, SpecificityOverload) {
@@ -58,12 +60,15 @@ html{text-decoration:reset;}
 }
 
 TEST_F(StyleTest, UselessRules) {
-    CSSParser  css("html.c1.c2{color:red;}");
+    CSSParser  css("html#id.c1.c2{color:red;}");
     HTMLParser html("<html></html>");
 
     auto root = Style::StyledNode::from(html.evaluate(), css.evaluate());
 
-    ASSERT_EQ(root.value("color"), nullptr);
+    ASSERT_EQ(root.value_or("color",
+                            CSS::ValuePtr(new CSS::TextValue("NO VALUE")))
+                  ->print(),
+              "NO VALUE");
 }
 
 TEST_F(StyleTest, NestedNodes) {
@@ -76,4 +81,21 @@ TEST_F(StyleTest, NestedNodes) {
     ASSERT_EQ(root.value("color")->print(), "red");
     ASSERT_EQ(children[0].value("color")->print(), "green");
     ASSERT_EQ(children[1].value("color")->print(), "blue");
+}
+
+TEST_F(StyleTest, NonElementNodes) {
+    CSSParser  css("*{color:red;}");
+    HTMLParser html(R"(
+<html>
+	<!-- comment! -->
+    text!
+</html>
+)");
+
+    auto root     = Style::StyledNode::from(html.evaluate(), css.evaluate());
+    auto children = root.getChildren();
+
+    ASSERT_EQ(root.value("color")->print(), "red");
+    ASSERT_EQ(children[0].value("color"), nullptr);
+    ASSERT_EQ(children[1].value("color"), nullptr);
 }

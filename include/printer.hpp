@@ -11,7 +11,6 @@
  */
 class Printer : public Visitor {
    public:
-    Printer()           = default;
     ~Printer() override = default;
 
     /**
