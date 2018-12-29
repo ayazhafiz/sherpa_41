@@ -65,9 +65,7 @@ TEST_F(StyleTest, UselessRules) {
 
     auto root = Style::StyledNode::from(html.evaluate(), css.evaluate());
 
-    ASSERT_EQ(root.value_or("color",
-                            CSS::ValuePtr(new CSS::TextValue("NO VALUE")))
-                  ->print(),
+    ASSERT_EQ(root.value_or("color", CSS::TextValue("NO VALUE"))->print(),
               "NO VALUE");
 }
 

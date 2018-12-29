@@ -31,36 +31,6 @@ Style::StyledNode::StyledNode(const Style::StyledNode & rhs)
 }
 
 /**
- * Returns the value of a style on the node, or nullptr if the style is not
- * applied.
- * @param style style to get
- * @return value of style, or nullptr if DNE
- */
-CSS::ValuePtr Style::StyledNode::value(const std::string & style) const {
-    auto cand = props.find(style);
-    if (cand != props.end()) {
-        return cand->second->clone();
-    } else {
-        return nullptr;
-    }
-}
-
-/**
- * Returns the value of a style on the node, or a passed default value if
- * the style is not applied.
- * @param style style to get
- * @param deflt fallback default
- * @return value of style, or default if DNE
- */
-CSS::ValuePtr Style::StyledNode::value_or(const std::string &   style,
-                                          const CSS::ValuePtr & deflt) const {
-    if (auto cand = value(style)) {
-        return cand;
-    }
-    return deflt->clone();
-}
-
-/**
  * Returns children
  * @return children
  */
@@ -92,6 +62,14 @@ Style::StyledNode Style::StyledNode::from(const DOM::NodePtr &    domRoot,
     } else {
         return StyledNode(domRoot->clone());
     }
+}
+
+/**
+ * `value` base case - no style found, nullptr returned
+ * @return nullptr
+ */
+CSS::ValuePtr Style::StyledNode::value() const {
+    return nullptr;
 }
 
 /**

@@ -7,4 +7,4 @@
 #include <gtest/gtest.h>
 
 // The fixture for testing the vector class
-class LayoutTest :     public ::testing::Test {};
+class LayoutTest : public ::testing::Test {};

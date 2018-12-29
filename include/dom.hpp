@@ -59,7 +59,7 @@ class Node {
      * @param tag tag to match
      * @return whether Node is of `tag` type
      */
-    bool is(std::string tag) const;
+    bool is(const std::string & tag) const;
 
     /**
      * Returns the tag name of the Node

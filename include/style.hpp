@@ -46,22 +46,58 @@ class StyledNode {
     StyledNode(const StyledNode & rhs);
 
     /**
-     * Returns the value of a style on the node, or nullptr if the style is not
-     * applied.
+     * Returns the value of a style, or any number of backup styles on the node,
+     * or nullptr if the style is not applied.
+     * @tparam Args variadic arguments, should be strings
      * @param style style to get
+     * @param backup any number of backup styles to check
      * @return value of style, or nullptr if DNE
      */
-    CSS::ValuePtr value(const std::string & style) const;
+    template <typename... Args>
+    CSS::ValuePtr value(const std::string & style,
+                        const Args &... backup) const {
+        auto cand = props.find(style);
+        if (cand != props.end()) {
+            return cand->second->clone();
+        } else {
+            return value(backup...);
+        }
+    }
 
     /**
-     * Returns the value of a style on the node, or a passed default value if
-     * the style is not applied.
+     * Returns the value of a style, or any number of backup styles on the node,
+     * or a passed default value if none of the styles are applied.
+     * @tparam Args variadic arguments, should be strings
      * @param style style to get
+     * @param backup any number of backup styles to check
      * @param deflt fallback default
-     * @return value of style, or default if DNE
+     * @return value of style, or `deflt` if DNE
      */
-    CSS::ValuePtr value_or(const std::string &   style,
-                           const CSS::ValuePtr & deflt) const;
+    template <typename... Args>
+    CSS::ValuePtr value_or(const std::string & style,
+                           const Args &... backup,
+                           const CSS::Value & deflt) const {
+        if (auto cand = value(style, backup...)) {
+            return cand;
+        }
+        return deflt.clone();
+    }
+
+    /**
+     * Returns the value of a style, or any number of backup styles on the node,
+     * or zero if none of the styles are applied.
+     * @tparam Args variadic arguments, should be strings
+     * @param style style to get
+     * @param backup any number of backup styles to check
+     * @return value of style, or zero if DNE
+     */
+    template <typename... Args>
+    CSS::ValuePtr value_or_zero(const std::string & style,
+                                const Args &... backup) const {
+        return value_or<std::string>(style,
+                                     backup...,
+                                     CSS::UnitValue(0, CSS::px));
+    }
 
     /**
      * Returns children
@@ -79,6 +115,12 @@ class StyledNode {
                            const CSS::StyleSheet & css);
 
    private:
+    /**
+     * `value` base case - no style found, nullptr returned
+     * @return nullptr
+     */
+    CSS::ValuePtr value() const;
+
     /**
      * Builds the styles for a single DOM node
      * @param node DOM node
