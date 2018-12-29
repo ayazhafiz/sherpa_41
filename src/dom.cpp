@@ -15,26 +15,27 @@
  */
 void DOM::AttributeMap::insert(const std::string & attribute,
                                const std::string & value) {
-    if (this->find(attribute) == end()) {
+    if (find(attribute) == end()) {
         (*this)[attribute] = value;
         order.push_back(attribute);
     }
 }
 
 std::string DOM::AttributeMap::print() const {
-    if (size() == 0) {
+    if (empty()) {
         return "";
     }
+
+    auto assign = [this](const auto & attr) {
+        return attr + "=\"" + const_cast<AttributeMap &>(*this)[attr] + "\"";
+    };
     auto        start = order.begin();
     std::string first = order.front();
     return std::accumulate(std::next(start),
                            order.end(),
-                           first + "=\"" +
-                               const_cast<AttributeMap &>(*this)[first] + "\"",
-                           [this](auto acc, auto attr) {
-                               return acc + " " + attr + "=\"" +
-                                      const_cast<AttributeMap &>(*this)[attr] +
-                                      "\"";
+                           assign(first),
+                           [&assign](auto acc, auto attr) {
+                               return acc + " " + assign(attr);
                            });
 }
 
@@ -55,7 +56,7 @@ DOM::Node::~Node() = default;
  * @param tag tag to match
  * @return whether Node is of `tag` type
  */
-bool DOM::Node::is(std::string tag) const {
+bool DOM::Node::is(const std::string & tag) const {
     return tagName() == tag;
 }
 
@@ -188,8 +189,9 @@ std::vector<std::string> DOM::ElementNode::getClasses() const {
         return {};
     }
     std::istringstream iss(classes->second);
+
     return {std::istream_iterator<std::string>{iss},
-            std::istream_iterator<std::string>{}};
+            std::istream_iterator<std::string>{}};  // split classes by space
 }
 
 /**

@@ -5,6 +5,30 @@
 
 #include "visitor.hpp"
 
+CSS::ValuePtr CSS::make_value(const CSS::Value & val) {
+    return val.clone();
+}
+
+/**
+ * Returns if *this is of specified value
+ * @param value value to compare
+ * @return whether *this is `value`
+ */
+bool CSS::Value::is(std::string value) const {
+    return print() == value;
+}
+
+/**
+ * Returns the unit value, or 0 if not a UnitValue
+ * @return unit value, or 0 if not UnitValue
+ */
+double CSS::Value::unitValue() const {
+    if (auto unit = dynamic_cast<const UnitValue *>(this)) {
+        return unit->value;
+    }
+    return 0;
+}
+
 /**
  * Creates a text value
  * @param value text value

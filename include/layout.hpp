@@ -9,6 +9,7 @@ namespace Layout {
 
 // forward declaration
 class Box;
+class Edges;
 
 typedef std::unique_ptr<Box> BoxPtr;
 typedef std::vector<BoxPtr>  BoxVector;
@@ -37,26 +38,33 @@ struct Rectangle {
      * Creates a rectangle
      * @param startX start x coordinate
      * @param startY start y coordinate
-     * @param length rectangle length
+     * @param width rectangle width
      * @param height rectangle height
      */
-    Rectangle(double startX, double startY, double length, double height);
+    Rectangle(double startX, double startY, double width, double height);
+
+    /**
+     * Expands a rectangle by some edges
+     * @param edge edges to expand by
+     * @return expanded rectangle
+     */
+    Rectangle expand(const Edges & edge) const;
 
     Coordinates origin;
-    double      length, height;
+    double      width, height;
 };
 
 /**
- * Describes lengths of edges in a block's dimensions
+ * Describes width of edges in a block's dimensions
  */
 struct Edges {
    public:
     /**
      * Creates edge dimensions
-     * @param top top edge length
-     * @param left left edge length
-     * @param bottom bottom edge length
-     * @param right right edge length
+     * @param top top edge width
+     * @param left left edge width
+     * @param bottom bottom edge width
+     * @param right right edge width
      */
     Edges(double top, double left, double bottom, double right);
 
@@ -81,28 +89,27 @@ struct BoxDimensions {
                            Edges     border  = Edges(0, 0, 0, 0));
 
     /**
-     * Returns start coordinates of the box
-     * @return origin coordinates of the box
+     * Area covered by box and its padding
+     * @return area covered
      */
-    Coordinates origin() const;
+    Rectangle paddingArea();
 
     /**
-     * Return length of box
-     * @return length
+     * Area covered by box, padding, and borders
+     * @return area covered
      */
-    double length() const;
+    Rectangle borderArea();
 
     /**
-     * Return height of box
-     * @return height
+     * Area covered by box, padding, borders, and margins
+     * @return area covered
      */
-    double height() const;
-
-   private:
-    Rectangle location;
+    Rectangle marginArea();
 
    public:
-    Edges margin, padding, border;
+    Coordinates origin;
+    double      width, height;
+    Edges       margin, padding, border;
 };
 
 class Box {
@@ -141,11 +148,9 @@ class Box {
      */
     static BoxPtr from(const Style::StyledNode & root);
 
-   private:
-    BoxDimensions dimensions;
-
    protected:
-    BoxVector children;
+    BoxDimensions dimensions;
+    BoxVector     children;
 };
 
 class AnonymousBox : public Box {
@@ -193,6 +198,42 @@ class StyledBox : public Box {
     BoxPtr clone() const override;
 
    private:
+    /**
+     * Lays out a box and its children
+     * @param container parent container dimensions
+     */
+    void layout(const BoxDimensions & container);
+
+    /**
+     * Lays out *this box's children, updating *this box's height
+     */
+    void layoutChildren();
+
+    /**
+     * Lays out a box with block display type and its children
+     * @param container parent container dimensions
+     */
+    void setBlockLayout(const BoxDimensions & container);
+
+    /**
+     * Calculates and sets box width based off parent
+     * @param container parent container dimensions
+     */
+    void setWidth(const BoxDimensions & container);
+
+    /**
+     * Positions the box within its parent container using widths and parent
+     * dimensions
+     * @param container parent container dimensions
+     */
+    void setPosition(const BoxDimensions & container);
+
+    /**
+     * Determines explicit height, or calculates height from children if no
+     * explicit height is given
+     */
+    void setHeight();
+
     /**
      * Get the box an inline node should go into, or a create a new one
      * @return box to put inline node in

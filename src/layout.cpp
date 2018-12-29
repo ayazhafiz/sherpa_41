@@ -19,30 +19,41 @@ Layout::DisplayType Layout::stodisplay(const std::string & s) {
 Layout::DisplayType Layout::snodetodisplay(const Style::StyledNode & node,
                                            const std::string &       deflt) {
     return Layout::stodisplay(
-        node.value_or("display", CSS::ValuePtr(new CSS::TextValue(deflt)))
-            ->print());
+        node.value_or("display", CSS::TextValue(deflt))->print());
 }
 
 /**
  * Creates a rectangle
  * @param startX start x coordinate
  * @param startY start y coordinate
- * @param length rectangle length
+ * @param width rectangle width
  * @param height rectangle height
  */
 Layout::Rectangle::Rectangle(double startX,
                              double startY,
-                             double length,
+                             double width,
                              double height)
-    : origin(Coordinates{startX, startY}), length(length), height(height) {
+    : origin(Coordinates{startX, startY}), width(width), height(height) {
+}
+
+/**
+ * Expands a rectangle by some edges
+ * @param edge edges to expand by
+ * @return expanded rectangle
+ */
+Layout::Rectangle Layout::Rectangle::expand(const Layout::Edges & edge) const {
+    return Rectangle(origin.x + edge.left,
+                     origin.y + edge.top,
+                     width + edge.left + edge.right,
+                     height + edge.top + edge.bottom);
 }
 
 /**
  * Creates edge dimensions
- * @param top top edge length
- * @param left left edge length
- * @param bottom bottom edge length
- * @param right right edge length
+ * @param top top edge width
+ * @param left left edge width
+ * @param bottom bottom edge width
+ * @param right right edge width
  */
 Layout::Edges::Edges(double top, double left, double bottom, double right)
     : top(top), left(left), bottom(bottom), right(right) {
@@ -59,31 +70,36 @@ Layout::BoxDimensions::BoxDimensions(Layout::Rectangle location,
                                      Layout::Edges     margin,
                                      Layout::Edges     padding,
                                      Layout::Edges     border)
-    : location(location), margin(margin), padding(padding), border(border) {
+    : origin(location.origin),
+      width(location.width),
+      height(location.height),
+      margin(margin),
+      padding(padding),
+      border(border) {
 }
 
 /**
- * Returns start coordinates of the box
- * @return origin coordinates of the box
+ * Area covered by box and its padding
+ * @return area covered
  */
-Layout::Coordinates Layout::BoxDimensions::origin() const {
-    return location.origin;
+Layout::Rectangle Layout::BoxDimensions::paddingArea() {
+    return Rectangle(origin.x, origin.y, width, height).expand(padding);
 }
 
 /**
- * Return length of box
- * @return length
+ * Area covered by box, padding, and borders
+ * @return area covered
  */
-double Layout::BoxDimensions::length() const {
-    return location.length;
+Layout::Rectangle Layout::BoxDimensions::borderArea() {
+    return paddingArea().expand(border);
 }
 
 /**
- * Return height of box
- * @return height
+ * Area covered by box, padding, borders, and margins
+ * @return area covered
  */
-double Layout::BoxDimensions::height() const {
-    return location.height;
+Layout::Rectangle Layout::BoxDimensions::marginArea() {
+    return borderArea().expand(margin);
 }
 
 /**
@@ -191,6 +207,170 @@ Layout::StyledBox::StyledBox(Layout::BoxDimensions dimensions,
 Layout::BoxPtr Layout::StyledBox::clone() const {
     return BoxPtr(
         new StyledBox(getDimensions(), content, display, getChildren()));
+}
+
+/**
+ * Lays out a block and its children
+ * @param container parent container dimensions
+ */
+void Layout::StyledBox::layout(const Layout::BoxDimensions & container) {
+    switch (display) {
+        case Block:
+            setBlockLayout(container);
+            break;
+        case Inline:
+        case None:
+        default:
+            break;
+    }
+}
+
+void Layout::StyledBox::layoutChildren() {
+    std::for_each(children.begin(), children.end(), [this](BoxPtr & child) {
+        if (auto styledChild = dynamic_cast<StyledBox *>(child.get())) {
+            styledChild->layout(dimensions);
+        }
+    });
+}
+
+/**
+ * Lays out a box with block display type and its children
+ * @param container parent container dimensions
+ */
+void Layout::StyledBox::setBlockLayout(
+    const Layout::BoxDimensions & container) {
+    setWidth(container);     // determine width from parent
+    setPosition(container);  // determine position inside parent
+    layoutChildren();
+    setHeight();  // height depends on children
+}
+
+/**
+ * Calculates and sets box width based off parent
+ * @param container parent container dimensions
+ */
+void Layout::StyledBox::setWidth(const Layout::BoxDimensions & container) {
+    auto width = content.value_or("width", CSS::TextValue("auto"));
+
+    auto marginLeft   = content.value_or_zero("margin-left", "margin");
+    auto marginRight  = content.value_or_zero("margin-right", "margin");
+    auto paddingLeft  = content.value_or_zero("padding-left", "padding");
+    auto paddingRight = content.value_or_zero("padding-right", "padding");
+    auto borderLeft   = content.value_or_zero("border-left-width",
+                                            "border-width");
+    auto borderRight  = content.value_or_zero("border-right-width",
+                                             "border-width");
+
+    double totalWidth(0);
+    for (const auto & dim : {&width,
+                             &marginLeft,
+                             &marginRight,
+                             &paddingLeft,
+                             &paddingRight,
+                             &borderLeft,
+                             &borderRight}) {
+        totalWidth += (*dim)->unitValue();
+    }
+
+    auto zero = CSS::make_value(CSS::UnitValue(0, CSS::px));
+
+    // if box is too big and width is not auto, zero the margins
+    if (totalWidth > container.width() && !width->is("auto")) {
+        if (marginLeft->is("auto")) {
+            marginLeft = zero->clone();
+        }
+        if (marginRight->is("auto")) {
+            marginRight = zero->clone();
+        }
+    }
+
+    // calculate box underflow
+    double underflow = container.width() - totalWidth;
+    bool   autoW = width->is("auto"), autoML = marginLeft->is("auto"),
+         autoMR = marginRight->is("auto");
+
+    // Eliminate under/overflow by adjusting expandable (auto) dimensions
+    if (!autoW && !autoML && !autoMR) {  // all dimensions constrained, update
+                                         // right margin
+        marginRight = CSS::make_value(
+            CSS::UnitValue(marginRight->unitValue() + underflow, CSS::px));
+    } else if (!autoW && !autoML) {  // only right margin adjustable
+        marginRight = CSS::make_value(CSS::UnitValue(underflow, CSS::px));
+    } else if (!autoW && !autoMR) {  // only left margin adjustable
+        marginLeft = CSS::make_value(CSS::UnitValue(underflow, CSS::px));
+    } else if (autoW) {  // width is auto, zero other auto dimensions
+        if (autoML) {
+            marginLeft = zero->clone();
+        }
+        if (autoMR) {
+            marginRight = zero->clone();
+        }
+
+        if (underflow >= 0) {  // set width to fit underflow
+            width = CSS::make_value(CSS::UnitValue(underflow, CSS::px));
+        } else {  // with overflow, adjust right margin
+            width       = zero->clone();
+            marginRight = CSS::make_value(
+                CSS::UnitValue(marginRight->unitValue() + underflow, CSS::px));
+        }
+    } else {  // only margins are adjustable, make them evenly split underflow
+        marginLeft  = CSS::make_value(CSS::UnitValue(underflow / 2, CSS::px));
+        marginRight = CSS::make_value(CSS::UnitValue(underflow / 2, CSS::px));
+    }
+
+    // store computed values
+    dimensions.width         = width->unitValue();
+    dimensions.margin.left   = marginLeft->unitValue();
+    dimensions.margin.right  = marginRight->unitValue();
+    dimensions.padding.left  = paddingLeft->unitValue();
+    dimensions.padding.right = paddingRight->unitValue();
+    dimensions.border.left   = borderLeft->unitValue();
+    dimensions.border.right  = borderRight->unitValue();
+}
+
+/**
+ * Positions the box within its parent container using widths and parent
+ * dimensions
+ * @param container parent container dimensions
+ */
+void Layout::StyledBox::setPosition(const Layout::BoxDimensions & container) {
+    auto &       d = dimensions;
+    const auto & c = content;
+
+    // transfer styles
+    d.margin.top     = c.value_or_zero("margin-top", "margin")->unitValue();
+    d.margin.bottom  = c.value_or_zero("margin-bottom", "margin")->unitValue();
+    d.padding.top    = c.value_or_zero("padding-top", "padding")->unitValue();
+    d.padding.bottom = c.value_or_zero("padding-bottom", "padding")
+                           ->unitValue();
+    d.border.top = c.value_or_zero("border-top-width", "border-width")
+                       ->unitValue();
+    d.border.bottom = c.value_or_zero("border-bottom-width", "border-width")
+                          ->unitValue();
+
+    // set x-start coordinate
+    d.origin.x = container.origin.x + d.margin.left + d.padding.left +
+                 d.border.left;
+
+    // set y-start coordinate by placing it below all existing blocks in the
+    // container (block positioning)
+    d.origin.y = container.height + container.origin.y + d.margin.top +
+                 d.padding.top + d.border.top;
+}
+
+/**
+ * Determines explicit height, or calculates height from children if no
+ * explicit height is given
+ */
+void Layout::StyledBox::setHeight() {
+    if (auto height = dynamic_cast<CSS::UnitValue *>(
+            content.value("height").get())) {
+        dimensions.height = height->value;
+    } else {
+        for (const auto & child : children) {
+            dimensions.height += child->getDimensions().marginArea().height;
+        }
+    }
 }
 
 /**

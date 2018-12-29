@@ -24,6 +24,8 @@ typedef std::vector<uint64_t>                     Specificity;
 typedef std::multiset<Selector, specificityOrder> PrioritySelectorSet;
 typedef std::vector<Declaration>                  DeclarationSet;
 
+ValuePtr make_value(const Value & val);
+
 /**
  * Abstract base struct representing a CSS declaration value
  */
@@ -42,6 +44,19 @@ struct Value {
      * @return printed value
      */
     virtual std::string print() const = 0;
+
+    /**
+     * Returns if *this is of specified value
+     * @param value value to compare
+     * @return whether *this is `value`
+     */
+    virtual bool is(std::string value) const;
+
+    /**
+     * Returns the unit value, or 0 if not a UnitValue
+     * @return unit value, or 0 if not UnitValue
+     */
+    virtual double unitValue() const;
 };
 
 /**
