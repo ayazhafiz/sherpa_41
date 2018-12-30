@@ -1,11 +1,10 @@
 #include "style.hpp"
 
-#include "parser_css.hpp"
-#include "parser_html.hpp"
+#include "parser/css.hpp"
+#include "parser/html.hpp"
 
 #include <gtest/gtest.h>
 
-// The fixture for testing the vector class
 class StyleTest : public ::testing::Test {};
 
 TEST_F(StyleTest, OneSelector) {

@@ -1,3 +1,5 @@
+// sherpa_41's Layout module, licensed under MIT. (c) hafiz, 2018
+
 #ifndef LAYOUT_HPP
 #define LAYOUT_HPP
 
@@ -5,11 +7,21 @@
 
 #include <vector>
 
+/**
+ * The Layout module performs computations on a styled node to figure out its
+ * location on the browser page, producing a Layout Tree not unlike the Style
+ * Tree or DOM Tree that holds positional information on all the nodes in the
+ * browser page.
+ *
+ * The following Layouts are currently supported:
+ *  - AnonymousBox: a non-rendered box to hold any number of children
+ *  - StyledBox: a box with arbitrary styling of any display type
+ */
 namespace Layout {
 
 // forward declaration
 class Box;
-class Edges;
+struct Edges;
 
 typedef std::unique_ptr<Box> BoxPtr;
 typedef std::vector<BoxPtr>  BoxVector;
@@ -92,19 +104,19 @@ struct BoxDimensions {
      * Area covered by box and its padding
      * @return area covered
      */
-    Rectangle paddingArea();
+    Rectangle paddingArea() const;
 
     /**
      * Area covered by box, padding, and borders
      * @return area covered
      */
-    Rectangle borderArea();
+    Rectangle borderArea() const;
 
     /**
      * Area covered by box, padding, borders, and margins
      * @return area covered
      */
-    Rectangle marginArea();
+    Rectangle marginArea() const;
 
    public:
     Coordinates origin;
@@ -112,6 +124,9 @@ struct BoxDimensions {
     Edges       margin, padding, border;
 };
 
+/**
+ * An abstract base Box that describes any other layout box in the Layout Tree
+ */
 class Box {
    public:
     /**
@@ -142,6 +157,14 @@ class Box {
     virtual BoxPtr clone() const = 0;
 
     /**
+     * Creates a tree of boxes from a styled node root and a browser window
+     * @param root styled node root
+     * @param window browser window size
+     * @return pointer to root of box tree
+     */
+    static BoxPtr from(const Style::StyledNode & root, BoxDimensions window);
+
+    /**
      * Creates a tree of boxes from a styled node root
      * @param root styled node root
      * @return pointer to root of box tree
@@ -153,6 +176,12 @@ class Box {
     BoxVector     children;
 };
 
+/**
+ * An anonymous box that is not itself rendered, but serves to contain its
+ * children. The primary use case for this is differing display types; for
+ * instance, multiple `inline` boxes after a `block` box will go in an anonymous
+ * box.
+ */
 class AnonymousBox : public Box {
    public:
     /**
@@ -173,6 +202,10 @@ class AnonymousBox : public Box {
     BoxPtr clone() const override;
 };
 
+/**
+ * A box with arbitrary styling defined by a StyledNode, that can have any
+ * number of children and any display type.
+ */
 class StyledBox : public Box {
    public:
     /**
@@ -196,6 +229,12 @@ class StyledBox : public Box {
      * @return styled box
      */
     BoxPtr clone() const override;
+
+    /**
+     * Returns content
+     * @return content of styled node
+     */
+    Style::StyledNode getContent() const;
 
    private:
     /**

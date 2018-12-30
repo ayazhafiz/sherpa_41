@@ -1,3 +1,5 @@
+// sherpa_41's Base Visitor, licensed under MIT. (c) hafiz, 2018
+
 #ifndef VISITOR_HPP
 #define VISITOR_HPP
 
@@ -5,8 +7,10 @@
 #include "dom.hpp"
 
 /**
- * A visitor interface for other iterators and applications to extend.
- * Allows for visiting various classes in the browser.
+ * A visitor interface for other iterators and applications to extend, currently
+ * for the Printer
+ *
+ * Allows for visiting various classes in the browser through visitation
  */
 class Visitor {
    public:

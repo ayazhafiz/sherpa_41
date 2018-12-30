@@ -1,11 +1,10 @@
-#include "parser_html.hpp"
-#include "printer.hpp"
+#include "parser/html.hpp"
 
 #include "./util.hpp"
+#include "visitor/printer.hpp"
 
 #include <gtest/gtest.h>
 
-// The fixture for testing the vector class
 class HTMLParserTest : public ::testing::Test {};
 
 TEST_F(HTMLParserTest, RootHTMLTag) {

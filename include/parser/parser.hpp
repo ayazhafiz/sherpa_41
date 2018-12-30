@@ -1,3 +1,5 @@
+// sherpa_41's Base Parser, licensed under MIT. (c) hafiz, 2018
+
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
@@ -6,6 +8,8 @@
 
 /**
  * A basic parser, not meant to evaluate anything on its own.
+ * The parser serves as a base for others, currently the HTML and CSS parser.
+ *
  * @tparam EvalType type of program to evaluate to
  */
 template <typename EvalType>
@@ -16,6 +20,11 @@ class Parser {
      * @param program program to parse
      */
     explicit Parser(std::string program);
+
+    /**
+     * Default dtor
+     */
+    virtual ~Parser() = default;
 
     /**
      * Generic evaluation of the parser

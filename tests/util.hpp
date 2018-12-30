@@ -3,7 +3,8 @@
 
 #include "css.hpp"
 #include "dom.hpp"
-#include "printer.hpp"
+
+#include "visitor/printer.hpp"
 
 #include <gtest/gtest.h>
 

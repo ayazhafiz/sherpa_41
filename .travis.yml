@@ -25,7 +25,7 @@ script:
     fi
   - cmake -DCOVERAGE=1 .
   - cmake --build .
-  - ./testing
+  - ./sherpa_41-test
 
 
 after_success:

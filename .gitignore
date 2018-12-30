@@ -4,7 +4,8 @@
 .idea
 .DS_Store
 
-testing
+sherpa_41
+sherpa_41-test
 cmake_install.cmake
 CMakeCache.txt
 Makefile

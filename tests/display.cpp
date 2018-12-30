@@ -1,4 +1,4 @@
-#include "layout.hpp"
+#include "display.hpp"
 
 #include "style.hpp"
 
@@ -7,4 +7,4 @@
 
 #include <gtest/gtest.h>
 
-class LayoutTest : public ::testing::Test {};
+class DisplayTest : public ::testing::Test {};

@@ -3,7 +3,7 @@
 
 #include "css.hpp"
 
-#include "visitor.hpp"
+#include "visitor/visitor.hpp"
 
 CSS::ValuePtr CSS::make_value(const CSS::Value & val) {
     return val.clone();
@@ -117,6 +117,14 @@ CSS::ValuePtr CSS::ColorValue::clone() const {
 std::string CSS::ColorValue::print() const {
     return "rgba(" + std::to_string(r) + ", " + std::to_string(g) + ", " +
            std::to_string(b) + ", " + std::to_string(a) + ")";
+}
+
+/**
+ * Returns a vector of the RGBA color channels
+ * @return color channels
+ */
+std::vector<uint8_t> CSS::ColorValue::channels() const {
+    return {r, g, b, a};
 }
 
 /**
