@@ -41,7 +41,7 @@ Both come pre-installed with most Linux distros, and are easy to install on MacO
 Clone the repo and make the project:
 
 ```bash
-https://github.com/ayazhafiz/sherpa_41.git
+git clone https://github.com/ayazhafiz/sherpa_41.git
 cd sherpa_41 && cmake .
 make
 ./sherpa_41-test && ./sherpa_41
@@ -65,5 +65,4 @@ make
 
 ##### etymology
 
-idk, i got a sherpa jacket and thought it sounded ambiguous enough to be a
-spectacular project name.
+idk, i got a sherpa jacket and thought it sounded ambiguous enough to be a spectacular project name.
