@@ -38,15 +38,6 @@ set(APP_FILES
     src/main.cpp
 )
 
-# sherpa_41 executable
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${APP_FILES})
-add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
-add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
-find_package(ImageMagick COMPONENTS Magick++)
-include_directories(${ImageMagick_INCLUDE_DIRS})
-target_compile_options(${PROJECT_NAME} PRIVATE ${CMAKE_CXX_FLAGS} -std=c++17)
-target_link_libraries(${PROJECT_NAME} ${ImageMagick_LIBRARIES})
-
 # tests
 find_package(Threads)
 add_executable(${PROJECT_NAME}-test ${SOURCE_FILES} ${TEST_FILES})
@@ -57,4 +48,13 @@ target_link_libraries(${PROJECT_NAME}-test PRIVATE gtest ${CMAKE_THREAD_LIBS_INI
 if (COVERAGE)
     target_compile_options(${PROJECT_NAME}-test PRIVATE --coverage)
     target_link_libraries(${PROJECT_NAME}-test PRIVATE --coverage)
+else()
+    # sherpa_41 executable
+    add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${APP_FILES})
+    add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
+    add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
+    find_package(ImageMagick COMPONENTS Magick++)
+    include_directories(${ImageMagick_INCLUDE_DIRS})
+    target_compile_options(${PROJECT_NAME} PRIVATE ${CMAKE_CXX_FLAGS} -std=c++17)
+    target_link_libraries(${PROJECT_NAME} ${ImageMagick_LIBRARIES})
 endif()
