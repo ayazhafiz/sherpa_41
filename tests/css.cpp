@@ -1,11 +1,10 @@
-#include "parser_css.hpp"
-#include "printer.hpp"
+#include "parser/css.hpp"
 
 #include "./util.hpp"
+#include "visitor/printer.hpp"
 
 #include <gtest/gtest.h>
 
-// The fixture for testing the vector class
 class CSSParserTest : public ::testing::Test {};
 
 TEST_F(CSSParserTest, TagSelector) {

@@ -1,3 +1,5 @@
+// sherpa_41's DOM module, licensed under MIT. (c) hafiz, 2018
+
 #ifndef DOM_HPP
 #define DOM_HPP
 
@@ -8,6 +10,16 @@
 
 class Visitor;
 
+/**
+ * The DOM module represents a tree of DOM nodes from a parsed HTML file. A base
+ * Node class is used to represent a multitude of derived nodes that may be in
+ * the DOM tree - this is not unlike a composite pattern.
+ *
+ * The following nodes are supported:
+ *  - TextNode: a block of text in an element
+ *  - CommentNode: a comment
+ *  - ElementNode: an HTML element
+ */
 namespace DOM {
 
 // forward declaration

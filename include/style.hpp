@@ -1,3 +1,5 @@
+// sherpa_41's Style module, licensed under MIT. (c) hafiz, 2018
+
 #ifndef STYLE_HPP
 #define STYLE_HPP
 
@@ -7,6 +9,12 @@
 #include <map>
 #include <string>
 
+/**
+ * The Style module is designed to build and represent styled nodes - DOM
+ * elements with CSS styles directly attached to them. This provides a layer of
+ * separation between the DOM tree/Stylesheet parsing and the positional Layout
+ * module, and arbitrarily styles ___any___ node.
+ */
 namespace Style {
 
 // forward declaration

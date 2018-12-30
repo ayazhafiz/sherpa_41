@@ -1,4 +1,4 @@
-#include "printer.hpp"
+#include "visitor/printer.hpp"
 
 #include "css.hpp"
 #include "dom.hpp"
@@ -7,7 +7,6 @@
 
 #include <gtest/gtest.h>
 
-// The fixture for testing the vector class
 class PrinterTest : public ::testing::Test {};
 
 TEST_F(PrinterTest, RootTag) {

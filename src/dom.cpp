@@ -3,7 +3,7 @@
 
 #include "dom.hpp"
 
-#include "visitor.hpp"
+#include "visitor/visitor.hpp"
 
 #include <iterator>
 #include <sstream>

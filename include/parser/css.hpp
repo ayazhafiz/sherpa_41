@@ -1,11 +1,19 @@
+// sherpa_41's CSS Parser, licensed under MIT. (c) hafiz, 2018
+
 #ifndef PARSER_CSS_HPP
 #define PARSER_CSS_HPP
 
-#include "css.hpp"
-#include "parser.hpp"
+#include "../css.hpp"
+#include "parser/parser.hpp"
 
 /**
- * CSS Parser, parsing text into a style sheet
+ * CSS Parser, parsing text into a style sheet represented using the CSS module.
+ *
+ * So far, the following features are supported:
+ *  - tag, id, class, and wildcard selectors
+ *  - text, numerical unit, and color (RGB/A, #HEX) declarations
+ *  - comments (simply ignored)
+ *  - mandatory semicolons at the end of declarations
  */
 class CSSParser : public Parser<CSS::StyleSheet> {
    public:
@@ -14,6 +22,11 @@ class CSSParser : public Parser<CSS::StyleSheet> {
      * @param css
      */
     explicit CSSParser(std::string css);
+
+    /**
+     * Default dtor
+     */
+    ~CSSParser() override = default;
 
     /**
      * Parses CSS into engine-operable format

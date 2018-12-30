@@ -1,5 +1,7 @@
-#ifndef PRINTER_HPP
-#define PRINTER_HPP
+// sherpa_41's Printer, licensed under MIT. (c) hafiz, 2018
+
+#ifndef VISITOR_PRINTER_HPP
+#define VISITOR_PRINTER_HPP
 
 #include "css.hpp"
 #include "visitor.hpp"
@@ -7,7 +9,9 @@
 #include <sstream>
 
 /**
- * Allows for printing various classes in the browser
+ * Prints various classes in the browser to stdout. This is meant more for
+ * pretty-printing and testing internal representations than for client viewing
+ * of the engine outputs.
  */
 class Printer : public Visitor {
    public:

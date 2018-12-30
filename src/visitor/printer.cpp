@@ -1,7 +1,7 @@
-#ifndef PRINTER_CPP
-#define PRINTER_CPP
+#ifndef VISITOR_PRINTER_CPP
+#define VISITOR_PRINTER_CPP
 
-#include "printer.hpp"
+#include "visitor/printer.hpp"
 
 /**
  * Prints text

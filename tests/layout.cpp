@@ -1,10 +1,10 @@
 #include "layout.hpp"
 
-#include "parser_css.hpp"
-#include "parser_html.hpp"
 #include "style.hpp"
+
+#include "parser/css.hpp"
+#include "parser/html.hpp"
 
 #include <gtest/gtest.h>
 
-// The fixture for testing the vector class
 class LayoutTest : public ::testing::Test {};

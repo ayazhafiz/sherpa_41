@@ -12,11 +12,48 @@ engine is ___not___ designed to be robust, or even useful.
 
 ### Usage
 
+```bash
+USAGE: sherpa_41 [options]
 
+OPTIONS:
+        --html                  HTML file to parse (=assets/rainbowBox.html)
+        --css                   CSS file to parse (=assets/rainboxBox.css)
+        -w, --width             Browser width (=800)
+        -h, --height            Browser height (=600)
+        -o, --out               Output file (=output.png)
+        -h, --help              Show this help screen
+```
+
+All option flags have a default if you do not specify them. For the output file,
+it is recommended to only use `.png`, `.jpg`, or `.bmp` extensions.
+
+An example of a custom invocation:
+
+```bash
+sherpa_41 --html index.html --css style.css -w 1800 -h 1200 -o myIndex.jpg
+```
+
+### Building
+
+First, you will need [CMake](https://cmake.org) and [Magick++](https://imagemagick.org/Magick++/).
+Both come pre-installed with most Linux distros, and are easy to install on MacOS and Windows.
+
+Clone the repo and make the project:
+
+```bash
+https://github.com/ayazhafiz/sherpa_41.git
+cd sherpa_41 && cmake .
+make
+./sherpa_41-test && ./sherpa_41
+```
 
 ### Features
 
+- The HTML parser currently supports elements, comments, and text nodes.
 
+- The CSS parser supports tag, class, id, and wildcard selectors, and has support for text, color (RGB/A, #HEX), and numerical unit declarations.
+
+- The Display module can issue commands to render only rectangular block nodes at this time.
 
 ### Notes
 

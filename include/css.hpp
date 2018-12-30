@@ -1,16 +1,32 @@
+// sherpa_41's CSS module, licensed under MIT. (c) hafiz, 2018
+
 #ifndef CSS_HPP
 #define CSS_HPP
 
-#include "parser.hpp"
+#include "parser/parser.hpp"
 
 #include <memory>
 #include <numeric>
 #include <set>
-#include <unordered_set>
 #include <vector>
 
 class Visitor;
 
+/**
+ * The CSS module is designed to represent trivial stylesheets with a series
+ * of rules. Rules consist of selectors and declarations.
+ *
+ * So far, the following is supported:
+ *  __selectors__:
+ *      - ids
+ *      - classes
+ *      - tags
+ *      - wildcards (\*)
+ *  __declarations__:
+ *      - text values
+ *      - color values (RGB/A, #HEX)
+ *      - unit values (px, em, rem, etc... but only px is normalized)
+ */
 namespace CSS {
 
 // forward declaration
@@ -152,6 +168,12 @@ struct ColorValue : public Value {
      * @return printed value
      */
     std::string print() const override;
+
+    /**
+     * Returns a vector of the RGBA color channels
+     * @return color channels
+     */
+    std::vector<uint8_t> channels() const;
 
     uint8_t r, g, b, a;
 };

@@ -82,7 +82,7 @@ Layout::BoxDimensions::BoxDimensions(Layout::Rectangle location,
  * Area covered by box and its padding
  * @return area covered
  */
-Layout::Rectangle Layout::BoxDimensions::paddingArea() {
+Layout::Rectangle Layout::BoxDimensions::paddingArea() const {
     return Rectangle(origin.x, origin.y, width, height).expand(padding);
 }
 
@@ -90,7 +90,7 @@ Layout::Rectangle Layout::BoxDimensions::paddingArea() {
  * Area covered by box, padding, and borders
  * @return area covered
  */
-Layout::Rectangle Layout::BoxDimensions::borderArea() {
+Layout::Rectangle Layout::BoxDimensions::borderArea() const {
     return paddingArea().expand(border);
 }
 
@@ -98,7 +98,7 @@ Layout::Rectangle Layout::BoxDimensions::borderArea() {
  * Area covered by box, padding, borders, and margins
  * @return area covered
  */
-Layout::Rectangle Layout::BoxDimensions::marginArea() {
+Layout::Rectangle Layout::BoxDimensions::marginArea() const {
     return borderArea().expand(margin);
 }
 
@@ -135,6 +135,23 @@ Layout::BoxVector Layout::Box::getChildren() const {
                    std::back_inserter(boxes),
                    [](const auto & child) { return child->clone(); });
     return boxes;
+}
+
+/**
+ * Creates a tree of boxes from a styled node root and a browser window
+ * @param root styled node root
+ * @param window browser window size
+ * @return pointer to root of box tree
+ */
+Layout::BoxPtr Layout::Box::from(const Style::StyledNode & root,
+                                 Layout::BoxDimensions     window) {
+    // layout algorithm assumes height is initially zero
+    // TODO: Store window height for vmin/vmax/% values
+    window.height = 0;
+
+    auto rootBox = from(root);
+    dynamic_cast<StyledBox *>(rootBox.get())->layout(window);
+    return rootBox;
 }
 
 /**
@@ -210,6 +227,14 @@ Layout::BoxPtr Layout::StyledBox::clone() const {
 }
 
 /**
+ * Returns content
+ * @return content of styled node
+ */
+Style::StyledNode Layout::StyledBox::getContent() const {
+    return content;
+}
+
+/**
  * Lays out a block and its children
  * @param container parent container dimensions
  */
@@ -275,7 +300,7 @@ void Layout::StyledBox::setWidth(const Layout::BoxDimensions & container) {
     auto zero = CSS::make_value(CSS::UnitValue(0, CSS::px));
 
     // if box is too big and width is not auto, zero the margins
-    if (totalWidth > container.width() && !width->is("auto")) {
+    if (totalWidth > container.width && !width->is("auto")) {
         if (marginLeft->is("auto")) {
             marginLeft = zero->clone();
         }
@@ -285,7 +310,7 @@ void Layout::StyledBox::setWidth(const Layout::BoxDimensions & container) {
     }
 
     // calculate box underflow
-    double underflow = container.width() - totalWidth;
+    double underflow = container.width - totalWidth;
     bool   autoW = width->is("auto"), autoML = marginLeft->is("auto"),
          autoMR = marginRight->is("auto");
 
@@ -383,7 +408,7 @@ Layout::Box * Layout::StyledBox::getInlineContainer() {
     } else {  // *this is a block display
         // if there is already an anonymous node to hold inline content, use it
         // otherwise, create a new anonymous node
-        Box * last = children.back().get();
+        Box * last = children.empty() ? nullptr : children.back().get();
         if (dynamic_cast<AnonymousBox *>(last) == nullptr) {
             children.push_back(BoxPtr(new AnonymousBox()));
         }
