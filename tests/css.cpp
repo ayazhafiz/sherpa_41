@@ -1,144 +1,68 @@
-#include "parser/css.hpp"
-
-#include "./util.hpp"
-#include "visitor/printer.hpp"
+#include "css.hpp"
 
 #include <gtest/gtest.h>
 
-class CSSParserTest : public ::testing::Test {};
+class CSSTest : public ::testing::Test {};
 
-TEST_F(CSSParserTest, TagSelector) {
-    CSSParser parser("body {}");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-body {
+using namespace CSS;
+
+TEST_F(CSSTest, ValueCtorDtor) {
+    TextValue  text("txt");
+    UnitValue  unit(1.0, px);
+    ColorValue color(0, 0, 0, 0);
+    TextValue  text2(text);
+    UnitValue  unit2(unit);
+    ColorValue color2(color);
 }
 
-)");
+TEST_F(CSSTest, makeValue) {
+    TextValue val("hello");
+
+    ASSERT_EQ(make_value(val)->print(), "hello");
+    ASSERT_FALSE(make_value(val) == make_value(val));
 }
 
-TEST_F(CSSParserTest, IdSelector) {
-    CSSParser parser("#id {}");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-#id {
+TEST_F(CSSTest, valueIs) {
+    TextValue  text("txt");
+    UnitValue  unit(1.0, px);
+    ColorValue color(0, 0, 0, 0);
+
+    ASSERT_TRUE(text.is("txt"));
+    ASSERT_TRUE(unit.is("1px"));
+    ASSERT_TRUE(color.is("rgba(0, 0, 0, 0)"));
 }
 
-)");
+TEST_F(CSSTest, unitValue) {
+    TextValue text("txt");
+    UnitValue unit(1.0, px);
+
+    ASSERT_EQ(text.unitValue(), 0);
+    ASSERT_EQ(unit.unitValue(), 1);
 }
 
-TEST_F(CSSParserTest, ClassSelector) {
-    CSSParser parser(".id {}");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-.id {
+TEST_F(CSSTest, printing) {
+    TextValue  text("txt");
+    UnitValue  unit(1.0, px);
+    ColorValue color(0, 0, 0, 0);
+
+    ASSERT_EQ(text.print(), "txt");
+    ASSERT_EQ(unit.print(), "1px");
+    ASSERT_EQ(color.print(), "rgba(0, 0, 0, 0)");
+    ASSERT_EQ(color.channels(), std::vector<uint8_t>({0, 0, 0, 0}));
 }
 
-)");
+TEST_F(CSSTest, SelectorCtorDtor) {
+    Selector selector("tag", "id", {"class1", "class2"});
 }
 
-TEST_F(CSSParserTest, UniversalSelector) {
-    CSSParser parser("* {}");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-* {
+TEST_F(CSSTest, DeclarationCtorDtor) {
+    Declaration declaration("key", make_value(TextValue("value")));
 }
 
-)");
+TEST_F(CSSTest, RuleCtorDtor) {
+    Rule rule(PrioritySelectorSet, DeclarationSet);
 }
 
-TEST_F(CSSParserTest, CombinedSelectors) {
-    CSSParser parser("span#solo.class1.class2 {}");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-span#solo.class1.class2 {
-}
-
-)");
-
-    parser = CSSParser("   span.class3#solo.class4#aSolo#bSolo   {}");
-    eval   = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-span#bSolo.class3.class4 {
-}
-
-)");
-}
-
-TEST_F(CSSParserTest, MultipleSelectors) {
-    CSSParser parser("span  , #id.class , \t\n.c.k.b, div#a.c.e {} body {}");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-div#a.c.e, #id.class, .c.k.b, span {
-}
-
-body {
-}
-
-)");
-}
-
-TEST_F(CSSParserTest, TextDeclaration) {
-    CSSParser parser("body { text-decoration: none; }");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-body {
-	text-decoration: none;
-}
-
-)");
-}
-
-TEST_F(CSSParserTest, UnitDeclaration) {
-    CSSParser parser(
-        "body { font-size:15px;font-size:1.0em;font-size:5.5vh; }");
-    auto eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-body {
-	font-size: 15px;
-	font-size: 1em;
-	font-size: 5.5vh;
-}
-
-)");
-}
-
-TEST_F(CSSParserTest, ColorDeclaration) {
-    CSSParser parser(
-        "body { color:rgba(100,202,97,5);color:rgb(55,44,33);} "
-        "div.first{color:#A45D10; }");
-    auto eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-body {
-	color: rgba(100, 202, 97, 5);
-	color: rgba(55, 44, 33, 255);
-}
-
-div.first {
-	color: rgba(164, 93, 16, 255);
-}
-
-)");
-}
-
-TEST_F(CSSParserTest, WhitespaceAndComments) {
-    CSSParser parser(R"(
-body     , // this is a body tag
-	.span#id 	{
-// this is a comment
-		font-size // another comment
-:				15px // comments everywhere!
-; // nothing after here parsed: color: red;
-color:     rgba(  0, 10 , // a useless comment, even
-20  , 55);
-    }
-)");
-    auto      eval = parser.evaluate();
-    ASSERT_PRINT(&eval, R"(
-#id.span, body {
-	font-size: 15px;
-	color: rgba(0, 10, 20, 55);
-}
-
-)");
+TEST_F(CSSTest, StyleSheetCtorDtor) {
+    StyleSheet styleSheet;
 }

@@ -28,11 +28,14 @@ set(SOURCE_FILES
 set(TEST_FILES
     tests/css.cpp
     tests/display.cpp
-    tests/html.cpp
+    tests/dom.cpp
     tests/layout.cpp
     tests/main.cpp
-    tests/printer.cpp
     tests/style.cpp
+    tests/parser/css.cpp
+    tests/parser/html.cpp
+    tests/renderer/canvas.cpp
+    tests/visitor/printer.cpp
 )
 set(APP_FILES
     src/main.cpp

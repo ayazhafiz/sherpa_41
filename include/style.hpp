@@ -37,6 +37,8 @@ struct ruleOrder {
  */
 class StyledNode {
    public:
+    StyledNode() = delete;
+
     /**
      * Creates a Styled Node
      * @param node reference to DOM Node

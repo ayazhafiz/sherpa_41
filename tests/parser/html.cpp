@@ -1,6 +1,6 @@
 #include "parser/html.hpp"
 
-#include "./util.hpp"
+#include "../util.hpp"
 #include "visitor/printer.hpp"
 
 #include <gtest/gtest.h>

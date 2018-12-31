@@ -42,8 +42,8 @@ Layout::Rectangle::Rectangle(double startX,
  * @return expanded rectangle
  */
 Layout::Rectangle Layout::Rectangle::expand(const Layout::Edges & edge) const {
-    return Rectangle(origin.x + edge.left,
-                     origin.y + edge.top,
+    return Rectangle(origin.x - edge.left,
+                     origin.y - edge.top,
                      width + edge.left + edge.right,
                      height + edge.top + edge.bottom);
 }
@@ -359,8 +359,8 @@ void Layout::StyledBox::setWidth(const Layout::BoxDimensions & container) {
  * @param container parent container dimensions
  */
 void Layout::StyledBox::setPosition(const Layout::BoxDimensions & container) {
-    auto &       d = dimensions;
     const auto & c = content;
+    auto &       d = dimensions;
 
     // transfer styles
     d.margin.top     = c.value_or_zero("margin-top", "margin")->unitValue();

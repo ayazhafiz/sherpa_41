@@ -17,7 +17,7 @@ class Canvas : public Renderer {
     typedef std::vector<CSS::ColorValue> PxVector;
 
     /**
-     * Creates blank, white canvas of a width and height
+     * Creates blank canvas of a width and height
      * @param width canvas width
      * @param height canvas height
      */

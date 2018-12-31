@@ -46,6 +46,8 @@ struct Coordinates {
  */
 struct Rectangle {
    public:
+    Rectangle() = delete;
+
     /**
      * Creates a rectangle
      * @param startX start x coordinate
@@ -71,6 +73,8 @@ struct Rectangle {
  */
 struct Edges {
    public:
+    Edges() = delete;
+
     /**
      * Creates edge dimensions
      * @param top top edge width
@@ -88,6 +92,8 @@ struct Edges {
  */
 struct BoxDimensions {
    public:
+    BoxDimensions() = delete;
+
     /**
      * Creates box dimensions
      * @param location box location and size
@@ -208,6 +214,8 @@ class AnonymousBox : public Box {
  */
 class StyledBox : public Box {
    public:
+    StyledBox() = delete;
+
     /**
      * Creates a styled box with content
      * @param dimensions box dimensions
