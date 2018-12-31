@@ -26,7 +26,7 @@ OPTIONS:
         -w, --width             Browser width (=800)
         -h, --height            Browser height (=600)
         -o, --out               Output file (=output.png)
-        -h, --help              Show this help screen
+        --help                  Show this help screen
 ```
 
 All option flags have a default if you do not specify them. For the output file,
