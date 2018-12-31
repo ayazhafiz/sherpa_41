@@ -1,6 +1,7 @@
 <h3 name="sherpa-header" id="sherpa-header" align="center">
-  <br>
-	<img width="400" src="./examples/test-output.png" alt="sherpa_41 test webpage">
+  <br />
+	<img width="400" src="./examples/test-output.png" alt="sherpa_41 test webpage" />
+  <h5 align="center"><sub>A `sherpa_41`-rendered webpage</sub></h5>
 </h3>
 
 # `sherpa_41` :mountain:
@@ -26,7 +27,7 @@ OPTIONS:
         -w, --width             Browser width (=800)
         -h, --height            Browser height (=600)
         -o, --out               Output file (=output.png)
-        -h, --help              Show this help screen
+        --help                  Show this help screen
 ```
 
 All option flags have a default if you do not specify them. For the output file,
