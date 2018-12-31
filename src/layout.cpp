@@ -1,3 +1,5 @@
+// sherpa_41's Layout module, licensed under MIT. (c) hafiz, 2018
+
 #ifndef LAYOUT_CPP
 #define LAYOUT_CPP
 

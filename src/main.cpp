@@ -1,3 +1,5 @@
+// The sherpa_41 browser engine, licensed under MIT. (c) hafiz, 2018
+
 #include "layout.hpp"
 #include "style.hpp"
 

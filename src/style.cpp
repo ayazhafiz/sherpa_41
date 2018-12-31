@@ -1,3 +1,5 @@
+// sherpa_41's Style module, licensed under MIT. (c) hafiz, 2018
+
 #ifndef STYLE_CPP
 #define STYLE_CPP
 

@@ -1,3 +1,5 @@
+// sherpa_41's Display module test fixture, licensed under MIT. (c) hafiz, 2018
+
 #include "display.hpp"
 
 #include "parser/css.hpp"

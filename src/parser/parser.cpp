@@ -1,3 +1,5 @@
+// sherpa_41's Base Parser, licensed under MIT. (c) hafiz, 2018
+
 #ifndef PARSER_CPP
 #define PARSER_CPP
 

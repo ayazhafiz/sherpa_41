@@ -1,3 +1,5 @@
+// sherpa_41's Args Parser, licensed under MIT. (c) hafiz, 2018
+
 #ifndef PARSER_ARGS_HPP
 #define PARSER_ARGS_HPP
 

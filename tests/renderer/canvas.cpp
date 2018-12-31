@@ -1,3 +1,5 @@
+// sherpa_41's Canvas renderer test fixture, licensed under MIT. (c) hafiz, 2018
+
 #include "renderer/canvas.hpp"
 
 #include "parser/css.hpp"

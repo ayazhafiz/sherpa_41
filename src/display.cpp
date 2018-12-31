@@ -1,3 +1,5 @@
+// sherpa_41's Display module, licensed under MIT. (c) hafiz, 2018
+
 #ifndef DISPLAY_CPP
 #define DISPLAY_CPP
 

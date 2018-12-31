@@ -1,3 +1,5 @@
+// sherpa_41's Layout module test fixture, licensed under MIT. (c) hafiz, 2018
+
 #include "layout.hpp"
 
 #include <gtest/gtest.h>

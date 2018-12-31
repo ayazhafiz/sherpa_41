@@ -1,3 +1,5 @@
+// sherpa_41's CSS Parser, licensed under MIT. (c) hafiz, 2018
+
 #ifndef PARSER_CSS_CPP
 #define PARSER_CSS_CPP
 

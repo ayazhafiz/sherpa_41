@@ -1,3 +1,5 @@
+// sherpa_41's HTML Parser, licensed under MIT. (c) hafiz, 2018
+
 #ifndef PARSER_HTML_CPP
 #define PARSER_HTML_CPP
 

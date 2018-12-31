@@ -1,3 +1,5 @@
+// sherpa_41's DOM module test fixture, licensed under MIT. (c) hafiz, 2018
+
 #include "dom.hpp"
 
 #include <gtest/gtest.h>

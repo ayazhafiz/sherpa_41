@@ -1,3 +1,5 @@
+// sherpa_41's CSS module test fixture, licensed under MIT. (c) hafiz, 2018
+
 #include "css.hpp"
 
 #include <gtest/gtest.h>

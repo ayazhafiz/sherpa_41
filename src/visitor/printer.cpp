@@ -1,3 +1,5 @@
+// sherpa_41's Printer, licensed under MIT. (c) hafiz, 2018
+
 #ifndef VISITOR_PRINTER_CPP
 #define VISITOR_PRINTER_CPP
 
