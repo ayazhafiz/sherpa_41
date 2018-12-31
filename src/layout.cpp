@@ -254,6 +254,10 @@ void Layout::StyledBox::layoutChildren() {
     std::for_each(children.begin(), children.end(), [this](BoxPtr & child) {
         if (auto styledChild = dynamic_cast<StyledBox *>(child.get())) {
             styledChild->layout(dimensions);
+
+            // parent height must be updated after each child is laid out so
+            // block children are stacked below each other
+            dimensions.height += child->getDimensions().marginArea().height;
         }
     });
 }
@@ -391,10 +395,6 @@ void Layout::StyledBox::setHeight() {
     if (auto height = dynamic_cast<CSS::UnitValue *>(
             content.value("height").get())) {
         dimensions.height = height->value;
-    } else {
-        for (const auto & child : children) {
-            dimensions.height += child->getDimensions().marginArea().height;
-        }
     }
 }
 

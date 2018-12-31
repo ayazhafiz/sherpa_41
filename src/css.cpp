@@ -5,6 +5,27 @@
 
 #include "visitor/visitor.hpp"
 
+/**
+ * Normalizes a printed floating point value
+ * 1.00000 -> 1.0
+ * @param value value to normalize
+ * @return normalized string
+ */
+std::string CSS::normalizeFp(double value) {
+    auto     val    = std::to_string(value);
+    uint64_t offset = 1;
+    if (val.find_last_not_of('0') == val.find('.')) {
+        offset = 0;
+    }
+    val.erase(val.find_last_not_of('0') + offset, std::string::npos);
+    return val;
+}
+
+/**
+ * Creates a ValuePtr from a concrete value
+ * @param val value to create a pointer of
+ * @return ValuePtr
+ */
 CSS::ValuePtr CSS::make_value(const CSS::Value & val) {
     return val.clone();
 }
@@ -82,13 +103,7 @@ CSS::ValuePtr CSS::UnitValue::clone() const {
  * @return printed value
  */
 std::string CSS::UnitValue::print() const {
-    auto     val    = std::to_string(value);
-    uint64_t offset = 1;
-    if (val.find_last_not_of('0') == val.find('.')) {
-        offset = 0;
-    }
-    val.erase(val.find_last_not_of('0') + offset, std::string::npos);
-    return val + CSS::UnitRaw()[unit];
+    return normalizeFp(value) + CSS::UnitRaw()[unit];
 }
 
 /**
@@ -98,7 +113,7 @@ std::string CSS::UnitValue::print() const {
  * @param b blue channel
  * @param a alpha channel
  */
-CSS::ColorValue::ColorValue(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+CSS::ColorValue::ColorValue(uint8_t r, uint8_t g, uint8_t b, double a)
     : r(r), g(g), b(b), a(a) {
 }
 
@@ -116,15 +131,15 @@ CSS::ValuePtr CSS::ColorValue::clone() const {
  */
 std::string CSS::ColorValue::print() const {
     return "rgba(" + std::to_string(r) + ", " + std::to_string(g) + ", " +
-           std::to_string(b) + ", " + std::to_string(a) + ")";
+           std::to_string(b) + ", " + normalizeFp(a) + ")";
 }
 
 /**
- * Returns a vector of the RGBA color channels
+ * Returns a vector of RGB color channels
  * @return color channels
  */
 std::vector<uint8_t> CSS::ColorValue::channels() const {
-    return {r, g, b, a};
+    return {r, g, b};
 }
 
 /**

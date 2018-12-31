@@ -36,7 +36,7 @@ TEST_F(StyleTest, OneSelector) {
     HTMLParser html("<html></html>");
     auto       root = StyledNode::from(html.evaluate(), css.evaluate());
     ASSERT_EQ(root.value("font-size")->print(), "15px");
-    ASSERT_EQ(root.value("color")->print(), "rgba(229, 229, 229, 255)");
+    ASSERT_EQ(root.value("color")->print(), "rgba(229, 229, 229, 1)");
 }
 
 TEST_F(StyleTest, WorksWithSelectors) {

@@ -105,17 +105,17 @@ body {
 
 TEST_F(CSSParserTest, ColorDeclaration) {
     CSSParser parser(
-        "body { color:rgba(100,202,97,5);color:rgb(55,44,33);} "
-        "div.first{color:#A45D10; }");
+        "body { color:rgba(100,202,97,0.2);color:rgb(55,44,33);} "
+        "div.first{ color:#A45D10; }");
     auto eval = parser.evaluate();
     ASSERT_PRINT(&eval, R"(
 body {
-	color: rgba(100, 202, 97, 5);
-	color: rgba(55, 44, 33, 255);
+	color: rgba(100, 202, 97, 0.2);
+	color: rgba(55, 44, 33, 1);
 }
 
 div.first {
-	color: rgba(164, 93, 16, 255);
+	color: rgba(164, 93, 16, 1);
 }
 
 )");
@@ -130,14 +130,14 @@ body     , // this is a body tag
 :				15px // comments everywhere!
 ; // nothing after here parsed: color: red;
 color:     rgba(  0, 10 , // a useless comment, even
-20  , 55);
+20  , .55);
     }
 )");
     auto      eval = parser.evaluate();
     ASSERT_PRINT(&eval, R"(
 #id.span, body {
 	font-size: 15px;
-	color: rgba(0, 10, 20, 55);
+	color: rgba(0, 10, 20, 0.55);
 }
 
 )");

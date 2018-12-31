@@ -62,10 +62,12 @@ std::vector<uint8_t> Canvas::getPixels() const {
     rawPixels.reserve(width * height * 4);
     std::for_each(pixels.begin(),
                   pixels.end(),
-                  [&rawPixels](const auto & pixel) {
+                  [&rawPixels](const CSS::ColorValue & pixel) {
                       for (auto channel : pixel.channels()) {
                           rawPixels.push_back(channel);
                       }
+                      rawPixels.push_back(  // alpha channel
+                          static_cast<uint8_t>(std::min(pixel.a * 255, 255.)));
                   });
     return rawPixels;
 }

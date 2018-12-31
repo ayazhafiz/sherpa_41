@@ -136,7 +136,7 @@ CSS::ValuePtr CSSParser::parseRGB() {
     hasAlpha ? consume("rgba") : consume("rgb");
     consume("(");
     std::vector<uint8_t> vals;
-    while (!peek(")")) {
+    while (!peek(")") && vals.size() < 3) {
         consume_whitespace();
         vals.push_back((uint8_t)std::stoul(build_until(notDigit)));
         if (peek(")")) {
@@ -144,13 +144,12 @@ CSS::ValuePtr CSSParser::parseRGB() {
         }
         consume_whitespace(",");
     }
+
+    double alpha = hasAlpha ? std::stod(build_until(std::not_fn(cisfloat))) : 1;
+
     consume(")");
 
-    return CSS::ValuePtr(
-        new CSS::ColorValue(vals[0],
-                            vals[1],
-                            vals[2],
-                            hasAlpha ? vals[3] : (uint8_t)255));
+    return CSS::ValuePtr(new CSS::ColorValue(vals[0], vals[1], vals[2], alpha));
 }
 
 /**
@@ -164,7 +163,7 @@ CSS::ValuePtr CSSParser::parseHex() {
         new CSS::ColorValue(static_cast<uint8_t>((hex >> 16) & 255),
                             static_cast<uint8_t>((hex >> 8) & 255),
                             static_cast<uint8_t>(hex & 255),
-                            (uint8_t)255));
+                            1));
 }
 
 /**

@@ -48,7 +48,7 @@ TEST_F(CSSTest, printing) {
     ASSERT_EQ(text.print(), "txt");
     ASSERT_EQ(unit.print(), "1px");
     ASSERT_EQ(color.print(), "rgba(0, 0, 0, 0)");
-    ASSERT_EQ(color.channels(), std::vector<uint8_t>({0, 0, 0, 0}));
+    ASSERT_EQ(color.channels(), std::vector<uint8_t>({0, 0, 0}));
 }
 
 TEST_F(CSSTest, SelectorCtorDtor) {

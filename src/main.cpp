@@ -27,7 +27,7 @@ OPTIONS:
 	-w, --width             Browser width (=800)
 	-h, --height            Browser height (=600)
 	-o, --out               Output file (=output.png)
-	-h, --help              Show this help screen
+	--help                  Show this help screen
 )";
     std::cout << helpText << std::endl;
 }
@@ -85,13 +85,13 @@ uint64_t getDimension(const std::string & shrt,
 int main(int argc, char ** argv) {
     ArgsParser & args = ArgsParser::instance(argc, argv);
 
-    if (args.cmdOptionExists("-h") || args.cmdOptionExists("--help")) {
+    if (args.cmdOptionExists("--help")) {
         printHelp();
         return 0;
     }
 
-    std::ifstream htmlFile("assets/rainbowBox.html");
-    std::ifstream cssFile("assets/rainbowBox.css");
+    std::ifstream htmlFile("examples/test.html");
+    std::ifstream cssFile("examples/test.css");
     getInFiles(htmlFile, cssFile);
 
     std::string output("output.png");
@@ -107,8 +107,8 @@ int main(int argc, char ** argv) {
 
     Layout::Rectangle browser(0,
                               0,
-                              getDimension("-w", "--width", 800),
-                              getDimension("-h", "--height", 600));
+                              getDimension("-w", "--width", 2880),
+                              getDimension("-h", "--height", 1800));
 
     // compute internal representations
     auto domTree    = htmlParser.evaluate();

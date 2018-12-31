@@ -40,6 +40,19 @@ typedef std::vector<uint64_t>                     Specificity;
 typedef std::multiset<Selector, specificityOrder> PrioritySelectorSet;
 typedef std::vector<Declaration>                  DeclarationSet;
 
+/**
+ * Normalizes a printed floating point value
+ * 1.00000 -> 1.0
+ * @param value value to normalize
+ * @return normalized string
+ */
+std::string normalizeFp(double value);
+
+/**
+ * Creates a ValuePtr from a concrete value
+ * @param val value to create a pointer of
+ * @return ValuePtr
+ */
 ValuePtr make_value(const Value & val);
 
 /**
@@ -156,7 +169,7 @@ struct ColorValue : public Value {
      * @param b blue channel
      * @param a alpha channel
      */
-    ColorValue(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+    ColorValue(uint8_t r, uint8_t g, uint8_t b, double a);
 
     ColorValue(const ColorValue & rhs) = default;
 
@@ -173,12 +186,13 @@ struct ColorValue : public Value {
     std::string print() const override;
 
     /**
-     * Returns a vector of the RGBA color channels
+     * Returns a vector of RGB color channels
      * @return color channels
      */
     std::vector<uint8_t> channels() const;
 
-    uint8_t r, g, b, a;
+    uint8_t r, g, b;
+    double  a;
 };
 
 /**

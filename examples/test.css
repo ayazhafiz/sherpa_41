@@ -1,0 +1,47 @@
+* {
+    display: block;
+}
+
+html, body {
+    background: rgba(255, 255, 255, 0);
+}
+
+div {
+    width: 800px;
+    height: 800px;
+    border-width: 10px;
+    border-color: #000000;
+}
+
+.one {
+    background-color: rgba(255, 0, 0, 1);
+    margin-left: 50px;
+    margin-top: 50px;
+}
+
+.two {
+    background-color: rgba(0, 255, 0, 1);
+    margin-left: 300px;
+    margin-top: -600px;
+}
+
+.three {
+    background: rgba(0, 0, 255, 1);
+    margin-left: 550px;
+    margin-top: -600px;
+}
+
+.blank {
+    background: #FFFFFF;
+    margin-left: 240px;
+}
+
+.blank.horizontal {
+    height: 300px;
+    margin-top: 240px;
+}
+
+.blank.vertical {
+    width: 300px;
+    margin-top: -320px;
+}
