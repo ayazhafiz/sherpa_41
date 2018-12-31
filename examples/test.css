@@ -15,33 +15,41 @@ div {
 
 .one {
     background-color: rgba(255, 0, 0, 0.6);
-    margin-left: 50px;
-    margin-top: 50px;
+    margin-left: 60px;
+    margin-top: 60px;
 }
 
 .two {
     background-color: rgba(0, 255, 0, 0.6);
     margin-left: 270px;
-    margin-top: -600px;
+    margin-top: -610px;
 }
 
 .three {
     background: rgba(0, 0, 255, 0.6);
-    margin-left: 490px;
-    margin-top: -600px;
+    margin-left: 480px;
+    margin-top: -610px;
 }
 
 .blank {
     background: rgba(255, 255, 255, 0.6);
-    margin-left: 270px;
+    margin-left: 230px;
 }
 
 .blank.horizontal {
     height: 300px;
-    margin-top: 270px;
+    margin-top: 230px;
 }
 
 .blank.vertical {
     width: 300px;
     margin-top: -320px;
+}
+
+.midbox {
+    width: 300px;
+    height: 300px;
+    margin-top: -10px;
+    margin-left: -10px;
+    background: #FFFFFF;
 }
