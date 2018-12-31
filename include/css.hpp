@@ -80,6 +80,7 @@ struct Value {
  */
 struct TextValue : public Value {
    public:
+    TextValue()           = delete;
     ~TextValue() override = default;
 
     /**
@@ -112,6 +113,7 @@ std::vector<std::string> UnitRaw();
  */
 struct UnitValue : public Value {
    public:
+    UnitValue()           = delete;
     ~UnitValue() override = default;
 
     /**
@@ -144,6 +146,7 @@ struct UnitValue : public Value {
  */
 struct ColorValue : public Value {
    public:
+    ColorValue()           = delete;
     ~ColorValue() override = default;
 
     /**

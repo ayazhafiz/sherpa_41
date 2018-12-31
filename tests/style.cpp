@@ -7,10 +7,34 @@
 
 class StyleTest : public ::testing::Test {};
 
+using namespace Style;
+
+TEST_F(StyleTest, StyledNodeCtorDtor) {
+    StyledNode styledNode(nullptr);
+}
+
+TEST_F(StyleTest, value) {
+    CSSParser  css("html {font-size:15px;}");
+    HTMLParser html("<html></html>");
+    auto       root = StyledNode::from(html.evaluate(), css.evaluate());
+    ASSERT_EQ(root.value("font-size")->print(), "15px");
+    ASSERT_EQ(root.value("font-size", "other-size", "rah")->print(), "15px");
+    ASSERT_EQ(root.value("other-size", "font-size", "rah")->print(), "15px");
+    ASSERT_EQ(root.value("other-size", "another-size"), nullptr);
+    ASSERT_EQ(root.value_or("font-size", CSS::TextValue("NO VALUE"))->print(),
+              "15px");
+    ASSERT_EQ(root.value_or<std::string>("other-size",
+                                         "font-size",
+                                         CSS::TextValue("NO VALUE"))
+                  ->print(),
+              "15px");
+    ASSERT_EQ(root.value_or_zero("other-size", "another-size")->print(), "0px");
+}
+
 TEST_F(StyleTest, OneSelector) {
     CSSParser  css("html {font-size:15px;color:red;color:#e5e5e5;}");
     HTMLParser html("<html></html>");
-    auto       root = Style::StyledNode::from(html.evaluate(), css.evaluate());
+    auto       root = StyledNode::from(html.evaluate(), css.evaluate());
     ASSERT_EQ(root.value("font-size")->print(), "15px");
     ASSERT_EQ(root.value("color")->print(), "rgba(229, 229, 229, 255)");
 }
@@ -28,7 +52,7 @@ html{display:block;}
 <html id="id" class="class1 class2"></html>
 )");
 
-    auto root = Style::StyledNode::from(html.evaluate(), css.evaluate());
+    auto root = StyledNode::from(html.evaluate(), css.evaluate());
 
     ASSERT_EQ(root.value("font-size")->print(), "15px");
     ASSERT_EQ(root.value("color")->print(), "red");
@@ -40,6 +64,7 @@ html{display:block;}
 
 TEST_F(StyleTest, SpecificityOverload) {
     CSSParser  css(R"(
+.c1.c2.c3{color:black;}
 #id.c1.c2{color:red;}
 #id.c1{color:green;font-size:1px;}
 html#id{font-size:10px;display:block;}
@@ -50,7 +75,7 @@ html{text-decoration:reset;}
 <html id="id" class="c1 c2"></html>
 )");
 
-    auto root = Style::StyledNode::from(html.evaluate(), css.evaluate());
+    auto root = StyledNode::from(html.evaluate(), css.evaluate());
 
     ASSERT_EQ(root.value("color")->print(), "red");
     ASSERT_EQ(root.value("font-size")->print(), "1px");
@@ -62,7 +87,7 @@ TEST_F(StyleTest, UselessRules) {
     CSSParser  css("html#id.c1.c2{color:red;}");
     HTMLParser html("<html></html>");
 
-    auto root = Style::StyledNode::from(html.evaluate(), css.evaluate());
+    auto root = StyledNode::from(html.evaluate(), css.evaluate());
 
     ASSERT_EQ(root.value_or("color", CSS::TextValue("NO VALUE"))->print(),
               "NO VALUE");
@@ -72,7 +97,7 @@ TEST_F(StyleTest, NestedNodes) {
     CSSParser  css("html{color:red;}span{color:green;}div{color:blue;}");
     HTMLParser html("<html><span></span><div></div></html>");
 
-    auto root     = Style::StyledNode::from(html.evaluate(), css.evaluate());
+    auto root     = StyledNode::from(html.evaluate(), css.evaluate());
     auto children = root.getChildren();
 
     ASSERT_EQ(root.value("color")->print(), "red");
@@ -89,7 +114,7 @@ TEST_F(StyleTest, NonElementNodes) {
 </html>
 )");
 
-    auto root     = Style::StyledNode::from(html.evaluate(), css.evaluate());
+    auto root     = StyledNode::from(html.evaluate(), css.evaluate());
     auto children = root.getChildren();
 
     ASSERT_EQ(root.value("color")->print(), "red");

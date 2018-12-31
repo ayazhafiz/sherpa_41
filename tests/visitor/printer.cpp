@@ -3,11 +3,15 @@
 #include "css.hpp"
 #include "dom.hpp"
 
-#include "./util.hpp"
+#include "../util.hpp"
 
 #include <gtest/gtest.h>
 
 class PrinterTest : public ::testing::Test {};
+
+TEST_F(PrinterTest, CtorDtor) {
+    Printer printer;
+}
 
 TEST_F(PrinterTest, RootTag) {
     using namespace DOM;

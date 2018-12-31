@@ -4,14 +4,14 @@
 #include "renderer/canvas.hpp"
 
 /**
- * Creates blank, white canvas of a width and height
+ * Creates blank canvas of a width and height
  * @param width canvas width
  * @param height canvas height
  */
 Canvas::Canvas(uint64_t width, uint64_t height)
     : width(width),
       height(height),
-      pixels(PxVector(width * height, CSS::ColorValue(255, 255, 255, 255))) {
+      pixels(PxVector(width * height, CSS::ColorValue(255, 255, 255, 0))) {
 }
 
 /**
@@ -22,7 +22,7 @@ Canvas::Canvas(uint64_t width, uint64_t height)
 Canvas::Canvas(const Layout::BoxPtr & root, const Layout::Rectangle & frame)
     : width(static_cast<uint64_t>(frame.width)),
       height(static_cast<uint64_t>(frame.height)),
-      pixels(PxVector(width * height, CSS::ColorValue(255, 255, 255, 255))) {
+      pixels(PxVector(width * height, CSS::ColorValue(255, 255, 255, 0))) {
     auto cmds = Display::Command::createQueue(root);
     while (!cmds.empty()) {
         cmds.front()->acceptRenderer(*this);
@@ -46,8 +46,8 @@ void Canvas::render(const Display::RectangleCmd & cmd) {
 
     // color rectangle pixels accordingly
     // std::iota here would be needlessly comsumptive and overly cryptic
-    for (uint64_t y = y0; y <= y1; ++y) {
-        for (uint64_t x = x0; x <= x1; ++x) {
+    for (uint64_t y = y0; y < y1; ++y) {
+        for (uint64_t x = x0; x < x1; ++x) {
             pixels[x + y * width] = color;
         }
     }
