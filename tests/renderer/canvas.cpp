@@ -26,7 +26,7 @@ TEST_F(CanvasTest, renderRectangle) {
                                        CSS::ColorValue(111, 111, 111, 0.2));
     Canvas                canvas(1, 1);
     canvas.render(rectangleCmd);
-    ASSERT_EQ(canvas.getPixels(), std::vector<uint8_t>({111, 111, 111, 51}));
+    ASSERT_EQ(canvas.getPixels(), std::vector<uint8_t>({111, 111, 111, 50}));
 }
 
 TEST_F(CanvasTest, renderFromSource) {

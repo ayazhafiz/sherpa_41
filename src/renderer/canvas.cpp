@@ -47,10 +47,9 @@ void Canvas::render(const Display::RectangleCmd & cmd) {
     const auto y1 = toPx(rect.origin.y + rect.height, 0, height);
 
     // color rectangle pixels accordingly
-    // std::iota here would be needlessly comsumptive and overly cryptic
     for (uint64_t y = y0; y < y1; ++y) {
         for (uint64_t x = x0; x < x1; ++x) {
-            pixels[x + y * width] = color;
+            setPixel(x + y * width, RGBA(color));
         }
     }
 }
@@ -72,6 +71,46 @@ std::vector<uint8_t> Canvas::getPixels() const {
                           static_cast<uint8_t>(std::min(pixel.a * 255, 255.)));
                   });
     return rawPixels;
+}
+
+/**
+ * Creates an RGBA from a ColorValue
+ * @param color ColorValue to convert
+ */
+Canvas::RGBA::RGBA(const CSS::ColorValue & color)
+    : r(color.r / 255.), g(color.g / 255.), b(color.b / 255.), a(color.a) {
+}
+
+/**
+ * Converts an RGBA into a ColorValue
+ * @return ColorValue
+ */
+CSS::ColorValue Canvas::RGBA::toColorValue() const {
+    return CSS::ColorValue(static_cast<uint8_t>(r * 255),
+                           static_cast<uint8_t>(g * 255),
+                           static_cast<uint8_t>(b * 255),
+                           a);
+}
+
+/**
+ * Sets a pixel by blending a color with the background
+ * @param location pixel to color
+ * @param fg foreground color to apply to pixel
+ */
+void Canvas::setPixel(uint64_t location, RGBA fg) {
+    RGBA stacked;
+    RGBA bg(pixels[location]);
+
+    // alpha channel blending
+    stacked.a = 1 - (1 - bg.a) * (1 - fg.a);
+    stacked.r = (bg.r * bg.a * (1 - fg.a) / stacked.a) +
+                (fg.r * fg.a / stacked.a);
+    stacked.g = (bg.g * bg.a * (1 - fg.a) / stacked.a) +
+                (fg.g * fg.a / stacked.a);
+    stacked.b = (bg.b * bg.a * (1 - fg.a) / stacked.a) +
+                (fg.b * fg.a / stacked.a);
+
+    pixels[location] = stacked.toColorValue();
 }
 
 /**

@@ -14,31 +14,31 @@ div {
 }
 
 .one {
-    background-color: rgba(255, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 0.6);
     margin-left: 50px;
     margin-top: 50px;
 }
 
 .two {
-    background-color: rgba(0, 255, 0, 1);
-    margin-left: 300px;
+    background-color: rgba(0, 255, 0, 0.6);
+    margin-left: 270px;
     margin-top: -600px;
 }
 
 .three {
-    background: rgba(0, 0, 255, 1);
-    margin-left: 550px;
+    background: rgba(0, 0, 255, 0.6);
+    margin-left: 490px;
     margin-top: -600px;
 }
 
 .blank {
-    background: #FFFFFF;
-    margin-left: 240px;
+    background: rgba(255, 255, 255, 0.6);
+    margin-left: 270px;
 }
 
 .blank.horizontal {
     height: 300px;
-    margin-top: 240px;
+    margin-top: 270px;
 }
 
 .blank.vertical {

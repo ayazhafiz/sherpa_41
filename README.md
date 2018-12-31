@@ -1,3 +1,8 @@
+<h3 name="sherpa-header" id="sherpa-header" align="center">
+  <br>
+	<img width="400" src="./examples/test-output.png" alt="sherpa_41 test webpage">
+</h3>
+
 # `sherpa_41` :mountain:
 
 [![Build Status](https://travis-ci.com/ayazhafiz/sherpa_41.svg?branch=master)](https://travis-ci.com/ayazhafiz/sherpa_41)
@@ -54,6 +59,8 @@ make
 - The CSS parser supports tag, class, id, and wildcard selectors, and has support for text, color (RGB/A, #HEX), and numerical unit declarations.
 
 - The Display module can issue commands to render only rectangular block nodes at this time.
+
+- Sherpa's `Canvas` renderer can currently generate fairly non-trivial webpages like [the header](#sherpa-header).
 
 ### Notes
 

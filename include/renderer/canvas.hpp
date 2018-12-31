@@ -49,6 +49,35 @@ class Canvas : public Renderer {
 
    private:
     /**
+     * A ColorValue-like struct that only deals with channels in [0, 1] for
+     * blending purposes.
+     */
+    struct RGBA {
+        RGBA() = default;
+
+        /**
+         * Creates an RGBA from a ColorValue
+         * @param color ColorValue to convert
+         */
+        explicit RGBA(const CSS::ColorValue & color);
+
+        /**
+         * Converts an RGBA into a ColorValue
+         * @return ColorValue
+         */
+        CSS::ColorValue toColorValue() const;
+
+        double r, g, b, a;
+    };
+
+    /**
+     * Sets a pixel by blending a color with the background
+     * @param location pixel to color
+     * @param fg foreground color to apply to pixel
+     */
+    void setPixel(uint64_t location, RGBA fg);
+
+    /**
      * Converts a start location to a pixel position on the canvas
      * @param x location to convert
      * @param min min bound
