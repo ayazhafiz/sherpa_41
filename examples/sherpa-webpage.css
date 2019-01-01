@@ -1,0 +1,92 @@
+* {
+    display: block;
+}
+
+.screen {
+    height: 1600px;
+    background: rgba(255, 255, 255, 0.6);
+    border-width: 10px;
+    border-color: #000000;
+}
+
+.btn {
+    width: 250px;
+    height: 70px;
+    background: rgba(0, 0, 255, 0.6);
+    margin: 50px;
+    margin-top: -120px;
+}
+
+.btn.click1 {
+    margin-top: 40px;
+}
+
+.btn.click2 {
+    margin-left: 350px;
+}
+
+.btn.click3 {
+    margin-left: 650px;
+}
+
+.btn.click4 {
+    margin-left: 2260px;
+}
+
+.btn.click5 {
+    margin-left: 2560px;
+}
+
+.mtn {
+    border-width: 10px;
+}
+
+.mtn.base {
+    background: rgba(86, 165, 76, 0.6);
+    border-color: #E1D6B9;
+}
+
+.mtn.top {
+    background: rgba(225, 214, 185, 0.8);
+    border-color: #6A320B;
+}
+
+.mtn.vertical {
+    width: 225px;
+    height: 600px;
+}
+
+.mtn.horizontal {
+    width: 600px;
+    height: 225px;
+}
+
+.mound1.vertical {
+    margin-top: 700px;
+    margin-left: 1000px;
+}
+
+.mound1.horizontal {
+    margin-top: -620px;
+    margin-left: 1000px;
+}
+
+.mound2.vertical {
+    margin-top: -620px;
+    margin-left: 1375px;
+}
+
+.mound2.horizontal {
+    margin-top: -620px;
+    margin-left: 1375px;
+}
+
+.top.vertical {
+    margin-top: -245px;
+    margin-left: 1000px;
+}
+
+.top.horizontal {
+    margin-top: -620px;
+    margin-left: 1000px;
+}
