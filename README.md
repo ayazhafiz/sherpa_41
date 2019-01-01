@@ -1,7 +1,7 @@
 <h3 name="sherpa-header" id="sherpa-header" align="center">
   <br />
 	<img width="400" src="./examples/test-output.png" alt="sherpa_41 test webpage" />
-  <h5 align="center"><sub>A `sherpa_41`-rendered webpage</sub></h5>
+  <h5 align="center"><sub>A <code>sherpa_41</code>-rendered webpage</sub></h5>
 </h3>
 
 # `sherpa_41` :mountain:
