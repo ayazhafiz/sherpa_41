@@ -180,9 +180,10 @@ CSS::Unit CSSParser::parseUnit() {
 }
 
 void CSSParser::consume_whitespace(const std::string & next) {
-    while (!eof() && (peek(cisspace) || peek("//"))) {
-        if (peek("//")) {
-            build_until([](char c) { return c == '\n'; });
+    while (!eof() && (peek(cisspace) || peek("/*"))) {
+        if (peek("/*")) {
+            build_until([this](char) { return peek("*/"); });
+            consume("*/");
         }
         Parser<CSS::StyleSheet>::consume_whitespace();
     }

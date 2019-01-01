@@ -125,13 +125,14 @@ div.first {
 
 TEST_F(CSSParserTest, WhitespaceAndComments) {
     CSSParser parser(R"(
-body     , // this is a body tag
+body     , /* this is a body tag */
 	.span#id 	{
-// this is a comment
-		font-size // another comment
-:				15px // comments everywhere!
-; // nothing after here parsed: color: red;
-color:     rgba(  0, 10 , // a useless comment, even
+/* this is a comment */
+		font-size /* another comment */
+:				15px /* comments everywhere! */
+; /* nothing after here parsed: color: red; */
+color:     rgba(  0, 10 , /* a useless comment,
+        but it's multiline! */
 20  , .55);
     }
 )");
