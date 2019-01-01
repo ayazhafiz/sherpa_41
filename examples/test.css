@@ -33,23 +33,34 @@ div {
 
 .blank {
     background: rgba(255, 255, 255, 0.6);
-    margin-left: 230px;
+    margin-left: 240px;
 }
 
-.blank.horizontal {
+.blank.top {
+    width: 300px;
+    margin-top: -260px;
+}
+
+.blank.left {
     height: 300px;
-    margin-top: 230px;
+    margin-top: -320px;
 }
 
-.blank.vertical {
+.blank.bottom {
     width: 300px;
     margin-top: -320px;
+}
+
+.blank.right {
+    height: 300px;
+    margin-top: -820px;
+    margin-left: -260px;
 }
 
 .midbox {
     width: 300px;
     height: 300px;
     margin-top: -10px;
-    margin-left: -10px;
+    margin-left: 490px;
     background: #FFFFFF;
 }
