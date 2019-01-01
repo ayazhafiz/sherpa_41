@@ -33,8 +33,7 @@ OPTIONS:
         --help                  Show this help screen
 ```
 
-All option flags have a default if you do not specify them. For the output file,
-it is recommended to only use `.png`, `.jpg`, or `.bmp` extensions.
+Almost any file type designed to show images can be used as the output file. `.png`, `.pdf`, `.jpg` are all great options, and you can even output to a `.html` file if you want.
 
 An example of a custom invocation:
 
