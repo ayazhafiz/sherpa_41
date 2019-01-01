@@ -44,10 +44,10 @@ sherpa_41 --html index.html --css style.css -w 1800 -h 1200 -o myIndex.jpg
 First, you will need [CMake](https://cmake.org) and [Magick++](https://imagemagick.org/Magick++/).
 Both come pre-installed with most Linux distros, and are easy to install on MacOS and Windows.
 
-Clone the repo and make the project:
+Clone the repo and its dependencies, then make the project:
 
 ```bash
-git clone https://github.com/ayazhafiz/sherpa_41.git
+git clone --recursive https://github.com/ayazhafiz/sherpa_41.git
 cd sherpa_41 && cmake .
 make
 ./sherpa_41-test && ./sherpa_41
