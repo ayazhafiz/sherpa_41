@@ -137,10 +137,10 @@ std::string CSS::ColorValue::print() const {
 }
 
 /**
- * Returns a vector of RGB color channels
+ * Returns an array of RGB color channels
  * @return color channels
  */
-std::vector<uint8_t> CSS::ColorValue::channels() const {
+std::array<uint8_t, 3> CSS::ColorValue::channels() const {
     return {r, g, b};
 }
 

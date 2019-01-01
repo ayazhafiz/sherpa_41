@@ -5,6 +5,7 @@
 
 #include "parser/parser.hpp"
 
+#include <array>
 #include <memory>
 #include <numeric>
 #include <set>
@@ -186,10 +187,10 @@ struct ColorValue : public Value {
     std::string print() const override;
 
     /**
-     * Returns a vector of RGB color channels
+     * Returns an array of RGB color channels
      * @return color channels
      */
-    std::vector<uint8_t> channels() const;
+    std::array<uint8_t, 3> channels() const;
 
     uint8_t r, g, b;
     double  a;

@@ -7,6 +7,8 @@
 
 #include "renderer/renderer.hpp"
 
+#include <array>
+
 /**
  * The Canvas is a rendering scheme designed for image rasterization,
  * particularly into PNG or JPG formats. It renders a Layout tree hierarchically
@@ -14,8 +16,6 @@
  */
 class Canvas : public Renderer {
    public:
-    typedef std::vector<CSS::ColorValue> PxVector;
-
     /**
      * Creates blank canvas of a width and height
      * @param width canvas width
@@ -56,26 +56,37 @@ class Canvas : public Renderer {
         RGBA() = default;
 
         /**
+         * Creates an RGBA from color channels
+         * @param r red channel
+         * @param g green channel
+         * @param b blue channel
+         * @param a alpha channel
+         */
+        RGBA(double r, double g, double b, double a);
+
+        /**
          * Creates an RGBA from a ColorValue
          * @param color ColorValue to convert
          */
         explicit RGBA(const CSS::ColorValue & color);
 
         /**
-         * Converts an RGBA into a ColorValue
-         * @return ColorValue
+         * Returns an array of RGBA channels
+         * @return RGBA color channels
          */
-        CSS::ColorValue toColorValue() const;
+        std::array<double, 4> channels() const;
 
         double r, g, b, a;
     };
+
+    typedef std::vector<RGBA> PxVector;
 
     /**
      * Sets a pixel by blending a color with the background
      * @param location pixel to color
      * @param fg foreground color to apply to pixel
      */
-    void setPixel(uint64_t location, RGBA fg);
+    void setPixel(uint64_t location, const RGBA & fg);
 
     /**
      * Converts a start location to a pixel position on the canvas

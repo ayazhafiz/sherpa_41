@@ -13,7 +13,7 @@
 Canvas::Canvas(uint64_t width, uint64_t height)
     : width(width),
       height(height),
-      pixels(PxVector(width * height, CSS::ColorValue(255, 255, 255, 0))) {
+      pixels(PxVector(width * height, RGBA(1, 1, 1, 0))) {
 }
 
 /**
@@ -24,7 +24,7 @@ Canvas::Canvas(uint64_t width, uint64_t height)
 Canvas::Canvas(const Layout::BoxPtr & root, const Layout::Rectangle & frame)
     : width(static_cast<uint64_t>(frame.width)),
       height(static_cast<uint64_t>(frame.height)),
-      pixels(PxVector(width * height, CSS::ColorValue(255, 255, 255, 0))) {
+      pixels(PxVector(width * height, RGBA(1, 1, 1, 0))) {
     auto cmds = Display::Command::createQueue(root);
     while (!cmds.empty()) {
         cmds.front()->acceptRenderer(*this);
@@ -38,7 +38,7 @@ Canvas::Canvas(const Layout::BoxPtr & root, const Layout::Rectangle & frame)
  */
 void Canvas::render(const Display::RectangleCmd & cmd) {
     const auto rect  = cmd.getRectangle();
-    const auto color = cmd.getColor();
+    const auto color = RGBA(cmd.getColor());
 
     // set rectangle edges, bounded to canvas
     const auto x0 = toPx(rect.origin.x, 0, width);
@@ -49,7 +49,7 @@ void Canvas::render(const Display::RectangleCmd & cmd) {
     // color rectangle pixels accordingly
     for (uint64_t y = y0; y < y1; ++y) {
         for (uint64_t x = x0; x < x1; ++x) {
-            setPixel(x + y * width, RGBA(color));
+            setPixel(x + y * width, color);
         }
     }
 }
@@ -63,14 +63,17 @@ std::vector<uint8_t> Canvas::getPixels() const {
     rawPixels.reserve(width * height * 4);
     std::for_each(pixels.begin(),
                   pixels.end(),
-                  [&rawPixels](const CSS::ColorValue & pixel) {
+                  [&rawPixels](const RGBA & pixel) {
                       for (auto channel : pixel.channels()) {
-                          rawPixels.push_back(channel);
+                          rawPixels.push_back(
+                              static_cast<uint8_t>(channel * 255));
                       }
-                      rawPixels.push_back(  // alpha channel
-                          static_cast<uint8_t>(std::min(pixel.a * 255, 255.)));
                   });
     return rawPixels;
+}
+
+Canvas::RGBA::RGBA(double r, double g, double b, double a)
+    : r(r), g(g), b(b), a(a) {
 }
 
 /**
@@ -82,14 +85,11 @@ Canvas::RGBA::RGBA(const CSS::ColorValue & color)
 }
 
 /**
- * Converts an RGBA into a ColorValue
- * @return ColorValue
+ * Returns an array of RGBA channels
+ * @return RGBA color channels
  */
-CSS::ColorValue Canvas::RGBA::toColorValue() const {
-    return CSS::ColorValue(static_cast<uint8_t>(r * 255),
-                           static_cast<uint8_t>(g * 255),
-                           static_cast<uint8_t>(b * 255),
-                           a);
+std::array<double, 4> Canvas::RGBA::channels() const {
+    return {r, g, b, a};
 }
 
 /**
@@ -97,20 +97,22 @@ CSS::ColorValue Canvas::RGBA::toColorValue() const {
  * @param location pixel to color
  * @param fg foreground color to apply to pixel
  */
-void Canvas::setPixel(uint64_t location, RGBA fg) {
-    RGBA stacked;
+void Canvas::setPixel(uint64_t location, const RGBA & fg) {
+    RGBA stacked(0, 0, 0, 0);
     RGBA bg(pixels[location]);
 
     // alpha channel blending
     stacked.a = 1 - (1 - bg.a) * (1 - fg.a);
-    stacked.r = (bg.r * bg.a * (1 - fg.a) / stacked.a) +
-                (fg.r * fg.a / stacked.a);
-    stacked.g = (bg.g * bg.a * (1 - fg.a) / stacked.a) +
-                (fg.g * fg.a / stacked.a);
-    stacked.b = (bg.b * bg.a * (1 - fg.a) / stacked.a) +
-                (fg.b * fg.a / stacked.a);
+    if (stacked.a != 0) {
+        stacked.r = (bg.r * bg.a * (1 - fg.a) / stacked.a) +
+                    (fg.r * fg.a / stacked.a);
+        stacked.g = (bg.g * bg.a * (1 - fg.a) / stacked.a) +
+                    (fg.g * fg.a / stacked.a);
+        stacked.b = (bg.b * bg.a * (1 - fg.a) / stacked.a) +
+                    (fg.b * fg.a / stacked.a);
+    }
 
-    pixels[location] = stacked.toColorValue();
+    pixels[location] = stacked;
 }
 
 /**
