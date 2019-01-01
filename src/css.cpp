@@ -141,7 +141,7 @@ std::string CSS::ColorValue::print() const {
  * @return color channels
  */
 std::array<uint8_t, 3> CSS::ColorValue::channels() const {
-    return {r, g, b};
+    return {{r, g, b}};
 }
 
 /**

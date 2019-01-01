@@ -89,7 +89,7 @@ Canvas::RGBA::RGBA(const CSS::ColorValue & color)
  * @return RGBA color channels
  */
 std::array<double, 4> Canvas::RGBA::channels() const {
-    return {r, g, b, a};
+    return {{r, g, b, a}};
 }
 
 /**
