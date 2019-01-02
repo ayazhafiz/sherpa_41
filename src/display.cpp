@@ -132,7 +132,7 @@ CSS::ColorValue * Display::Command::getColor(const Layout::BoxPtr & box,
  */
 Display::RectangleCmd::RectangleCmd(Layout::Rectangle rectangle,
                                     CSS::ColorValue   color)
-    : rectangle(rectangle), color(std::move(color)) {
+    : rectangle(rectangle), color(color) {
 }
 
 void Display::RectangleCmd::acceptRenderer(Renderer & renderer) const {

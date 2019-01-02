@@ -152,7 +152,9 @@ Layout::BoxPtr Layout::Box::from(const Style::StyledNode & root,
     window.height = 0;
 
     auto rootBox = from(root);
-    dynamic_cast<StyledBox *>(rootBox.get())->layout(window);
+    if (auto sRoot = dynamic_cast<StyledBox *>(rootBox.get())) {
+        sRoot->layout(window);
+    }
     return rootBox;
 }
 

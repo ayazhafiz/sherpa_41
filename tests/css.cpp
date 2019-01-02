@@ -15,6 +15,9 @@ TEST_F(CSSTest, ValueCtorDtor) {
     TextValue  text2(text);
     UnitValue  unit2(unit);
     ColorValue color2(color);
+    ValuePtr   text3  = ValuePtr(new TextValue("txt"));
+    ValuePtr   unit3  = ValuePtr(new UnitValue(1.0, px));
+    ValuePtr   color3 = ValuePtr(new ColorValue(0, 0, 0, 0));
 }
 
 TEST_F(CSSTest, makeValue) {
@@ -59,6 +62,7 @@ TEST_F(CSSTest, SelectorCtorDtor) {
 
 TEST_F(CSSTest, DeclarationCtorDtor) {
     Declaration declaration("key", make_value(TextValue("value")));
+    Declaration declaration2(declaration);
 }
 
 TEST_F(CSSTest, RuleCtorDtor) {

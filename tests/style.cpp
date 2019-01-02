@@ -12,7 +12,8 @@ class StyleTest : public ::testing::Test {};
 using namespace Style;
 
 TEST_F(StyleTest, StyledNodeCtorDtor) {
-    StyledNode styledNode(nullptr);
+    StyledNode                  styledNode(nullptr);
+    std::unique_ptr<StyledNode> snuptr(new StyledNode(nullptr));
 }
 
 TEST_F(StyleTest, value) {
@@ -21,6 +22,7 @@ TEST_F(StyleTest, value) {
     auto       root = StyledNode::from(html.evaluate(), css.evaluate());
     ASSERT_EQ(root.value("font-size")->print(), "15px");
     ASSERT_EQ(root.value("font-size", "other-size", "rah")->print(), "15px");
+    ASSERT_EQ(root.value("font-size", "font-size")->print(), "15px");
     ASSERT_EQ(root.value("other-size", "font-size", "rah")->print(), "15px");
     ASSERT_EQ(root.value("other-size", "another-size"), nullptr);
     ASSERT_EQ(root.value_or("font-size", CSS::TextValue("NO VALUE"))->print(),

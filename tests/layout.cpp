@@ -12,6 +12,9 @@ TEST_F(LayoutTest, BoxCtorDtor) {
     AnonymousBox anonymousBox;
     StyledBox    styledBox(BoxDimensions(Rectangle(0, 0, 0, 0)),
                         Style::StyledNode(DOM::NodePtr(new DOM::TextNode(""))));
+    BoxPtr       boxPtr1(anonymousBox.clone());
+    BoxPtr       boxPtr2(styledBox.clone());
+    BoxPtr       boxPtr3(boxPtr1->clone());
 }
 
 TEST_F(LayoutTest, stringToDisplayType) {
@@ -61,4 +64,291 @@ TEST_F(LayoutTest, BoxDimensions) {
     ASSERT_EQ(bor.height, 9);
     ASSERT_EQ(mar.width, 13);
     ASSERT_EQ(mar.height, 11);
+}
+
+TEST_F(LayoutTest, FromDisplayNone) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("none"));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+
+    ASSERT_EQ(Box::from(styledNode, boxDimensions), nullptr);
+}
+
+TEST_F(LayoutTest, FromChildrenDisplayBlock) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap1;
+    propertyMap1["display"] = CSS::make_value(CSS::TextValue("block"));
+    Style::PropertyMap propertyMap2;
+    propertyMap2["display"] = CSS::make_value(CSS::TextValue("block"));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap1),
+                                 {Style::StyledNode(DOM::NodePtr(
+                                                        new DOM::TextNode("")),
+                                                    std::move(propertyMap2))});
+    auto              box = Box::from(styledNode, boxDimensions);
+
+    ASSERT_EQ(box->getChildren().size(), 1);
+}
+
+TEST_F(LayoutTest, FromChildrenDisplayInline_One) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap1;
+    propertyMap1["display"] = CSS::make_value(CSS::TextValue("block"));
+    Style::PropertyMap propertyMap2;
+    propertyMap2["display"] = CSS::make_value(CSS::TextValue("inline"));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap1),
+                                 {Style::StyledNode(DOM::NodePtr(
+                                                        new DOM::TextNode("")),
+                                                    std::move(propertyMap2))});
+    auto              box      = Box::from(styledNode, boxDimensions);
+    auto              children = box->getChildren();
+
+    ASSERT_EQ(children.size(), 1);
+    ASSERT_TRUE(dynamic_cast<AnonymousBox *>(children[0].get()));
+    ASSERT_EQ(children[0]->getChildren().size(), 1);
+}
+
+TEST_F(LayoutTest, FromChildrenDisplayInline_Multiple) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap1;
+    propertyMap1["display"] = CSS::make_value(CSS::TextValue("block"));
+    Style::PropertyMap propertyMap2;
+    propertyMap2["display"] = CSS::make_value(CSS::TextValue("inline"));
+    Style::PropertyMap propertyMap3;
+    propertyMap3["display"] = CSS::make_value(CSS::TextValue("inline"));
+    Style::PropertyMap propertyMap4;
+    propertyMap4["display"] = CSS::make_value(CSS::TextValue("inline"));
+    Style::StyledNode
+         styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                   std::move(propertyMap1),
+                   {Style::StyledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                      std::move(propertyMap2)),
+                    Style::StyledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                      std::move(propertyMap3)),
+                    Style::StyledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                      std::move(propertyMap4))});
+    auto box      = Box::from(styledNode, boxDimensions);
+    auto children = box->getChildren();
+
+    ASSERT_EQ(children.size(), 1);
+    ASSERT_TRUE(dynamic_cast<AnonymousBox *>(children[0].get()));
+    ASSERT_EQ(children[0]->getChildren().size(), 3);
+
+    for (const auto & child : children[0]->getChildren()) {
+        ASSERT_TRUE(dynamic_cast<StyledBox *>(child.get()));
+    }
+}
+
+TEST_F(LayoutTest, FromChildrenDisplayInline_Within_Inline) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap1;
+    propertyMap1["display"] = CSS::make_value(CSS::TextValue("block"));
+    Style::PropertyMap propertyMap2;
+    propertyMap2["display"] = CSS::make_value(CSS::TextValue("inline"));
+    Style::PropertyMap propertyMap3;
+    propertyMap3["display"] = CSS::make_value(CSS::TextValue("inline"));
+
+    auto iISN = Style::StyledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                  std::move(propertyMap3));
+    auto oISN = Style::StyledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                  std::move(propertyMap2),
+                                  {iISN});
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap1),
+                                 {oISN});
+    auto              box      = Box::from(styledNode, boxDimensions);
+    auto              children = box->getChildren();
+
+    ASSERT_EQ(children.size(), 1);
+    ASSERT_TRUE(dynamic_cast<AnonymousBox *>(children[0].get()));
+
+    auto anonBox = children[0].get();
+
+    ASSERT_EQ(anonBox->getChildren().size(), 1);
+
+    auto outerNode = dynamic_cast<StyledBox *>(anonBox->getChildren()[0].get())
+                         ->getContent();
+
+    ASSERT_EQ(outerNode.value("display")->print(), "inline");
+    ASSERT_EQ(anonBox->getChildren()[0]->getChildren().size(), 1);
+
+    auto innerNode = dynamic_cast<StyledBox *>(
+                         anonBox->getChildren()[0]->getChildren()[0].get())
+                         ->getContent();
+
+    ASSERT_EQ(innerNode.value("display")->print(), "inline");
+}
+
+TEST_F(LayoutTest, FromChildrenDisplayNone) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap1;
+    propertyMap1["display"] = CSS::make_value(CSS::TextValue("block"));
+    Style::PropertyMap propertyMap2;
+    propertyMap2["display"] = CSS::make_value(CSS::TextValue("none"));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap1),
+                                 {Style::StyledNode(DOM::NodePtr(
+                                                        new DOM::TextNode("")),
+                                                    std::move(propertyMap2))});
+    auto              box = Box::from(styledNode, boxDimensions);
+
+    ASSERT_EQ(box->getChildren().size(), 0);
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("block"));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+
+    ASSERT_TRUE(
+        dynamic_cast<StyledBox *>(Box::from(styledNode, boxDimensions).get()));
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock_WidthGTContainer_NotAutoWidth) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["width"]   = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["margin"]  = CSS::make_value(CSS::TextValue("auto"));
+    propertyMap["padding"] = CSS::make_value(CSS::UnitValue(10, CSS::px));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.width, 0);
+    ASSERT_EQ(dims.margin.left, 0);
+    ASSERT_EQ(dims.margin.right, -19);
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock_AllConstrained) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["width"]   = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["margin"]  = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["padding"] = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.width, 0);
+    ASSERT_EQ(dims.margin.left, 0);
+    ASSERT_EQ(dims.margin.right, 1);
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock_AutoMarginRight) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"]      = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["width"]        = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["margin"]       = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["margin-right"] = CSS::make_value(CSS::TextValue("auto"));
+    propertyMap["padding"]      = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.width, 0);
+    ASSERT_EQ(dims.margin.left, 0);
+    ASSERT_EQ(dims.margin.right, 1);
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock_AutoMarginLeft) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"]     = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["width"]       = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["margin"]      = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["margin-left"] = CSS::make_value(CSS::TextValue("auto"));
+    propertyMap["padding"]     = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.width, 0);
+    ASSERT_EQ(dims.margin.left, 1);
+    ASSERT_EQ(dims.margin.right, 0);
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock_AutoWidth_FitUnderflow) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["width"]   = CSS::make_value(CSS::TextValue("auto"));
+    propertyMap["margin"]  = CSS::make_value(CSS::TextValue("auto"));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.width, 1);
+    ASSERT_EQ(dims.margin.left, 0);
+    ASSERT_EQ(dims.margin.right, 0);
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock_AutoWidth_MarginRightFitUnderflow) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["width"]   = CSS::make_value(CSS::TextValue("auto"));
+    propertyMap["margin"]  = CSS::make_value(CSS::TextValue("auto"));
+    propertyMap["padding"] = CSS::make_value(CSS::UnitValue(10, CSS::px));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.width, 0);
+    ASSERT_EQ(dims.margin.left, 0);
+    ASSERT_EQ(dims.margin.right, -19);
+}
+
+TEST_F(LayoutTest, LayoutDisplayBlock_AutoLeftMargin_AutoRightMargin) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["width"]   = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    propertyMap["margin"]  = CSS::make_value(CSS::TextValue("auto"));
+    propertyMap["padding"] = CSS::make_value(CSS::UnitValue(0, CSS::px));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.width, 0);
+    ASSERT_EQ(dims.margin.left, 0.5);
+    ASSERT_EQ(dims.margin.right, 0.5);
+}
+
+TEST_F(LayoutTest, LayoutDisplayInline) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("inline"));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+
+    ASSERT_TRUE(
+        dynamic_cast<StyledBox *>(Box::from(styledNode, boxDimensions).get()));
+}
+
+TEST_F(LayoutTest, SetHeightExplicitly) {
+    BoxDimensions      boxDimensions(Rectangle(0, 0, 1, 1));
+    Style::PropertyMap propertyMap;
+    propertyMap["display"] = CSS::make_value(CSS::TextValue("block"));
+    propertyMap["height"]  = CSS::make_value(CSS::UnitValue(50, CSS::px));
+    Style::StyledNode styledNode(DOM::NodePtr(new DOM::TextNode("")),
+                                 std::move(propertyMap));
+    auto              box  = Box::from(styledNode, boxDimensions);
+    auto              dims = box->getDimensions();
+
+    ASSERT_EQ(dims.height, 50);
 }
