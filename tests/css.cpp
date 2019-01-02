@@ -9,22 +9,28 @@ class CSSTest : public ::testing::Test {};
 using namespace CSS;
 
 TEST_F(CSSTest, ValueCtorDtor) {
-    TextValue  text("txt");
-    UnitValue  unit(1.0, px);
-    ColorValue color(0, 0, 0, 0);
-    TextValue  text2(text);
-    UnitValue  unit2(unit);
-    ColorValue color2(color);
-    ValuePtr   text3  = ValuePtr(new TextValue("txt"));
-    ValuePtr   unit3  = ValuePtr(new UnitValue(1.0, px));
-    ValuePtr   color3 = ValuePtr(new ColorValue(0, 0, 0, 0));
-    Value *    text4  = new TextValue("txt");
-    Value *    unit4  = new UnitValue(1.0, px);
-    Value *    color4 = new ColorValue(0, 0, 0, 0);
+    TextValue    text("txt");
+    UnitValue    unit(1.0, px);
+    ColorValue   color(0, 0, 0, 0);
+    TextValue    text2(text);
+    UnitValue    unit2(unit);
+    ColorValue   color2(color);
+    ValuePtr     text3  = ValuePtr(new TextValue("txt"));
+    ValuePtr     unit3  = ValuePtr(new UnitValue(1.0, px));
+    ValuePtr     color3 = ValuePtr(new ColorValue(0, 0, 0, 0));
+    Value *      text4  = new TextValue("txt");
+    Value *      unit4  = new UnitValue(1.0, px);
+    Value *      color4 = new ColorValue(0, 0, 0, 0);
+    TextValue *  text5  = new TextValue("txt");
+    UnitValue *  unit5  = new UnitValue(1.0, px);
+    ColorValue * color5 = new ColorValue(0, 0, 0, 0);
 
     ASSERT_NO_THROW(delete text4);
     ASSERT_NO_THROW(delete unit4);
     ASSERT_NO_THROW(delete color4);
+    ASSERT_NO_THROW(delete text5);
+    ASSERT_NO_THROW(delete unit5);
+    ASSERT_NO_THROW(delete color5);
 }
 
 TEST_F(CSSTest, makeValue) {
