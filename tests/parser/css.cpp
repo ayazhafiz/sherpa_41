@@ -108,7 +108,7 @@ body {
 TEST_F(CSSParserTest, ColorDeclaration) {
     CSSParser parser(
         "body { color:rgba(100,202,97,0.2);color:rgb(55,44,33);} "
-        "div.first{ color:#A45D10; }");
+        "div.first{ color:#A45D10; color:#ABC; }");
     auto eval = parser.evaluate();
     ASSERT_PRINT(&eval, R"(
 body {
@@ -118,6 +118,7 @@ body {
 
 div.first {
 	color: rgba(164, 93, 16, 1);
+	color: rgba(170, 187, 204, 1);
 }
 
 )");
