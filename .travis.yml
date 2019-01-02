@@ -1,32 +1,105 @@
-os:
-  - linux
-  - osx
-
 language: cpp
 
-dist: trusty
+matrix:
+  include:
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-7
-      - g++-7
+    # Coverage
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['gcc-7', 'g++-7']
+      before_script:
+        - pip install --user cpp-coveralls
+      after_success:
+        - coveralls --root . -e tests -e lib -E ".*CMakeFiles.*"
+      env:
+        - MATRIX_EVAL="CMAKE_OPTIONS=-DCOVERAGE=ON && CC=gcc-7 && CXX=g++-7"
+
+    # Linux: clang
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - clang-4.0
+      env:
+        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+    # Linux: gcc
+
+    - os: linux
+      compiler: gcc
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['gcc-7', 'g++-7']
+
+    - os: linux
+      compiler: gcc
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['gcc-8', 'g++-8']
+
+    # macOS: clang
+
+    - os: osx
+      osx_image: xcode9
+
+    - os: osx
+      osx_image: xcode9.1
+
+    - os: osx
+      osx_image: xcode9.2
+
+    - os: osx
+      osx_image: xcode9.3
+
+    - os: osx
+      osx_image: xcode9.4
+
+    - os: osx
+      osx_image: xcode10
+
+    - os: osx
+      osx_image: xcode10.1
+
+    # macOS: gcc
+
+    - os: osx
+      osx_image: xcode10
+      env:
+        - MATRIX_EVAL="brew install gcc@7 && CC=gcc-7 && CXX=g++-7"
+
+    - os: osx
+      osx_image: xcode10
+      env:
+        - MATRIX_EVAL="brew install gcc@8 && CC=gcc-8 && CXX=g++-8"
 
 
 before_install:
-  - pip install --user cpp-coveralls
+  - eval "${MATRIX_EVAL}"
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    export CC=gcc-7 ;
-    export CXX=g++-7 ;
-    fi
-  - cmake -DCOVERAGE=1 .
+  - cmake ${CMAKE_OPTIONS} -DEXECUTABLE=OFF .
   - cmake --build .
   - ./sherpa_41-test
-
-
-after_success:
-  - coveralls --root . -e tests -e lib -E ".*CMakeFiles.*"

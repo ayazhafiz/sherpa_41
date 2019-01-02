@@ -1,11 +1,13 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.1)
 project(sherpa_41)
 
 # Set compiler flags
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(COVERAGE OFF CACHE BOOL "Coverage")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+option(COVERAGE "Test with coverage" OFF)
+option(EXECUTABLE "Generate ${PROJECT_NAME} executable" ON)
 
 include(gtest.cmake)
 
@@ -51,7 +53,9 @@ target_link_libraries(${PROJECT_NAME}-test PRIVATE gtest ${CMAKE_THREAD_LIBS_INI
 if (COVERAGE)
     target_compile_options(${PROJECT_NAME}-test PRIVATE --coverage)
     target_link_libraries(${PROJECT_NAME}-test PRIVATE --coverage)
-else()
+endif ()
+
+if (EXECUTABLE)
     # sherpa_41 executable
     add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${APP_FILES})
     add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )

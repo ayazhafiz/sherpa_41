@@ -7,6 +7,8 @@
 
 #include "parser.cpp"
 
+#include <functional>
+
 /**
  * Creates a CSS Parser
  * @param css
