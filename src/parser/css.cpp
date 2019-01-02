@@ -160,7 +160,14 @@ CSS::ValuePtr CSSParser::parseRGB() {
  */
 CSS::ValuePtr CSSParser::parseHex() {
     consume("#");
-    auto hex = std::stoul(build(6), nullptr, 16);
+    auto hexStr = build_until(std::not_fn(cisalnum));
+    auto hex    = std::stoul(hexStr, nullptr, 16);
+    if (hexStr.size() == 3) {  // duplicate each character
+        // 0x000RGB => 0x0R0G0B
+        auto hhex = ((hex & 0xF00) << 8) | ((hex & 0x0F0) << 4) | (hex & 0x00F);
+        // 0x0R0G0B | 0xR0G0B0 => 0xRRGGBB
+        hex = hhex | hhex << 4;
+    }
     return CSS::ValuePtr(
         new CSS::ColorValue(static_cast<uint8_t>((hex >> 16) & 255),
                             static_cast<uint8_t>((hex >> 8) & 255),

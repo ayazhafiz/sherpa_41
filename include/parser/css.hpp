@@ -90,6 +90,7 @@ class CSSParser : public Parser<CSS::StyleSheet> {
         return std::isdigit(c) || c == '.' || c == '-';
     };
     static constexpr auto cisalpha = static_cast<int (*)(int)>(std::isalpha);
+    static constexpr auto cisalnum = static_cast<int (*)(int)>(std::isalnum);
     static constexpr auto cisspace = static_cast<int (*)(int)>(std::isspace);
 };
 
