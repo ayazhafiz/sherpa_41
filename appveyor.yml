@@ -1,6 +1,5 @@
 version: '{build}'
 
-
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
@@ -13,14 +12,17 @@ environment:
       FLAGS: "/std:c++17"
       GENERATOR: Visual Studio 15 2017
 
+configuration:
+	- Debug
+
 install:
-  - git submodule update --init --recursive
+	- git submodule update --init --recursive
 
 before_build:
-  - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="%FLAGS%" -G "%GENERATOR%" .
+	- cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="%FLAGS%" -G "%GENERATOR%" .
 
-build_script:
-  - cmake --build . --config Debug
+build:
+	project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
 
 test_script:
-  - '%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\sherpa_41-test.exe'
+	- '%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\sherpa_41-test.exe'
