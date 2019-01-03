@@ -45,7 +45,7 @@ set(APP_FILES
 
 # set compile flags
 if (MSVC)
-    set(PROJ_COMPILE_OPTS /std:c++17 /W4 /WX /EHsc)
+    set(PROJ_COMPILE_OPTS /std:c++17 /W3 /WX /EHsc)
 
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Od")
