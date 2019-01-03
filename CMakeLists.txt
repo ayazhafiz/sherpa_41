@@ -55,7 +55,7 @@ if (MSVC)
 else()
     set(PROJ_COMPILE_OPTS -std=c++17 -Wall -Werror -Wextra -pedantic -pedantic-errors -g)
     set(EXEC_COMPILE_OPTS -Wno-keyword-macro) # Magick++ error
-    set(EXEC_COMPILE_OPTS ${EXEC_COMPILE_OPTS} -march=native -O2 -pipe)
+    set(EXEC_COMPILE_OPTS ${EXEC_COMPILE_OPTS} -march=native -O3 -pipe)
 endif()
 
 # sherpa_41 executable
