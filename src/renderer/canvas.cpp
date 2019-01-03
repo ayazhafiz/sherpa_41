@@ -10,7 +10,7 @@
  * @param width canvas width
  * @param height canvas height
  */
-Canvas::Canvas(uint64_t width, uint64_t height)
+Canvas::Canvas(uint32_t width, uint32_t height)
     : width(width),
       height(height),
       pixels(PxVector(width * height, RGBA(1, 1, 1, 0))) {
@@ -22,8 +22,8 @@ Canvas::Canvas(uint64_t width, uint64_t height)
  * @param frame width and height to draw in
  */
 Canvas::Canvas(const Layout::BoxPtr & root, const Layout::Rectangle & frame)
-    : width(static_cast<uint64_t>(frame.width)),
-      height(static_cast<uint64_t>(frame.height)),
+    : width(static_cast<uint32_t>(frame.width)),
+      height(static_cast<uint32_t>(frame.height)),
       pixels(PxVector(width * height, RGBA(1, 1, 1, 0))) {
     auto cmds = Display::Command::createQueue(root);
     while (!cmds.empty()) {
@@ -47,8 +47,8 @@ void Canvas::render(const Display::RectangleCmd & cmd) {
     const auto y1 = toPx(rect.origin.y + rect.height, 0, height);
 
     // color rectangle pixels accordingly
-    for (uint64_t y = y0; y < y1; ++y) {
-        for (uint64_t x = x0; x < x1; ++x) {
+    for (uint32_t y = y0; y < y1; ++y) {
+        for (uint32_t x = x0; x < x1; ++x) {
             setPixel(x + y * width, color);
         }
     }
@@ -97,7 +97,7 @@ std::array<double, 4> Canvas::RGBA::channels() const {
  * @param location pixel to color
  * @param fg foreground color to apply to pixel
  */
-void Canvas::setPixel(uint64_t location, const RGBA & fg) {
+void Canvas::setPixel(uint32_t location, const RGBA & fg) {
     RGBA stacked(0, 0, 0, 0);
     RGBA bg(pixels[location]);
 
@@ -122,8 +122,8 @@ void Canvas::setPixel(uint64_t location, const RGBA & fg) {
  * @param max max bound
  * @return converted location, bounded by canvas size
  */
-uint64_t Canvas::toPx(double x, uint64_t min, uint64_t max) {
-    return std::min(max, std::max(min, static_cast<uint64_t>(x)));
+uint32_t Canvas::toPx(double x, uint32_t min, uint32_t max) {
+    return std::min(max, std::max(min, static_cast<uint32_t>(x)));
 }
 
 #endif

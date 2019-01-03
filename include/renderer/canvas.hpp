@@ -21,7 +21,7 @@ class Canvas : public Renderer {
      * @param width canvas width
      * @param height canvas height
      */
-    Canvas(uint64_t width, uint64_t height);
+    Canvas(uint32_t width, uint32_t height);
 
     /**
      * Creates a canvas from a root box and a specified frame width/height
@@ -86,7 +86,7 @@ class Canvas : public Renderer {
      * @param location pixel to color
      * @param fg foreground color to apply to pixel
      */
-    void setPixel(uint64_t location, const RGBA & fg);
+    void setPixel(uint32_t location, const RGBA & fg);
 
     /**
      * Converts a start location to a pixel position on the canvas
@@ -95,9 +95,9 @@ class Canvas : public Renderer {
      * @param max max bound
      * @return converted location, bounded by canvas size
      */
-    uint64_t toPx(double x, uint64_t min, uint64_t max);
+    uint32_t toPx(double x, uint32_t min, uint32_t max);
 
-    uint64_t width, height;
+    uint32_t width, height;
     PxVector pixels;
 };
 
