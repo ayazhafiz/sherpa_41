@@ -13,16 +13,16 @@ environment:
       GENERATOR: Visual Studio 15 2017
 
 configuration:
-	- Debug
+  - Debug
 
 install:
-	- git submodule update --init --recursive
+  - git submodule update --init --recursive
 
 before_build:
-	- cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="%FLAGS%" -G "%GENERATOR%" .
+  - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="%FLAGS%" -G "%GENERATOR%" .
 
 build:
-	project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
+  project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
 
 test_script:
-	- '%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\sherpa_41-test.exe'
+  - '%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\sherpa_41-test.exe'
