@@ -1,25 +1,19 @@
 version: '{build}'
 
-environment:
-  matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      platform: x86
-      FLAGS: "/std:c++17"
-      GENERATOR: Visual Studio 15 2017
+image: Visual Studio 2017
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      platform: x64
-      FLAGS: "/std:c++17"
-      GENERATOR: Visual Studio 15 2017
-
+platform:
+  - x64
+ 
 configuration:
+  - Release
   - Debug
 
 install:
   - git submodule update --init --recursive
 
 before_build:
-  - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="%FLAGS%" -G "%GENERATOR%" .
+  - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="/std:c++17" -G "Visual Studio 15 2017 Win64" .
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
