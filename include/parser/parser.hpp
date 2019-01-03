@@ -41,7 +41,7 @@ class Parser {
      * @param len length of string to build
      * @return built string
      */
-    std::string build(uint64_t len);
+    std::string build(uint32_t len);
 
     /**
      * Builds a string from the program until predicate satisfied
@@ -68,7 +68,7 @@ class Parser {
      * Pushes the program pointer some units ahead
      * @param dist distance to push pointer
      */
-    void pushPtr(uint64_t dist = 1);
+    void pushPtr(uint32_t dist = 1);
 
     /**
      * Determines the next characters of the program
@@ -107,7 +107,7 @@ class Parser {
 
    private:
     std::string program;
-    uint64_t    ptr;
+    uint32_t    ptr;
 };
 
 #endif

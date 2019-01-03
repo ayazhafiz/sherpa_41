@@ -22,7 +22,7 @@ Parser<EvalType>::Parser(std::string program)
  * @return built string
  */
 template <typename EvalType>
-std::string Parser<EvalType>::build(uint64_t len) {
+std::string Parser<EvalType>::build(uint32_t len) {
     return build_until([&len](char) { return len-- == 0; });
 }
 
@@ -51,7 +51,7 @@ std::string Parser<EvalType>::build_until(
 template <typename EvalType>
 void Parser<EvalType>::consume(const std::string & next) {
     assert(peek(next));
-    pushPtr(next.length());
+    pushPtr(static_cast<uint32_t>(next.length()));
 }
 
 /**
@@ -72,7 +72,7 @@ void Parser<EvalType>::consume_whitespace(const std::string & next) {
  * @param dist distance to push pointer
  */
 template <typename EvalType>
-void Parser<EvalType>::pushPtr(uint64_t dist) {
+void Parser<EvalType>::pushPtr(uint32_t dist) {
     ptr += dist;
 }
 
