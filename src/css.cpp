@@ -15,7 +15,7 @@
  */
 std::string CSS::normalizeFp(double value) {
     auto     val    = std::to_string(value);
-    uint64_t offset = 1;
+    uint32_t offset = 1;
     if (val.find_last_not_of('0') == val.find('.')) {
         offset = 0;
     }
