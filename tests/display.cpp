@@ -40,7 +40,7 @@ TEST_F(DisplayTest, CreateQueue) {
     ASSERT_EQ(htmlTag->getRectangle().width, 800);
     ASSERT_EQ(htmlTag->getRectangle().height, 72);
 
-    for (uint64_t i = 0; i < 5; ++i)
+    for (uint32_t i = 0; i < 5; ++i)
         queue.pop();  // html borders
 
     const auto & divTag = dynamic_cast<RectangleCmd *>(queue.front().get());
@@ -51,7 +51,7 @@ TEST_F(DisplayTest, CreateQueue) {
     ASSERT_EQ(divTag->getRectangle().width, 776);
     ASSERT_EQ(divTag->getRectangle().height, 24);
 
-    for (uint64_t i = 0; i < 5; ++i)
+    for (uint32_t i = 0; i < 5; ++i)
         queue.pop();  // div borders
 
     const auto & divTag2 = dynamic_cast<RectangleCmd *>(queue.front().get());

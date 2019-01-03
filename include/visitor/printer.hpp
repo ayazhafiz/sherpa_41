@@ -67,7 +67,7 @@ class Printer : public Visitor {
     std::string closeTag();
 
     std::stringstream tree;
-    uint64_t          tabIndent = 0;
+    uint32_t          tabIndent = 0;
 };
 
 #endif

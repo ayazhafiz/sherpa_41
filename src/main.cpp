@@ -72,9 +72,9 @@ void getOutFiles(std::string & out) {
  * @param deflt default value
  * @return converted dimension
  */
-uint64_t getDimension(const std::string & shrt,
+uint32_t getDimension(const std::string & shrt,
                       const std::string & lng,
-                      uint64_t            deflt) {
+                      uint32_t            deflt) {
     ArgsParser & args = ArgsParser::instance();
     if (args.cmdOptionExists(shrt)) {
         return std::stoull(args.getCmdOption(shrt));
@@ -127,8 +127,8 @@ int main(int argc, char ** argv) {
 
     // read in pixel data from Canvas
     Magick::Image image;
-    image.read(static_cast<uint64_t>(browser.width),
-               static_cast<uint64_t>(browser.height),
+    image.read(static_cast<uint32_t>(browser.width),
+               static_cast<uint32_t>(browser.height),
                "RGBA",
                Magick::CharPixel,
                canvas.getPixels().data());
