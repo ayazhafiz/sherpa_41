@@ -31,8 +31,8 @@ install:
 before_build:
   - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="%FLAGS%" -G "%GENERATOR%" .
 
-build:
-  project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
+build_script:
+  - cmake --build . --config Release
 
 test_script:
   - '%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\sherpa_41-test.exe'
