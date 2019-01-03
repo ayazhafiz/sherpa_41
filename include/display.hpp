@@ -83,9 +83,9 @@ class Command {
      * @return color value, or nullptr if it does not exist
      */
     template <typename... Args>
-    static CSS::ColorValue * getColor(const Layout::BoxPtr & box,
-                                      const std::string &    style,
-                                      const Args &... backup);
+    static CSS::ValuePtr getColor(const Layout::BoxPtr & box,
+                                  const std::string &    style,
+                                  const Args &... backup);
 };
 
 /**

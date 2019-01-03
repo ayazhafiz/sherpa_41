@@ -9,8 +9,9 @@
 
 # `sherpa_41` :mountain:
 
-[![Build Status](https://travis-ci.com/ayazhafiz/sherpa_41.svg?branch=master)](https://travis-ci.com/ayazhafiz/sherpa_41)
-[![Coverage Status](https://coveralls.io/repos/github/ayazhafiz/sherpa_41/badge.svg?branch=master)](https://coveralls.io/github/ayazhafiz/sherpa_41?branch=master)
+[![Build Status](https://img.shields.io/travis/com/ayazhafiz/sherpa_41/master.svg)](https://travis-ci.com/ayazhafiz/sherpa_41)
+[![Build status](https://ci.appveyor.com/api/projects/status/kr7k3fc7o1iwpc97?svg=true)](https://ci.appveyor.com/project/ayazhafiz/sherpa-41)
+[![Coverage Status](https://img.shields.io/coveralls/github/ayazhafiz/sherpa_41/master.svg)](https://coveralls.io/github/ayazhafiz/sherpa_41?branch=master)
 
 `sherpa_41` is a toy browser engine, based somewhat on [Limpet's _Let's build a browser engine!_](https://limpet.net/mbrubeck/2014/08/08/toy-layout-engine-1.html)
 with architectures introduced in [CS3251](https://vuse-cs3251.github.io).
