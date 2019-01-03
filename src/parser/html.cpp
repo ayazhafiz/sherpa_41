@@ -7,6 +7,8 @@
 
 #include "parser.cpp"
 
+#include <cctype>
+
 /**
  * Creates an HTML Parser
  * @param html HTML to parse

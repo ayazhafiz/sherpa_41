@@ -7,6 +7,7 @@
 
 #include "parser.cpp"
 
+#include <algorithm>
 #include <functional>
 
 /**

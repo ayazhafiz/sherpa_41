@@ -79,7 +79,7 @@ TEST_F(CSSTest, DeclarationCtorDtor) {
 }
 
 TEST_F(CSSTest, RuleCtorDtor) {
-    Rule rule(PrioritySelectorSet, DeclarationSet);
+    Rule rule((PrioritySelectorSet()), (DeclarationSet()));
 }
 
 TEST_F(CSSTest, StyleSheetCtorDtor) {

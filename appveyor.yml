@@ -1,0 +1,23 @@
+version: '{build}'
+
+image: Visual Studio 2017
+
+platform:
+  - x64
+  - x86
+
+configuration:
+  - Debug
+  - Release
+
+install:
+  - git submodule update --init --recursive
+
+before_build:
+  - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="/std:c++17" -G "Visual Studio 15 2017 Win64" .
+
+build:
+  project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
+
+test_script:
+  - '%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\sherpa_41-test.exe'

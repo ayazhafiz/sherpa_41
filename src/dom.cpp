@@ -55,11 +55,11 @@ DOM::Node::~Node() = default;
 
 /**
  * Determines whether the Node is of specified type
- * @param tag tag to match
- * @return whether Node is of `tag` type
+ * @param cand tag to match
+ * @return whether Node is of `cand` type
  */
-bool DOM::Node::is(const std::string & tag) const {
-    return tagName() == tag;
+bool DOM::Node::is(const std::string & cand) const {
+    return tagName() == cand;
 }
 
 /**

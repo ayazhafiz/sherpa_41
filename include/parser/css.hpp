@@ -6,6 +6,8 @@
 #include "../css.hpp"
 #include "parser/parser.hpp"
 
+#include <cctype>
+
 /**
  * CSS Parser, parsing text into a style sheet represented using the CSS module.
  *

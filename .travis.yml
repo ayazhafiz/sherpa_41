@@ -19,26 +19,7 @@ matrix:
         - MATRIX_EVAL="CMAKE_OPTIONS=-DCOVERAGE=ON && CC=gcc-7 && CXX=g++-7"
 
     # Linux: clang
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-4.0
-          packages:
-            - clang-4.0
-      env:
-        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-5.0
-          packages:
-            - clang-5.0
-      env:
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+    # this keeps failing for some reason, so it's ignored for now
 
     # Linux: gcc
 

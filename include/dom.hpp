@@ -68,10 +68,10 @@ class Node {
 
     /**
      * Determines whether the Node is of specified type
-     * @param tag tag to match
-     * @return whether Node is of `tag` type
+     * @param cand tag to match
+     * @return whether Node is of `cand` type
      */
-    bool is(const std::string & tag) const;
+    bool is(const std::string & cand) const;
 
     /**
      * Returns the tag name of the Node
