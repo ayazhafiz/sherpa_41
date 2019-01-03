@@ -60,6 +60,13 @@ CSS::TextValue::TextValue(std::string value) : value(std::move(value)) {
 }
 
 /**
+ * Copy ctor
+ * @param rhs TextValue to copy
+ */
+CSS::TextValue::TextValue(const TextValue & rhs) : value(rhs.value) {
+}
+
+/**
  * Clones a TextValue
  * @return cloned value
  */
@@ -93,6 +100,14 @@ CSS::UnitValue::UnitValue(double value, CSS::Unit unit)
 }
 
 /**
+ * Copy ctor
+ * @param rhs UnitValue to copy
+ */
+CSS::UnitValue::UnitValue(const UnitValue & rhs)
+    : value(rhs.value), unit(rhs.unit) {
+}
+
+/**
  * Clones a UnitValue
  * @return cloned value
  */
@@ -117,6 +132,14 @@ std::string CSS::UnitValue::print() const {
  */
 CSS::ColorValue::ColorValue(uint8_t r, uint8_t g, uint8_t b, double a)
     : r(r), g(g), b(b), a(a) {
+}
+
+/**
+ * Copy ctor
+ * @param rhs ColorValue to copy
+ */
+CSS::ColorValue::ColorValue(const ColorValue & rhs)
+    : r(rhs.r), g(rhs.g), b(rhs.b), a(rhs.a) {
 }
 
 /**

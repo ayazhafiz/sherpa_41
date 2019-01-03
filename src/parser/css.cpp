@@ -120,8 +120,9 @@ CSS::ValuePtr CSSParser::parseValue() {
     auto notFloat = std::not_fn(cisfloat);
 
     if (peek(cisfloat)) {
-        return CSS::ValuePtr(
-            new CSS::UnitValue(std::stod(build_until(notFloat)), parseUnit()));
+        auto val  = std::stod(build_until(notFloat));
+        auto unit = parseUnit();
+        return CSS::ValuePtr(new CSS::UnitValue(val, unit));
     } else if (peek("rgb")) {
         return parseRGB();
     } else if (peek("#")) {

@@ -396,8 +396,8 @@ void Layout::StyledBox::setPosition(const Layout::BoxDimensions & container) {
  * explicit height is given
  */
 void Layout::StyledBox::setHeight() {
-    if (auto height = dynamic_cast<CSS::UnitValue *>(
-            content.value("height").get())) {
+    auto heightPtr = content.value("height");
+    if (auto height = dynamic_cast<CSS::UnitValue *>(heightPtr.get())) {
         dimensions.height = height->value;
     }
 }

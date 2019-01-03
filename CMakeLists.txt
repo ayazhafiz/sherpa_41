@@ -73,7 +73,8 @@ endif()
 find_package(Threads)
 add_executable(${PROJECT_NAME}-test ${SOURCE_FILES} ${TEST_FILES})
 target_compile_options(${PROJECT_NAME}-test PRIVATE ${CMAKE_CXX_FLAGS} ${PROJ_COMPILE_OPTS})
-target_link_libraries(${PROJECT_NAME}-test PRIVATE gtest ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${PROJECT_NAME}-test PRIVATE gtest)
+#target_link_libraries(${PROJECT_NAME}-test PRIVATE gtest ${CMAKE_THREAD_LIBS_INIT})
 
 # coverage
 if (COVERAGE)

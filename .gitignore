@@ -11,7 +11,11 @@ CMakeCache.txt
 Makefile
 
 .idea/
+.vs/
 bin/
 cmake-build-debug/
 cmake-build-coverage/
 CMakeFiles/
+Debug/
+gtest.dir/
+x64/

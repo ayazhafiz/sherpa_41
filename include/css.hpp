@@ -103,7 +103,11 @@ struct TextValue : public Value {
      */
     explicit TextValue(std::string value);
 
-    TextValue(const TextValue & rhs) = default;
+    /**
+     * Copy ctor
+     * @param rhs TextValue to copy
+     */
+    TextValue(const TextValue & rhs);
 
     /**
      * Clones a TextValue
@@ -137,7 +141,11 @@ struct UnitValue : public Value {
      */
     UnitValue(double value, Unit unit);
 
-    UnitValue(const UnitValue & rhs) = default;
+    /**
+     * Copy ctor
+     * @param rhs UnitValue to copy
+     */
+    UnitValue(const UnitValue & rhs);
 
     /**
      * Clones a UnitValue
@@ -172,7 +180,11 @@ struct ColorValue : public Value {
      */
     ColorValue(uint8_t r, uint8_t g, uint8_t b, double a);
 
-    ColorValue(const ColorValue & rhs) = default;
+    /**
+     * Copy ctor
+     * @param rhs ColorValue to copy
+     */
+    ColorValue(const ColorValue & rhs);
 
     /**
      * Clones a ColorValue
