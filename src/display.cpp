@@ -49,8 +49,9 @@ void Display::Command::renderBox(const Layout::BoxPtr &  box,
  */
 void Display::Command::renderBackground(const Layout::BoxPtr &  box,
                                         Display::CommandQueue & queue) {
+    auto colorPtr = getColor(box, "background-color", "background");
     // only render box if it actually has a background
-    if (auto color = getColor(box, "background-color", "background")) {
+    if (auto color = dynamic_cast<CSS::ColorValue *>(colorPtr.get())) {
         // create rectangle of padding area and background color
         queue.push(CommandPtr(
             new RectangleCmd(box->getDimensions().paddingArea(), *color)));
@@ -60,10 +61,11 @@ void Display::Command::renderBackground(const Layout::BoxPtr &  box,
 void Display::Command::renderBorders(const Layout::BoxPtr &  box,
                                      Display::CommandQueue & queue) {
     // use background if no explicit border color provided
-    auto color = getColor(box,
-                          "border-color",
-                          "background-color",
-                          "background");
+    auto colorPtr = getColor(box,
+                             "border-color",
+                             "background-color",
+                             "background");
+    auto color    = dynamic_cast<CSS::ColorValue *>(colorPtr.get());
     if (color == nullptr) {
         return;  // nothing to render if no border color
     }
@@ -115,12 +117,12 @@ void Display::Command::renderBorders(const Layout::BoxPtr &  box,
  * @return color value, or nullptr if it does not exist
  */
 template <typename... Args>
-CSS::ColorValue * Display::Command::getColor(const Layout::BoxPtr & box,
-                                             const std::string &    style,
-                                             const Args &... backup) {
+CSS::ValuePtr Display::Command::getColor(const Layout::BoxPtr & box,
+                                         const std::string &    style,
+                                         const Args &... backup) {
     if (auto sBox = dynamic_cast<Layout::StyledBox *>(box.get())) {
         auto bg = sBox->getContent().value(style, backup...);
-        return dynamic_cast<CSS::ColorValue *>(bg.get());
+        return bg ? bg->clone() : nullptr;
     }
     return nullptr;
 }
