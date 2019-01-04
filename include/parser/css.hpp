@@ -88,12 +88,14 @@ class CSSParser : public Parser<CSS::StyleSheet> {
 
     // casted std::is_ methods for parameter use
     static constexpr auto cisdigit = static_cast<int (*)(int)>(std::isdigit);
+    static constexpr auto cisalnum = static_cast<int (*)(int)>(std::isalnum);
+    static constexpr auto cisspace = static_cast<int (*)(int)>(std::isspace);
     static constexpr auto cisfloat = [](char c) {
         return std::isdigit(c) || c == '.' || c == '-';
     };
-    static constexpr auto cisalpha = static_cast<int (*)(int)>(std::isalpha);
-    static constexpr auto cisalnum = static_cast<int (*)(int)>(std::isalnum);
-    static constexpr auto cisspace = static_cast<int (*)(int)>(std::isspace);
+    static constexpr auto cisunit = [](char c) {
+        return std::isalpha(c) || c == '%';
+    };
 };
 
 #endif

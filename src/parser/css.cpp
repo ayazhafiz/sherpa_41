@@ -184,7 +184,7 @@ CSS::ValuePtr CSSParser::parseHex() {
  * @return Unit
  */
 CSS::Unit CSSParser::parseUnit() {
-    auto raw    = build_until(std::not_fn(cisalpha));
+    auto raw    = build_until(std::not_fn(cisunit));
     auto rawArr = CSS::UnitRaw();
     return static_cast<CSS::Unit>(std::find(rawArr.begin(), rawArr.end(), raw) -
                                   rawArr.begin());

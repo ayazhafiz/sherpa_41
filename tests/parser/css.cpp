@@ -93,13 +93,17 @@ body {
 
 TEST_F(CSSParserTest, UnitDeclaration) {
     CSSParser parser(
-        "body { font-size:15px;font-size:1.0em;font-size:5.5vh; }");
+        "body { font-size:15px;"
+        "font-size:1.0em;"
+        "font-size:5.5vh;"
+        "font-size:10%; }");
     auto eval = parser.evaluate();
     ASSERT_PRINT(&eval, R"(
 body {
 	font-size: 15px;
 	font-size: 1em;
 	font-size: 5.5vh;
+	font-size: 10%;
 }
 
 )");
