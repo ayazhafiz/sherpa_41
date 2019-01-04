@@ -179,7 +179,7 @@ Layout::BoxPtr Layout::Box::from(const Style::StyledNode & styledRoot) {
                 root.children.push_back(Box::from(child));
                 break;
             case Inline:
-                root.getInlineContainer()->children.push_back(Box::from(child));
+                root.inlineContainer()->children.push_back(Box::from(child));
                 break;
             case None:
             default:
@@ -403,10 +403,10 @@ void Layout::StyledBox::setHeight() {
 }
 
 /**
- * Get the box an inline node should go into, or a create a new one
+ * Returns a pointer to the box an inline node should go into
  * @return box to put inline node in
  */
-Layout::Box * Layout::StyledBox::getInlineContainer() {
+Layout::Box * Layout::StyledBox::inlineContainer() {
     if (display == Inline) {
         return this;
     } else {  // *this is a block display

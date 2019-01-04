@@ -5,7 +5,7 @@
 
 #include "parser/html.hpp"
 
-#include "parser.cpp"
+#include "parser/parser.hpp"
 
 #include <cctype>
 

@@ -110,4 +110,6 @@ class Parser {
     uint64_t    ptr;
 };
 
+#include "../../src/parser/parser.cpp"
+
 #endif

@@ -282,10 +282,10 @@ class StyledBox : public Box {
     void setHeight();
 
     /**
-     * Get the box an inline node should go into, or a create a new one
+     * Returns a pointer to the box an inline node should go into
      * @return box to put inline node in
      */
-    Box * getInlineContainer();
+    Box * inlineContainer();
 
     Style::StyledNode content;
     DisplayType       display;

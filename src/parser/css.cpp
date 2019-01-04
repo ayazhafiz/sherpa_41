@@ -5,7 +5,7 @@
 
 #include "parser/css.hpp"
 
-#include "parser.cpp"
+#include "parser/parser.hpp"
 
 #include <algorithm>
 #include <functional>
