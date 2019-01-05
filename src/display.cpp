@@ -132,8 +132,8 @@ CSS::ValuePtr Display::Command::getColor(const Layout::BoxPtr & box,
  * @param rectangle rectangle to create
  * @param color color to color rectangle
  */
-Display::RectangleCmd::RectangleCmd(Layout::Rectangle rectangle,
-                                    CSS::ColorValue   color)
+Display::RectangleCmd::RectangleCmd(const Layout::Rectangle & rectangle,
+                                    const CSS::ColorValue &   color)
     : rectangle(rectangle), color(color) {
 }
 

@@ -6,12 +6,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-option(COVERAGE "Test with coverage" OFF)
 option(EXECUTABLE "Generate ${PROJECT_NAME} executable" ON)
+option(SANITIZER "Test with clang sanitizer" OFF)
+option(COVERAGE "Test with coverage" OFF)
 
 include(gtest.cmake)
-
-# Include project headers
 include_directories(./include)
 
 # Define the source files and dependencies for the executable
@@ -79,4 +78,10 @@ target_link_libraries(${PROJECT_NAME}-test PRIVATE gtest ${CMAKE_THREAD_LIBS_INI
 if (COVERAGE)
     target_compile_options(${PROJECT_NAME}-test PRIVATE --coverage)
     target_link_libraries(${PROJECT_NAME}-test PRIVATE --coverage)
-endif ()
+endif()
+
+# sanitizer
+if (SANITIZER)
+    target_compile_options(${PROJECT_NAME}-test PRIVATE -fno-omit-frame-pointer -fsanitize=address)
+    target_link_libraries(${PROJECT_NAME}-test PRIVATE -fno-omit-frame-pointer -fsanitize=address)
+endif()

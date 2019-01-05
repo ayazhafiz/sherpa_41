@@ -36,10 +36,10 @@ struct Selector;
 struct Declaration;
 struct specificityOrder;
 
-typedef std::unique_ptr<Value>                    ValuePtr;
-typedef std::vector<uint64_t>                     Specificity;
-typedef std::multiset<Selector, specificityOrder> PrioritySelectorSet;
-typedef std::vector<Declaration>                  DeclarationSet;
+using ValuePtr            = std::unique_ptr<Value>;
+using Specificity         = std::vector<uint64_t>;
+using PrioritySelectorSet = std::multiset<Selector, specificityOrder>;
+using DeclarationSet      = std::vector<Declaration>;
 
 /**
  * Normalizes a printed floating point value
@@ -80,7 +80,7 @@ struct Value {
      * @param value value to compare
      * @return whether *this is `value`
      */
-    virtual bool is(std::string value) const;
+    virtual bool is(const std::string & value) const;
 
     /**
      * Returns the unit value, or 0 if not a UnitValue

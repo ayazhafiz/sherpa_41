@@ -25,8 +25,8 @@ namespace DOM {
 // forward declaration
 class Node;
 
-typedef std::unique_ptr<Node> NodePtr;
-typedef std::vector<NodePtr>  NodeVector;
+using NodePtr    = std::unique_ptr<Node>;
+using NodeVector = std::vector<NodePtr>;
 
 /**
  * A map of DOM attributes, adapted to allow visitors
@@ -59,7 +59,7 @@ class Node {
      * Creates a DOM Node
      * @param tag node tag name
      */
-    explicit Node(const std::string & tag);
+    explicit Node(std::string tag);
 
     /**
      * Pure virtual destructor prevents unanticipated instantiation
@@ -104,7 +104,7 @@ class TextNode : public Node {
      * Creates a Text Node
      * @param text node content
      */
-    explicit TextNode(const std::string & text);
+    explicit TextNode(std::string text);
 
     TextNode(const TextNode & rhs) = delete;
 
@@ -144,7 +144,7 @@ class CommentNode : public Node {
      * Creates a Comment Node
      * @param comment node content
      */
-    explicit CommentNode(const std::string & comment);
+    explicit CommentNode(std::string comment);
 
     CommentNode(const CommentNode & rhs) = delete;
 

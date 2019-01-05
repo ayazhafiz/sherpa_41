@@ -37,7 +37,7 @@ CSS::ValuePtr CSS::make_value(const CSS::Value & val) {
  * @param value value to compare
  * @return whether *this is `value`
  */
-bool CSS::Value::is(std::string value) const {
+bool CSS::Value::is(const std::string & value) const {
     return print() == value;
 }
 

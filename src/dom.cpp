@@ -45,7 +45,7 @@ std::string DOM::AttributeMap::print() const {
  * Creates a DOM Node
  * @param tag node tag name
  */
-DOM::Node::Node(const std::string & tag) : tag(tag) {
+DOM::Node::Node(std::string tag) : tag(std::move(tag)) {
 }
 
 /**
@@ -75,8 +75,8 @@ std::string DOM::Node::tagName() const {
  * @param tag node tag name
  * @param text node content
  */
-DOM::TextNode::TextNode(const std::string & text)
-    : Node("TEXT NODE"), text(text) {
+DOM::TextNode::TextNode(std::string text)
+    : Node("TEXT NODE"), text(std::move(text)) {
 }
 
 /**
@@ -107,8 +107,8 @@ DOM::NodePtr DOM::TextNode::clone() {
  * Creates a Comment Node
  * @param comment node content
  */
-DOM::CommentNode::CommentNode(const std::string & comment)
-    : Node("COMMENT NODE"), comment(comment) {
+DOM::CommentNode::CommentNode(std::string comment)
+    : Node("COMMENT NODE"), comment(std::move(comment)) {
 }
 
 /**

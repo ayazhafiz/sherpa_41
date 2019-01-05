@@ -3,6 +3,42 @@ language: cpp
 matrix:
   include:
 
+    # Clang Format
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang-format-7']
+      script:
+        - diff -u <(cat src/**/*.cpp include/**/*.hpp tests/**/*.{cpp,hpp}) \
+                  <(clang-format-7 src/**/*.cpp include/**/*.hpp tests/**/*.{cpp,hpp}) \
+               --old-group-format=$'\e[0;31m%<\e[0m' \
+               --new-group-format=$'\e[0;31m%>\e[0m' \
+               --unchanged-group-format=$'\e[0;32m%=\e[0m'
+
+    # Clang Sanitizer
+
+    - os: linux
+      addons:
+        apt:
+          sources: ['llvm-toolchain-xenial-6.0']
+          packages: ['clang-6.0']
+      env:
+        - MATRIX_EVAL="CMAKE_OPTIONS=-DSANITIZER=ON CC=clang-6.0 && CXX=clang++-6.0"
+
+    # Clang Tidy
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang-tidy-7']
+      script:
+        - clang-tidy-7 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17
+
     # Coverage
 
     - os: linux
@@ -19,27 +55,34 @@ matrix:
         - MATRIX_EVAL="CMAKE_OPTIONS=-DCOVERAGE=ON && CC=gcc-7 && CXX=g++-7"
 
     # Linux: clang
-    # this keeps failing for some reason, so it's ignored for now
+
+    - os: linux
+      addons:
+        apt:
+          sources: ['llvm-toolchain-xenial-6.0']
+          packages: ['clang-6.0']
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
 
     # Linux: gcc
 
     - os: linux
       compiler: gcc
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['gcc-7', 'g++-7']
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
     - os: linux
       compiler: gcc
-      env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['gcc-8', 'g++-8']
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
     # macOS: clang
 
