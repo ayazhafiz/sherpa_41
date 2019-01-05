@@ -26,7 +26,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
           packages: ['clang-6.0', 'libstdc++-7-dev']
       env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0 && CMAKE_OPTIONS=-DSANITIZER=ON && CLANG_FLAGS=-DCLANG_FLAGS=-stdlib=libc++"
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0 && CMAKE_OPTIONS=-DSANITIZER=ON"
 
     # Clang Tidy
 
@@ -37,7 +37,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
           packages: ['clang-6.0', 'libstdc++-7-dev', 'clang-tidy-6.0']
       script:
-        - clang-tidy-6.0 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17 -stdlib=libc++
+        - clang-tidy-6.0 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17
 
   # Coverage
 
@@ -62,7 +62,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
           packages: ['clang-6.0', 'libstdc++-7-dev']
       env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0 && CLANG_FLAGS=-DCLANG_FLAGS=-stdlib=libc++"
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
 
     # Linux: gcc
 
@@ -124,6 +124,6 @@ before_install:
   - eval "${MATRIX_EVAL}"
 
 script:
-  - cmake "$CMAKE_OPTIONS" "$CLANG_FLAGS" -DEXECUTABLE=OFF .
+  - cmake "$CMAKE_OPTIONS" -DEXECUTABLE=OFF .
   - cmake --build .
   - ./sherpa_41-test
