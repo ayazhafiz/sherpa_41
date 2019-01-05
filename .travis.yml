@@ -75,7 +75,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['gcc-7', 'g++-7']
+          packages: ['gcc-7', 'g++-7', 'libstdc++-7-dev']
         coverity_scan:
           project:
             name: "ayazhafiz/sherpa_41"
