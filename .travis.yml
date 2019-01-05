@@ -14,11 +14,11 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-format-7']
       script:
-        - diff -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
-                  <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec clang-format-7 {} +) \
-               --old-group-format=$'\e[0;31m%<\e[0m' \
+        - diff --old-group-format=$'\e[0;31m%<\e[0m' \
                --new-group-format=$'\e[0;31m%>\e[0m' \
-               --unchanged-group-format=$'\e[0;32m%=\e[0m'
+               --unchanged-group-format=$'\e[0;32m%=\e[0m' \
+               -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
+                  <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec clang-format-7 {} +)
 
     # Clang Sanitizer
 
@@ -28,7 +28,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
           packages: ['clang-6.0']
       env:
-        - MATRIX_EVAL="CMAKE_OPTIONS=-DSANITIZER=ON CC=clang-6.0 && CXX=clang++-6.0"
+        - MATRIX_EVAL="CMAKE_OPTIONS=-DSANITIZER=ON && CXXFLAGS=-stdlib=libc++ && CC=clang-6.0 && CXX=clang++-6.0"
 
     # Clang Tidy
 
@@ -39,9 +39,9 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-7', 'clang-tidy-7']
       script:
-        - clang-tidy-7 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17
+        - clang-tidy-7 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17 -stdlib=libc++
 
-    # Coverage
+  # Coverage
 
     - os: linux
       compiler: gcc
@@ -64,7 +64,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
           packages: ['clang-6.0']
       env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - MATRIX_EVAL="CXXFLAGS=-stdlib=libc++ && CC=clang-6.0 && CXX=clang++-6.0"
 
     # Linux: gcc
 
