@@ -8,6 +8,8 @@ env:
   - secure: "Md9S9t94zyokHlfDVajplngTqGt2ev/EtgSDN7s+VUo6te59pughWUuSeK/9Zo7PcgdK8NtkBHpsFk3Ut13D8Tg4nin2bW71d7YAweYg7+zJVii25ke3ZAuSCZQqN9npAlpekX/2YTGh6PbIlqnuBes/SQSdwo6mWJRM5Qhef6xNZ4sAeaDEnr6wjalAX0WnYPWiQIwrGDHIj5A4Y1KQEScSGDZBRxwfbzZ11SHj+imqUXa9h8y7vQMomNgzFvn3YPUgduCmSFd6kYEqhhQddGpTksEO0GT9RF1msWIWvm7em95n+6jhp8B7XIdVwILgVcHIHo2PSCzA7ELxdeWFa6TYkwmZangC+tPmPEXKFsl4FyY8FPkailSNHltqTFGW/kmdmxaKs/1ooGeTfgYAmP/vwTY4DDXeE1kgfajIW8cL3ctyqaSikhpmXakJTLpmJjfmvtKIVIyIceKqPPUWF3GGWC61pFHqGlPPCNBZl2nKHQOKag1kK2Iy7Ahs3mI0RhPRPSdFmNN8i2D2yJFhXbfoBulv2JPBSwDfGgM5hEgyzGFXcv+FSsPJCTgmqdZt2S1H45DUJNVQqkaLffPLOF9MDTczceKz2keI938MqrN0gcIXBWl1z6Om69ei9Yw9W6uemSeprgdhjcP+fZTT1TmqaMHwCunY19Wfpg58ZqU="
 
 matrix:
+  fast_finish: true
+
   include:
 
     # Clang Format
@@ -73,13 +75,13 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['gcc-8', 'g++-8']
+          packages: ['gcc-7', 'g++-7']
         coverity_scan:
           project:
             name: "ayazhafiz/sherpa_41"
             description: "A well-architectured, trivial browser engine"
           notification_email: ayaz.hafiz.1@gmail.com
-          build_command_prepend: "cov-configure --comptype gcc --compiler g++-8 --template && CC=gcc-8 CXX=g++-8 cmake -DEXECUTABLE=OFF ."
+          build_command_prepend: "cov-configure --comptype gcc --compiler g++-7 --template && CC=gcc-7 CXX=g++-7 cmake -DEXECUTABLE=OFF ."
           build_command: "cmake --build ."
           branch_pattern: coverity_scan
       env: COVERITY_SCAN_BUILD=true
