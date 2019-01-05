@@ -15,10 +15,7 @@ matrix:
           packages: ['clang-format-7']
       script:
         - |
-          diff --old-group-format=$'\e[0;31m%<\e[0m' \
-               --new-group-format=$'\e[0;31m%>\e[0m' \
-               --unchanged-group-format=$'\e[0;32m%=\e[0m' \
-               -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
+          diff -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
                   <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec clang-format-7 {} +)
 
     # Clang Sanitizer
