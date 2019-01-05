@@ -14,7 +14,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-format-7']
       script:
-        - diff -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
+        - |
+          diff -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
                   <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec clang-format-7 {} +)
 
     # Clang Sanitizer
@@ -23,7 +24,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0']
+          packages: ['clang-6.0', 'libstdc++-7-dev']
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0 && CMAKE_OPTIONS=-DSANITIZER=ON && CLANG_FLAGS=-DCLANG_FLAGS=-stdlib=libc++"
 
@@ -34,7 +35,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0', 'clang-tidy-6.0']
+          packages: ['clang-6.0', 'libstdc++-7-dev', 'clang-tidy-6.0']
       script:
         - clang-tidy-6.0 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17 -stdlib=libc++
 
@@ -59,7 +60,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0']
+          packages: ['clang-6.0', 'libstdc++-7-dev']
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0 && CLANG_FLAGS=-DCLANG_FLAGS=-stdlib=libc++"
 
