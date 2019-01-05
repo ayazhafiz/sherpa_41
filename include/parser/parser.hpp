@@ -34,7 +34,7 @@ class Parser {
     virtual EvalType evaluate() = 0;
 
    protected:
-    typedef std::function<bool(char)> const PrefixComparator;
+    using PrefixComparator = std::function<bool(char)> const;
 
     /**
      * Builds a string of some length

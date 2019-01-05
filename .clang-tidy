@@ -1,6 +1,6 @@
 Checks: "-*,
         bugprone-*,
-        cert-*, -cert-err58-cpp
+        cert-*,
         clang-analyzer-*,
         modernize-*,
         performance-*,
