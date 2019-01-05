@@ -63,6 +63,30 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && CMAKE_OPTIONS=-DCOVERAGE=ON"
 
+    # Coverity Scan
+
+    - name: "Coverity Scan"
+      os: linux
+      compiler: gcc
+      before_install:
+        - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['gcc-8', 'g++-8']
+        coverity_scan:
+          project:
+            name: "ayazhafiz/sherpa_41"
+            description: "A well-architectured, trivial browser engine"
+          notification_email: ayaz.hafiz.1@gmail.com
+          build_command_prepend: "cov-configure --comptype gcc --compiler g++-8 --template && CC=gcc-8 CXX=g++-8 cmake -DEXECUTABLE=OFF ."
+          build_command: "cmake --build ."
+          branch_pattern: coverity_scan
+      env: COVERITY_SCAN_BUILD=true
+      if: branch = coverity_scan
+      before_script: echo "Coverity Scan"
+      script: echo "Coverity build log:" && cat cov-int/build-log.txt
+
     # Linux: clang
 
     - name: "Linux: clang 5"
@@ -158,30 +182,7 @@ matrix:
         - MATRIX_EVAL="brew install gcc@8 && CC=gcc-8 && CXX=g++-8"
 
   allow_failures:
-
-    # Coverity
-
-    - name: "Coverity Scan"
-      os: linux
-      compiler: gcc
-      before_install:
-      - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['gcc-8', 'g++-8']
-        coverity_scan:
-          project:
-            name: "ayazhafiz/sherpa_41"
-            description: "A well-architectured, trivial browser engine"
-          notification_email: ayaz.hafiz.1@gmail.com
-          build_command_prepend: "cov-configure --comptype gcc --compiler g++-8 --template && CC=gcc-8 CXX=g++-8 cmake -DEXECUTABLE=OFF ."
-          build_command: "cmake --build ."
-          branch_pattern: coverity_scan
-      if: branch = coverity_scan
-      before_script: echo "Coverity Scan"
-      script: echo "Coverity build log:" && cat cov-int/build-log.txt
-
+    - env: COVERITY_SCAN_BUILD=true
 
 before_install:
   - eval "${MATRIX_EVAL}"
