@@ -19,14 +19,14 @@ namespace Style {
 
 // forward declaration
 class StyledNode;
-struct ruleOrder;
+struct RuleOrder;
 
-typedef std::vector<StyledNode>                          StyledNodeVector;
-typedef std::map<std::string, CSS::ValuePtr>             PropertyMap;
-typedef std::pair<CSS::DeclarationSet, CSS::Specificity> ScoredRule;
-typedef std::multiset<ScoredRule, ruleOrder>             PriorityRuleSet;
+using StyledNodeVector = std::vector<StyledNode>;
+using PropertyMap      = std::map<std::string, CSS::ValuePtr>;
+using ScoredRule       = std::pair<CSS::DeclarationSet, CSS::Specificity>;
+using PriorityRuleSet  = std::multiset<ScoredRule, RuleOrder>;
 
-struct ruleOrder {
+struct RuleOrder {
     bool operator()(const ScoredRule & a, const ScoredRule & b) const {
         return a.second < b.second;
     }

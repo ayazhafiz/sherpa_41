@@ -24,8 +24,8 @@ namespace Display {
 // forward declaration
 class Command;
 
-typedef std::unique_ptr<Command> CommandPtr;
-typedef std::queue<CommandPtr>   CommandQueue;
+using CommandPtr   = std::unique_ptr<Command>;
+using CommandQueue = std::queue<CommandPtr>;
 
 /**
  * An abstract class describing a display command
@@ -98,7 +98,8 @@ class RectangleCmd : public Command {
      * @param rectangle rectangle to create
      * @param color color to color rectangle
      */
-    RectangleCmd(Layout::Rectangle rectangle, CSS::ColorValue color);
+    RectangleCmd(const Layout::Rectangle & rectangle,
+                 const CSS::ColorValue &   color);
 
     /**
      * Accepts a renderer to the command

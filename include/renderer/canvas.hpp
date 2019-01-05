@@ -79,7 +79,7 @@ class Canvas : public Renderer {
         double r, g, b, a;
     };
 
-    typedef std::vector<RGBA> PxVector;
+    using PxVector = std::vector<RGBA>;
 
     /**
      * Sets a pixel by blending a color with the background

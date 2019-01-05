@@ -1,11 +1,51 @@
 language: cpp
 
+dist: trusty
+
 matrix:
   include:
 
-    # Coverage
+    # Clang Format
 
-    - os: linux
+    - name: "Clang Format"
+      os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-format-7']
+      script:
+        - |
+          diff -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
+                  <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec clang-format-7 {} +)
+
+    # Clang Sanitizer
+
+    - name: "Clang Sanitizer"
+      os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-7', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7 && CMAKE_OPTIONS=-DSANITIZER=ON"
+
+    # Clang Tidy
+
+    - name: "Clang Tidy"
+      os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-7', 'libstdc++-7-dev', 'clang-tidy-7']
+      script:
+        - clang-tidy-7 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17
+
+  # Coverage
+
+    - name: "Coverage (Coveralls)"
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -16,62 +56,98 @@ matrix:
       after_success:
         - coveralls --root . -e tests -e lib -E ".*CMakeFiles.*"
       env:
-        - MATRIX_EVAL="CMAKE_OPTIONS=-DCOVERAGE=ON && CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && CMAKE_OPTIONS=-DCOVERAGE=ON "
 
     # Linux: clang
-    # this keeps failing for some reason, so it's ignored for now
+
+    - name: "Linux: clang 5"
+      os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+    - name: "Linux: clang 6"
+      os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+
+    - name: "Linux: clang 7"
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-7', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
 
     # Linux: gcc
 
-    - os: linux
+    - name: "Linux: gcc 7"
+      os: linux
       compiler: gcc
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['gcc-7', 'g++-7']
-
-    - os: linux
-      compiler: gcc
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+    - name: "Linux: gcc 8"
+      os: linux
+      compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['gcc-8', 'g++-8']
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
     # macOS: clang
 
-    - os: osx
+    - name: "macOS: xcode 9"
+      os: osx
       osx_image: xcode9
 
-    - os: osx
+    - name: "macOS: xcode 9.1"
+      os: osx
       osx_image: xcode9.1
 
-    - os: osx
+    - name: "macOS: xcode 9.2"
+      os: osx
       osx_image: xcode9.2
 
-    - os: osx
+    - name: "macOS: xcode 9.3"
+      os: osx
       osx_image: xcode9.3
 
-    - os: osx
+    - name: "macOS: xcode 9.4"
+      os: osx
       osx_image: xcode9.4
 
-    - os: osx
+    - name: "macOS: xcode 10"
+      os: osx
       osx_image: xcode10
 
-    - os: osx
+    - name: "macOS: xcode 10.1"
+      os: osx
       osx_image: xcode10.1
 
     # macOS: gcc
 
-    - os: osx
+    - name: "macOS: gcc 7"
+      os: osx
       osx_image: xcode10
       env:
         - MATRIX_EVAL="brew install gcc@7 && CC=gcc-7 && CXX=g++-7"
 
-    - os: osx
+    - name: "macOS: gcc 8"
+      os: osx
       osx_image: xcode10
       env:
         - MATRIX_EVAL="brew install gcc@8 && CC=gcc-8 && CXX=g++-8"
@@ -81,6 +157,6 @@ before_install:
   - eval "${MATRIX_EVAL}"
 
 script:
-  - cmake ${CMAKE_OPTIONS} -DEXECUTABLE=OFF .
+  - cmake "$CMAKE_OPTIONS" -DEXECUTABLE=OFF .
   - cmake --build .
   - ./sherpa_41-test

@@ -214,10 +214,10 @@ Layout::BoxPtr Layout::AnonymousBox::clone() const {
  * @param display display type
  * @param children box children
  */
-Layout::StyledBox::StyledBox(Layout::BoxDimensions dimensions,
-                             Style::StyledNode     content,
-                             Layout::DisplayType   display,
-                             const BoxVector &     children)
+Layout::StyledBox::StyledBox(Layout::BoxDimensions     dimensions,
+                             const Style::StyledNode & content,
+                             Layout::DisplayType       display,
+                             const BoxVector &         children)
     : Box(dimensions, children), content(content), display(display) {
 }
 

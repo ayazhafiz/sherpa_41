@@ -84,7 +84,7 @@ When adding a new feature or module to `sherpa_41`, please also add appropriate 
 
 Before submitting a [PR](https://github.com/ayazhafiz/sherpa_41/compare), please take care that your changes pass on [Travis](https://travis-ci.com/ayazhafiz/sherpa_41) and have at least [80% coverage](https://coveralls.io/repos/github/ayazhafiz/sherpa_41).
 
-The `sherpa_41` repository includes a pre-commit hook to insure the codebase is formatted according to the `.clang-format` spec provided. To format the code, use `clang-format -i include/**/*.hpp src/**/*.cpp tests/**/*.{hpp,cpp}`.
+The Travis build will fail if the codebase is not formatted to the `.clang-format` spec provided. To format the code, use `clang-format -i include/**/*.hpp src/**/*.cpp tests/**/*.{hpp,cpp}`.
 
 ##### A Brief Overview of `sherpa_41`'s Design
 

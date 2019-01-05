@@ -23,8 +23,8 @@ namespace Layout {
 class Box;
 struct Edges;
 
-typedef std::unique_ptr<Box> BoxPtr;
-typedef std::vector<BoxPtr>  BoxVector;
+using BoxPtr    = std::unique_ptr<Box>;
+using BoxVector = std::vector<BoxPtr>;
 
 /**
  * Block display types
@@ -223,10 +223,10 @@ class StyledBox : public Box {
      * @param display display type
      * @param children box children
      */
-    StyledBox(BoxDimensions     dimensions,
-              Style::StyledNode content,
-              DisplayType       display  = Inline,
-              const BoxVector & children = BoxVector());
+    StyledBox(BoxDimensions             dimensions,
+              const Style::StyledNode & content,
+              DisplayType               display  = Inline,
+              const BoxVector &         children = BoxVector());
 
     ~StyledBox() override = default;
 
