@@ -7,7 +7,8 @@ matrix:
 
     # Clang Format
 
-    - os: linux
+    - name: "Clang Format"
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -20,7 +21,8 @@ matrix:
 
     # Clang Sanitizer
 
-    - os: linux
+    - name: "Clang Sanitizer"
+      os: linux
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
@@ -30,7 +32,8 @@ matrix:
 
     # Clang Tidy
 
-    - os: linux
+    - name: "Clang Tidy"
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -41,7 +44,8 @@ matrix:
 
   # Coverage
 
-    - os: linux
+    - name: "Coverage (Coveralls)"
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -56,7 +60,8 @@ matrix:
 
     # Linux: clang
 
-    - os: linux
+    - name: "Linux: clang 5"
+      os: linux
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
@@ -64,7 +69,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
-    - os: linux
+    - name: "Linux: clang 6"
+      os: linux
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
@@ -72,7 +78,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
 
-    - os: linux
+    - name: "Linux: clang 7"
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
@@ -82,7 +88,8 @@ matrix:
 
     # Linux: gcc
 
-    - os: linux
+    - name: "Linux: gcc 7"
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -91,7 +98,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
-    - os: linux
+    - name: "Linux: gcc 8"
+      os: linux
       compiler: gcc
       addons:
         apt:
@@ -102,35 +110,44 @@ matrix:
 
     # macOS: clang
 
-    - os: osx
+    - name: "macOS: xcode 9"
+      os: osx
       osx_image: xcode9
 
-    - os: osx
+    - name: "macOS: xcode 9.1"
+      os: osx
       osx_image: xcode9.1
 
-    - os: osx
+    - name: "macOS: xcode 9.2"
+      os: osx
       osx_image: xcode9.2
 
-    - os: osx
+    - name: "macOS: xcode 9.3"
+      os: osx
       osx_image: xcode9.3
 
-    - os: osx
+    - name: "macOS: xcode 9.4"
+      os: osx
       osx_image: xcode9.4
 
-    - os: osx
+    - name: "macOS: xcode 10"
+      os: osx
       osx_image: xcode10
 
-    - os: osx
+    - name: "macOS: xcode 10.1"
+      os: osx
       osx_image: xcode10.1
 
     # macOS: gcc
 
-    - os: osx
+    - name: "macOS: gcc 7"
+      os: osx
       osx_image: xcode10
       env:
         - MATRIX_EVAL="brew install gcc@7 && CC=gcc-7 && CXX=g++-7"
 
-    - os: osx
+    - name: "macOS: gcc 8"
+      os: osx
       osx_image: xcode10
       env:
         - MATRIX_EVAL="brew install gcc@8 && CC=gcc-8 && CXX=g++-8"
