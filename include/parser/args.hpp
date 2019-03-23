@@ -15,7 +15,7 @@ class ArgsParser {
    public:
     ArgsParser(const ArgsParser &) = delete;
 
-    static ArgsParser & instance(int argc = 0, char ** argv = 0) {
+    static ArgsParser & instance(int argc = 0, char ** argv = nullptr) {
         if (parser == nullptr) {
             parser = new ArgsParser(argc, argv);
         }
@@ -28,8 +28,8 @@ class ArgsParser {
         if (itr != this->tokens.end() && ++itr != this->tokens.end()) {
             return *itr;
         }
-        static const std::string empty_string("");
-        return empty_string;
+        throw std::invalid_argument("Expected a value for option `" + option +
+                                    "'");
     }
     /// @author iain
     bool cmdOptionExists(const std::string & option) const {

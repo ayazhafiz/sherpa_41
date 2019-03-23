@@ -15,71 +15,45 @@
 #include <sstream>
 
 /**
- * Prints help menu
+ * Prints usage menu
  */
-void printHelp() {
-    static std::string helpText = R"(
-A trivial browser engine.
-
+void printUsage() {
+    static std::string usageText = R"(
 USAGE: sherpa_41 [options]
 
 OPTIONS:
 	--html <file>             HTML file to parse (Default: examples/sherpa-webpage.html)
 	--css <file>              CSS file to parse (Default: examples/sherpa-webpage.css)
-	-w, --width <size>        Browser width, in pixels (Default: 2880)
-	-h, --height <size>       Browser height, in pixels (Default: 1620)
+	-W, --width <size>        Browser width, in pixels (Default: 2880)
+	-H, --height <size>       Browser height, in pixels (Default: 1620)
 	-o, --out <file>          Output file (Default: output.png)
-	--help                    Show this help screen
+	-h, --help                Show this help screen
 )";
-    std::cout << helpText << std::endl;
+    std::cout << usageText << "\n";
 }
 
 /**
- * Gets input files from CLI args
- * @param html html file
- * @param css css file
+ * Gets an argument from the CLI
+ * @param shrt short arg (-a). Empty string if no short arg.
+ * @param lng long arg (--arg). Empty string if no long arg.
+ * @param deflt default value to use. Empty string if no default value.
+ * @return value of argument
  */
-void getInFiles(std::ifstream & html, std::ifstream & css) {
-    ArgsParser & args         = ArgsParser::instance();
-    auto         htmlFileName = args.getCmdOption("--html");
-    auto         cssFileName  = args.getCmdOption("--css");
-    if (!htmlFileName.empty()) {
-        html = std::ifstream(htmlFileName);
-    }
-    if (!cssFileName.empty()) {
-        css = std::ifstream(cssFileName);
-    }
-}
-
-/**
- * Gets output files from CLI args
- * @param out output file
- */
-void getOutFiles(std::string & out) {
-    ArgsParser & args           = ArgsParser::instance();
-    auto         outputFileName = args.cmdOptionExists("-o")
-                              ? args.getCmdOption("-o")
-                              : args.getCmdOption("--out");
-    if (!outputFileName.empty()) {
-        out = outputFileName;
-    }
-}
-
-/**
- * Converts a dimension in a CLI arg
- * @param shrt short arg (-a)
- * @param lng long arg (--arg)
- * @param deflt default value
- * @return converted dimension
- */
-uint64_t getDimension(const std::string & shrt,
-                      const std::string & lng,
-                      uint64_t            deflt) {
+const std::string & getArg(const std::string & shrt  = "",
+                           const std::string & lng   = "",
+                           const std::string & deflt = "") {
     ArgsParser & args = ArgsParser::instance();
-    if (args.cmdOptionExists(shrt)) {
-        return std::stoull(args.getCmdOption(shrt));
-    } else if (args.cmdOptionExists(lng)) {
-        return std::stoull(args.getCmdOption(lng));
+    try {
+        if (!shrt.empty() && args.cmdOptionExists(shrt)) {
+            return args.getCmdOption(shrt);
+        } else if (!lng.empty() && args.cmdOptionExists(lng)) {
+            return args.getCmdOption(lng);
+        }
+    } catch (const std::invalid_argument & exc) {
+        // argument specified but value not, exit on error.
+        std::cout << "ERROR: " << exc.what() << "\n";
+        printUsage();
+        exit(1);
     }
     return deflt;
 }
@@ -87,17 +61,16 @@ uint64_t getDimension(const std::string & shrt,
 int main(int argc, char ** argv) {
     ArgsParser & args = ArgsParser::instance(argc, argv);
 
-    if (args.cmdOptionExists("--help")) {
-        printHelp();
+    if (args.cmdOptionExists("-h") || args.cmdOptionExists("--help")) {
+        std::cout << "A trivial browser engine.\n";
+        printUsage();
         return 0;
     }
 
-    std::ifstream htmlFile("examples/sherpa-webpage.html");
-    std::ifstream cssFile("examples/sherpa-webpage.css");
-    getInFiles(htmlFile, cssFile);
-
-    std::string output("output.png");
-    getOutFiles(output);
+    std::ifstream htmlFile(
+        getArg("", "--html", "examples/sherpa-webpage.html"));
+    std::ifstream cssFile(getArg("", "--css", "examples/sherpa-webpage.css"));
+    std::string   output(getArg("-o", "--out", "output.png"));
 
     std::stringstream buffer;
     buffer << htmlFile.rdbuf();
@@ -109,8 +82,8 @@ int main(int argc, char ** argv) {
 
     Layout::Rectangle browser(0,
                               0,
-                              getDimension("-w", "--width", 2880),
-                              getDimension("-h", "--height", 1800));
+                              std::stoull(getArg("-W", "--width", "2880")),
+                              std::stoull(getArg("-H", "--height", "1620")));
 
     // compute internal representations
     auto domTree    = htmlParser.evaluate();
@@ -136,5 +109,5 @@ int main(int argc, char ** argv) {
     // Write the image to output
     image.write(output);
 
-    std::cout << "Output written to " << output << "." << std::endl;
+    std::cout << "Output written to " << output << ".\n";
 }

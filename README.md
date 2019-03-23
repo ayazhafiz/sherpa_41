@@ -26,10 +26,10 @@ USAGE: sherpa_41 [options]
 OPTIONS:
         --html <file>             HTML file to parse (Default: examples/sherpa-webpage.html)
         --css <file>              CSS file to parse (Default: examples/sherpa-webpage.css)
-        -w, --width <size>        Browser width, in pixels (Default: 2880)
-        -h, --height <size>       Browser height, in pixels (Default: 1620)
+        -W, --width <size>        Browser width, in pixels (Default: 2880)
+        -H, --height <size>       Browser height, in pixels (Default: 1620)
         -o, --out <file>          Output file (Default: output.png)
-        --help                    Show this help screen
+        -h, --help                Show this help screen
 ```
 
 Almost any file type designed to show images can be used as the output file. `.png`, `.pdf`, `.jpg` are all great options, and you can even output to a `.html` file if you want.
@@ -37,7 +37,7 @@ Almost any file type designed to show images can be used as the output file. `.p
 An example of a custom invocation:
 
 ```bash
-sherpa_41 --html index.html --css style.css -w 1800 -h 1200 -o myIndex.jpg
+sherpa_41 --html index.html --css style.css -W 1800 -H 1200 -o myIndex.jpg
 ```
 
 ### Building
