@@ -1,4 +1,4 @@
-// The sherpa_41 browser engine, licensed under MIT. (c) hafiz, 2018
+// The sherpa_41 browser engine, licensed under MIT. (c) hafiz, 2019
 
 #include "layout.hpp"
 #include "style.hpp"
@@ -24,12 +24,12 @@ A trivial browser engine.
 USAGE: sherpa_41 [options]
 
 OPTIONS:
-	--html                  HTML file to parse (=assets/rainbowBox.html)
-	--css                   CSS file to parse (=assets/rainboxBox.css)
-	-w, --width             Browser width (=800)
-	-h, --height            Browser height (=600)
-	-o, --out               Output file (=output.png)
-	--help                  Show this help screen
+	--html <file>             HTML file to parse (Default: examples/sherpa-webpage.html)
+	--css <file>              CSS file to parse (Default: examples/sherpa-webpage.css)
+	-w, --width <size>        Browser width, in pixels (Default: 2880)
+	-h, --height <size>       Browser height, in pixels (Default: 1620)
+	-o, --out <file>          Output file (Default: output.png)
+	--help                    Show this help screen
 )";
     std::cout << helpText << std::endl;
 }
@@ -92,8 +92,8 @@ int main(int argc, char ** argv) {
         return 0;
     }
 
-    std::ifstream htmlFile("examples/test.html");
-    std::ifstream cssFile("examples/test.css");
+    std::ifstream htmlFile("examples/sherpa-webpage.html");
+    std::ifstream cssFile("examples/sherpa-webpage.css");
     getInFiles(htmlFile, cssFile);
 
     std::string output("output.png");
