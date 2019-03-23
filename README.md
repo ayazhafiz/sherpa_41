@@ -24,12 +24,12 @@ This app is meant to be explorative in nature, with particular [design philosoph
 USAGE: sherpa_41 [options]
 
 OPTIONS:
-        --html                  HTML file to parse (=assets/rainbowBox.html)
-        --css                   CSS file to parse (=assets/rainboxBox.css)
-        -w, --width             Browser width (=800)
-        -h, --height            Browser height (=600)
-        -o, --out               Output file (=output.png)
-        --help                  Show this help screen
+        --html <file>             HTML file to parse (Default: examples/sherpa-webpage.html)
+        --css <file>              CSS file to parse (Default: examples/sherpa-webpage.css)
+        -w, --width <size>        Browser width, in pixels (Default: 2880)
+        -h, --height <size>       Browser height, in pixels (Default: 1620)
+        -o, --out <file>          Output file (Default: output.png)
+        --help                    Show this help screen
 ```
 
 Almost any file type designed to show images can be used as the output file. `.png`, `.pdf`, `.jpg` are all great options, and you can even output to a `.html` file if you want.
