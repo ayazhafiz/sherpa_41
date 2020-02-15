@@ -40,7 +40,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-7', 'libstdc++-7-dev', 'clang-tidy-7']
       script:
-        - clang-tidy-7 $(find src -not -name "main.cpp" -type f) -p . -- -Isrc/ -std=c++17
+        - clang-tidy-7 $(find src -type f) -p . -- -std=c++17 -x c++ -Isrc/ $(pkg-config Magick++ --cflags-only-I)
 
   # Coverage
 
