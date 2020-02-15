@@ -7,28 +7,28 @@ matrix:
 
     # Clang Format
 
-    # - name: "Clang Format"
-    #   os: linux
-    #   compiler: gcc
-    #   addons:
-    #     apt:
-    #       sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-    #       packages: ['clang-format-7']
-    #   script:
-    #     - |
-    #       diff -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
-    #               <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec clang-format-7 {} +)
+    - name: "Clang Format"
+      os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-format-7']
+      script:
+        - |
+          diff -u <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec cat {} +) \
+                  <(find src include tests -name '*.cpp' -o -name '*.hpp' -type f -exec clang-format-7 {} +)
 
-    # # Clang Sanitizer
+    # Clang Sanitizer
 
-    # - name: "Clang Sanitizer"
-    #   os: linux
-    #   addons:
-    #     apt:
-    #       sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-    #       packages: ['clang-7', 'libstdc++-7-dev']
-    #   env:
-    #     - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7 && CMAKE_OPTIONS=-DSANITIZER=ON"
+    - name: "Clang Sanitizer"
+      os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-7', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7 && CMAKE_OPTIONS=-DSANITIZER=ON"
 
     # Clang Tidy
 
@@ -48,113 +48,113 @@ matrix:
 
     # Coverage
 
-          # - name: "Coverage (Coveralls)"
-          #   os: linux
-          #   compiler: gcc
-          #   addons:
-          #     apt:
-          #       sources: ['ubuntu-toolchain-r-test']
-          #       packages: ['gcc-7', 'g++-7']
-          #   before_script:
-          #     - pip install --user cpp-coveralls
-          #   after_success:
-          #     - coveralls --root . -e tests -e lib -E ".*CMakeFiles.*"
-          #   env:
-          #     - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && CMAKE_OPTIONS=-DCOVERAGE=ON "
+    - name: "Coverage (Coveralls)"
+      os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['gcc-7', 'g++-7']
+      before_script:
+        - pip install --user cpp-coveralls
+      after_success:
+        - coveralls --root . -e tests -e lib -E ".*CMakeFiles.*"
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7 && CMAKE_OPTIONS=-DCOVERAGE=ON "
 
-          # # Linux: clang
+    # Linux: clang
 
-          # - name: "Linux: clang 5"
-          #   os: linux
-          #   addons:
-          #     apt:
-          #       sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          #       packages: ['clang-5.0', 'libstdc++-7-dev']
-          #   env:
-          #     - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+    - name: "Linux: clang 5"
+      os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
-          # - name: "Linux: clang 6"
-          #   os: linux
-          #   addons:
-          #     apt:
-          #       sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          #       packages: ['clang-6.0', 'libstdc++-7-dev']
-          #   env:
-          #     - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+    - name: "Linux: clang 6"
+      os: linux
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
 
-          # - name: "Linux: clang 7"
-          #   addons:
-          #     apt:
-          #       sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          #       packages: ['clang-7', 'libstdc++-7-dev']
-          #   env:
-          #     - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
+    - name: "Linux: clang 7"
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          packages: ['clang-7', 'libstdc++-7-dev']
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
 
-          # # Linux: gcc
+    # Linux: gcc
 
-          # - name: "Linux: gcc 7"
-          #   os: linux
-          #   compiler: gcc
-          #   addons:
-          #     apt:
-          #       sources: ['ubuntu-toolchain-r-test']
-          #       packages: ['gcc-7', 'g++-7']
-          #   env:
-          #     - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+    - name: "Linux: gcc 7"
+      os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['gcc-7', 'g++-7']
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
-          # - name: "Linux: gcc 8"
-          #   os: linux
-          #   compiler: gcc
-          #   addons:
-          #     apt:
-          #       sources: ['ubuntu-toolchain-r-test']
-          #       packages: ['gcc-8', 'g++-8']
-          #   env:
-          #     - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+    - name: "Linux: gcc 8"
+      os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['gcc-8', 'g++-8']
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
-          # # macOS: clang
+    # macOS: clang
 
-          # - name: "macOS: xcode 9"
-          #   os: osx
-          #   osx_image: xcode9
+    - name: "macOS: xcode 9"
+      os: osx
+      osx_image: xcode9
 
-          # - name: "macOS: xcode 9.1"
-          #   os: osx
-          #   osx_image: xcode9.1
+    - name: "macOS: xcode 9.1"
+      os: osx
+      osx_image: xcode9.1
 
-          # - name: "macOS: xcode 9.2"
-          #   os: osx
-          #   osx_image: xcode9.2
+    - name: "macOS: xcode 9.2"
+      os: osx
+      osx_image: xcode9.2
 
-          # - name: "macOS: xcode 9.3"
-          #   os: osx
-          #   osx_image: xcode9.3
+    - name: "macOS: xcode 9.3"
+      os: osx
+      osx_image: xcode9.3
 
-          # - name: "macOS: xcode 9.4"
-          #   os: osx
-          #   osx_image: xcode9.4
+    - name: "macOS: xcode 9.4"
+      os: osx
+      osx_image: xcode9.4
 
-          # - name: "macOS: xcode 10"
-          #   os: osx
-          #   osx_image: xcode10
+    - name: "macOS: xcode 10"
+      os: osx
+      osx_image: xcode10
 
-          # - name: "macOS: xcode 10.1"
-          #   os: osx
-          #   osx_image: xcode10.1
+    - name: "macOS: xcode 10.1"
+      os: osx
+      osx_image: xcode10.1
 
-          # # macOS: gcc
+    # macOS: gcc
 
-          # - name: "macOS: gcc 7"
-          #   os: osx
-          #   osx_image: xcode10
-          #   env:
-          #     - MATRIX_EVAL="brew install gcc@7 && CC=gcc-7 && CXX=g++-7"
+    - name: "macOS: gcc 7"
+      os: osx
+      osx_image: xcode10
+      env:
+        - MATRIX_EVAL="brew install gcc@7 && CC=gcc-7 && CXX=g++-7"
 
-          # - name: "macOS: gcc 8"
-          #   os: osx
-          #   osx_image: xcode10
-          #   env:
-          #     - MATRIX_EVAL="brew install gcc@8 && CC=gcc-8 && CXX=g++-8"
+    - name: "macOS: gcc 8"
+      os: osx
+      osx_image: xcode10
+      env:
+        - MATRIX_EVAL="brew install gcc@8 && CC=gcc-8 && CXX=g++-8"
 
 
 before_install:
