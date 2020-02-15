@@ -41,7 +41,8 @@ matrix:
       install:
         - wget http://www.imagemagick.org/download/ImageMagick.tar.gz
         - tar -xzvf ImageMagick.tar.gz
-        - cd ImageMagick*/ && ./configure --prefix=/usr && make && sudo make install
+        - pushd ImageMagick*/ && ./configure --prefix=/usr && make && sudo make install
+        - popd
       script:
         - clang-tidy-7 $(find src -type f) -p . -- -std=c++17 -x c++ -Isrc/ $(pkg-config Magick++ --cflags-only-I)
 
