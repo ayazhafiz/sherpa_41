@@ -2,6 +2,10 @@ language: cpp
 
 dist: trusty
 
+cache:
+  directories:
+  - ImageMagick*/
+
 matrix:
   include:
 
@@ -40,7 +44,7 @@ matrix:
           packages: ['clang-7', 'libstdc++-7-dev', 'clang-tidy-7']
       install:
         - wget http://www.imagemagick.org/download/ImageMagick.tar.gz
-        - tar -xzvf ImageMagick.tar.gz
+        - if [[ -n $(find . -name "ImageMagick*" -type d) ]]; then tar -xzvf ImageMagick.tar.gz; fi
         - pushd ImageMagick*/ && ./configure --prefix=/usr && make && sudo make install
         - popd
       script:

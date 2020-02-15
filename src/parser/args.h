@@ -3,6 +3,8 @@
 #ifndef PARSER_ARGS_HPP
 #define PARSER_ARGS_HPP
 
+#include <algorithm>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
