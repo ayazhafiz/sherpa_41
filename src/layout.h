@@ -30,9 +30,9 @@ using BoxVector = std::vector<BoxPtr>;
  * Block display types
  */
 enum DisplayType { Block, Inline, None };
-DisplayType stodisplay(const std::string& s);
-DisplayType snodetodisplay(const Style::StyledNode& node,
-                           const std::string& deflt = "inline");
+auto stodisplay(const std::string& s) -> DisplayType;
+auto snodetodisplay(const Style::StyledNode& node, const std::string& deflt = "inline")
+    -> DisplayType;
 
 /**
  * x, y coordinates on a 2D plane
@@ -62,7 +62,7 @@ struct Rectangle {
    * @param edge edges to expand by
    * @return expanded rectangle
    */
-  Rectangle expand(const Edges& edge) const;
+  [[nodiscard]] auto expand(const Edges& edge) const -> Rectangle;
 
   Coordinates origin;
   double width, height;
@@ -110,19 +110,19 @@ struct BoxDimensions {
    * Area covered by box and its padding
    * @return area covered
    */
-  Rectangle paddingArea() const;
+  [[nodiscard]] auto paddingArea() const -> Rectangle;
 
   /**
    * Area covered by box, padding, and borders
    * @return area covered
    */
-  Rectangle borderArea() const;
+  [[nodiscard]] auto borderArea() const -> Rectangle;
 
   /**
    * Area covered by box, padding, borders, and margins
    * @return area covered
    */
-  Rectangle marginArea() const;
+  [[nodiscard]] auto marginArea() const -> Rectangle;
 
  public:
   Coordinates origin;
@@ -148,19 +148,19 @@ class Box {
    * Returns box dimensions
    * @return dimensions
    */
-  BoxDimensions getDimensions() const;
+  [[nodiscard]] auto getDimensions() const -> BoxDimensions;
 
   /**
    * Returns box children
    * @return children
    */
-  BoxVector getChildren() const;
+  [[nodiscard]] auto getChildren() const -> BoxVector;
 
   /**
    * Clones a box into a unique_ptr
    * @return cloned box
    */
-  virtual BoxPtr clone() const = 0;
+  [[nodiscard]] virtual auto clone() const -> BoxPtr = 0;
 
   /**
    * Creates a tree of boxes from a styled node root and a browser window
@@ -168,14 +168,14 @@ class Box {
    * @param window browser window size
    * @return pointer to root of box tree
    */
-  static BoxPtr from(const Style::StyledNode& root, BoxDimensions window);
+  static auto from(const Style::StyledNode& root, BoxDimensions window) -> BoxPtr;
 
   /**
    * Creates a tree of boxes from a styled node root
    * @param root styled node root
    * @return pointer to root of box tree
    */
-  static BoxPtr from(const Style::StyledNode& root);
+  static auto from(const Style::StyledNode& root) -> BoxPtr;
 
  protected:
   BoxDimensions dimensions;
@@ -205,7 +205,7 @@ class AnonymousBox : public Box {
    * Clones an anonymous box
    * @return cloned box
    */
-  BoxPtr clone() const override;
+  [[nodiscard]] auto clone() const -> BoxPtr override;
 };
 
 /**
@@ -236,13 +236,13 @@ class StyledBox : public Box {
    * Clones a styled box
    * @return styled box
    */
-  BoxPtr clone() const override;
+  [[nodiscard]] auto clone() const -> BoxPtr override;
 
   /**
    * Returns content
    * @return content of styled node
    */
-  Style::StyledNode getContent() const;
+  [[nodiscard]] auto getContent() const -> Style::StyledNode;
 
  private:
   /**
@@ -285,7 +285,7 @@ class StyledBox : public Box {
    * Get the box an inline node should go into, or a create a new one
    * @return box to put inline node in
    */
-  Box* getInlineContainer();
+  auto getInlineContainer() -> Box*;
 
   Style::StyledNode content;
   DisplayType display;

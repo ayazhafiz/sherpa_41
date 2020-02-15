@@ -45,26 +45,26 @@ class Printer : public Visitor {
    * Returns pretty-printed DOM tree
    * @return DOM tree
    */
-  std::string result();
+  auto result() -> std::string;
 
  private:
   /**
    * Print tab indent
    * @return stream for chaining
    */
-  std::stringstream& tabs();
+  auto tabs() -> std::stringstream&;
 
   /**
    * Print opening tag
    * @return stream for chaining
    */
-  std::stringstream& openTag();
+  auto openTag() -> std::stringstream&;
 
   /**
    * Print closing tag
    * @return stream for chaining
    */
-  std::string closeTag();
+  auto closeTag() -> std::string;
 
   std::stringstream tree;
   uint64_t tabIndent = 0;

@@ -31,44 +31,44 @@ class HTMLParser : public Parser<DOM::NodePtr> {
    * Parses the HTML into a DOM tree
    * @return DOM tree
    */
-  DOM::NodePtr evaluate() override;
+  auto evaluate() -> DOM::NodePtr override;
 
  private:
   /**
    * Parses children of a DOM Node
    * @return Node children
    */
-  DOM::NodeVector parseChildren();
+  auto parseChildren() -> DOM::NodeVector;
 
   /**
    * Parses a single DOM Node
    * @return parsed Node
    */
-  DOM::NodePtr parseNode();
+  auto parseNode() -> DOM::NodePtr;
 
   /**
    * Parses text in the DOM
    * @return Text node
    */
-  DOM::NodePtr parseTextNode();
+  auto parseTextNode() -> DOM::NodePtr;
 
   /**
    * Parses a comment in the DOM
    * @return Comment node
    */
-  DOM::NodePtr parseCommentNode();
+  auto parseCommentNode() -> DOM::NodePtr;
 
   /**
    * Parses a DOM Element
    * @return Element node
    */
-  DOM::NodePtr parseElementNode();
+  auto parseElementNode() -> DOM::NodePtr;
 
   /**
    * Parses Element attributes
    * @return attributes
    */
-  DOM::AttributeMap parseAttributes();
+  auto parseAttributes() -> DOM::AttributeMap;
 };
 
 #endif

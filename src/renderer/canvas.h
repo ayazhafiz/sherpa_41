@@ -44,7 +44,7 @@ class Canvas : public Renderer {
    * Returns vector of RGBA pixels representing the Canvas
    * @return pixels
    */
-  std::vector<uint8_t> getPixels() const;
+  [[nodiscard]] auto getPixels() const -> std::vector<uint8_t>;
 
  private:
   /**
@@ -73,7 +73,7 @@ class Canvas : public Renderer {
      * Returns an array of RGBA channels
      * @return RGBA color channels
      */
-    std::array<double, 4> channels() const;
+    [[nodiscard]] auto channels() const -> std::array<double, 4>;
 
     double r, g, b, a;
   };
@@ -94,7 +94,7 @@ class Canvas : public Renderer {
    * @param max max bound
    * @return converted location, bounded by canvas size
    */
-  uint64_t toPx(double x, uint64_t min, uint64_t max);
+  auto toPx(double x, uint64_t min, uint64_t max) -> uint64_t;
 
   uint64_t width, height;
   PxVector pixels;

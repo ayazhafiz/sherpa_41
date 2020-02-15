@@ -34,50 +34,50 @@ class CSSParser : public Parser<CSS::StyleSheet> {
    * Parses CSS into engine-operable format
    * @return vector of parsed CSS rules
    */
-  CSS::StyleSheet evaluate() override;
+  auto evaluate() -> CSS::StyleSheet override;
 
  private:
   /**
    * Parses a single rule in the style sheet
    * @return parsed Rule
    */
-  CSS::Rule parseRule();
+  auto parseRule() -> CSS::Rule;
 
   /**
    * Parses rule selectors of form `tag#id.class`
    * @return vector of Selectors
    */
-  CSS::PrioritySelectorSet parseSelectors();
+  auto parseSelectors() -> CSS::PrioritySelectorSet;
 
   /**
    * Parses rule declarations of form `rule: value;`
    * @return vector of Declarations
    */
-  CSS::DeclarationSet parseDeclarations();
+  auto parseDeclarations() -> CSS::DeclarationSet;
 
   /**
    * Parses a value, for example `15px` or `rgba(0,0,0,0)`
    * @return pointer to Value
    */
-  CSS::ValuePtr parseValue();
+  auto parseValue() -> CSS::ValuePtr;
 
   /**
    * Parses RGB color
    * @return RGB ColorValue
    */
-  CSS::ValuePtr parseRGB();
+  auto parseRGB() -> CSS::ValuePtr;
 
   /**
    * Parses Hex color
    * @return Hex to RGB ColorValue
    */
-  CSS::ValuePtr parseHex();
+  auto parseHex() -> CSS::ValuePtr;
 
   /**
    * Parses Unit
    * @return Unit
    */
-  CSS::Unit parseUnit();
+  auto parseUnit() -> CSS::Unit;
 
   /**
    * Consumes whitespace and comments, then optionally ensures next
