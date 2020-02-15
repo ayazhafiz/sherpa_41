@@ -13,7 +13,7 @@ install:
   - git submodule update --init --recursive
 
 before_build:
-  - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="/std:c++17" -G "Visual Studio 15 2017 Win64" .
+  - cmake -DEXECUTABLE="OFF" -DCMAKE_CXX_FLAGS="/std:c++20" -G "Visual Studio 15 2017 Win64" .
 
 build:
   project: $(APPVEYOR_BUILD_FOLDER)\$(APPVEYOR_PROJECT_NAME).sln
