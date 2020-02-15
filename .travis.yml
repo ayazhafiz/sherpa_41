@@ -39,11 +39,10 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-7', 'libstdc++-7-dev', 'clang-tidy-7']
       before_script:
-        - VERSION=7.0.8
         - set -ex
-        - wget http://www.imagemagick.org/download/ImageMagick-${VERSION}.tar.gz
-        - tar -xzvf ImageMagick-${VERSION}.tar.gz
-        - cd ImageMagick-${VERSION} && ./configure --prefix=/usr && make && sudo make install
+        - wget http://www.imagemagick.org/download/ImageMagick.tar.gz
+        - tar -xzvf ImageMagick.tar.gz
+        - cd ImageMagick && ./configure --prefix=/usr && make && sudo make install
       script:
         - clang-tidy-7 $(find src -type f) -p . -- -std=c++17 -x c++ -Isrc/ $(pkg-config Magick++ --cflags-only-I)
 
