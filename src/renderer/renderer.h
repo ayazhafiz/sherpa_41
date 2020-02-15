@@ -3,7 +3,7 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 
-#include "display.hpp"
+#include "display.h"
 
 /**
  * A renderer interface for specific rendering applications to extend, currently
@@ -12,10 +12,10 @@
  * Allows for rendering various display commands through visitation.
  */
 class Renderer {
-   public:
-    virtual ~Renderer() = default;
+ public:
+  virtual ~Renderer() = default;
 
-    virtual void render(const Display::RectangleCmd &) = 0;
+  virtual void render(const Display::RectangleCmd&) = 0;
 };
 
 #endif  // VISITOR_HPP

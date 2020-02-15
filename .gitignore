@@ -1,17 +1,18 @@
 *.a
 *.o
 *.cbp
-.idea
 .DS_Store
+.*/
 
 sherpa_41
 sherpa_41-test
-cmake_install.cmake
-CMakeCache.txt
 Makefile
 
-.idea/
+lib/
 bin/
+build/
+cmake_install.cmake
 cmake-build-debug/
 cmake-build-coverage/
 CMakeFiles/
+CMakeCache.txt

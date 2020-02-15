@@ -3,50 +3,45 @@
 #ifndef DOM_CPP
 #define DOM_CPP
 
-#include "dom.hpp"
-
-#include "visitor/visitor.hpp"
+#include "dom.h"
 
 #include <iterator>
 #include <sstream>
+
+#include "visitor/visitor.h"
 
 /**
  * Inserts an attribute
  * @param attribute attribute to add
  * @param value value of attribute
  */
-void DOM::AttributeMap::insert(const std::string & attribute,
-                               const std::string & value) {
-    if (find(attribute) == end()) {
-        (*this)[attribute] = value;
-        order.push_back(attribute);
-    }
+void DOM::AttributeMap::insert(const std::string& attribute, const std::string& value) {
+  if (find(attribute) == end()) {
+    (*this)[attribute] = value;
+    order.push_back(attribute);
+  }
 }
 
 std::string DOM::AttributeMap::print() const {
-    if (empty()) {
-        return "";
-    }
+  if (empty()) {
+    return "";
+  }
 
-    auto assign = [this](const auto & attr) {
-        return attr + "=\"" + const_cast<AttributeMap &>(*this)[attr] + "\"";
-    };
-    auto        start = order.begin();
-    std::string first = order.front();
-    return std::accumulate(std::next(start),
-                           order.end(),
-                           assign(first),
-                           [&assign](auto acc, auto attr) {
-                               return acc + " " + assign(attr);
-                           });
+  auto assign = [this](const auto& attr) {
+    return attr + "=\"" + const_cast<AttributeMap&>(*this)[attr] + "\"";
+  };
+  auto start = order.begin();
+  std::string first = order.front();
+  return std::accumulate(
+      std::next(start), order.end(), assign(first),
+      [&assign](auto acc, auto attr) { return acc + " " + assign(attr); });
 }
 
 /**
  * Creates a DOM Node
  * @param tag node tag name
  */
-DOM::Node::Node(std::string tag) : tag(std::move(tag)) {
-}
+DOM::Node::Node(std::string tag) : tag(std::move(tag)) {}
 
 /**
  * Pure virtual destructor prevents unanticipated instantiation
@@ -58,8 +53,8 @@ DOM::Node::~Node() = default;
  * @param cand tag to match
  * @return whether Node is of `cand` type
  */
-bool DOM::Node::is(const std::string & cand) const {
-    return tagName() == cand;
+bool DOM::Node::is(const std::string& cand) const {
+  return tagName() == cand;
 }
 
 /**
@@ -67,7 +62,7 @@ bool DOM::Node::is(const std::string & cand) const {
  * @return Node tag
  */
 std::string DOM::Node::tagName() const {
-    return tag;
+  return tag;
 }
 
 /**
@@ -75,24 +70,22 @@ std::string DOM::Node::tagName() const {
  * @param tag node tag name
  * @param text node content
  */
-DOM::TextNode::TextNode(std::string text)
-    : Node("TEXT NODE"), text(std::move(text)) {
-}
+DOM::TextNode::TextNode(std::string text) : Node("TEXT NODE"), text(std::move(text)) {}
 
 /**
  * Returns text
  * @return text
  */
 std::string DOM::TextNode::getText() const {
-    return text;
+  return text;
 }
 
 /**
  * Accepts a visitor to the node
  * @param visitor accepted visitor
  */
-void DOM::TextNode::acceptVisitor(Visitor & visitor) const {
-    visitor.visit(*this);
+void DOM::TextNode::acceptVisitor(Visitor& visitor) const {
+  visitor.visit(*this);
 }
 
 /**
@@ -100,7 +93,7 @@ void DOM::TextNode::acceptVisitor(Visitor & visitor) const {
  * @return cloned Node
  */
 DOM::NodePtr DOM::TextNode::clone() {
-    return NodePtr(new TextNode(text));
+  return NodePtr(new TextNode(text));
 }
 
 /**
@@ -108,23 +101,22 @@ DOM::NodePtr DOM::TextNode::clone() {
  * @param comment node content
  */
 DOM::CommentNode::CommentNode(std::string comment)
-    : Node("COMMENT NODE"), comment(std::move(comment)) {
-}
+    : Node("COMMENT NODE"), comment(std::move(comment)) {}
 
 /**
  * Returns comment
  * @return comment
  */
 std::string DOM::CommentNode::getComment() const {
-    return comment;
+  return comment;
 }
 
 /**
  * Accepts a visitor to the node
  * @param visitor accepted visitor
  */
-void DOM::CommentNode::acceptVisitor(Visitor & visitor) const {
-    visitor.visit(*this);
+void DOM::CommentNode::acceptVisitor(Visitor& visitor) const {
+  visitor.visit(*this);
 }
 
 /**
@@ -132,7 +124,7 @@ void DOM::CommentNode::acceptVisitor(Visitor & visitor) const {
  * @return cloned Node
  */
 DOM::NodePtr DOM::CommentNode::clone() {
-    return NodePtr(new CommentNode(comment));
+  return NodePtr(new CommentNode(comment));
 }
 
 /**
@@ -141,14 +133,13 @@ DOM::NodePtr DOM::CommentNode::clone() {
  * @param attributes node attributes
  * @param children children nodes
  */
-DOM::ElementNode::ElementNode(std::string        tag,
-                              AttributeMap       attributes,
-                              const NodeVector & children)
+DOM::ElementNode::ElementNode(std::string tag,
+                              AttributeMap attributes,
+                              const NodeVector& children)
     : Node(std::move(tag)), attributes(std::move(attributes)), children() {
-    this->children.reserve(children.size());
-    std::for_each(children.begin(), children.end(), [this](const auto & child) {
-        this->children.push_back(child->clone());
-    });
+  this->children.reserve(children.size());
+  std::for_each(children.begin(), children.end(),
+                [this](const auto& child) { this->children.push_back(child->clone()); });
 }
 
 /**
@@ -156,12 +147,10 @@ DOM::ElementNode::ElementNode(std::string        tag,
  * @return children nodes
  */
 DOM::NodeVector DOM::ElementNode::getChildren() const {
-    NodeVector nodes;
-    std::transform(children.begin(),
-                   children.end(),
-                   std::back_inserter(nodes),
-                   [](const auto & child) { return child->clone(); });
-    return nodes;
+  NodeVector nodes;
+  std::transform(children.begin(), children.end(), std::back_inserter(nodes),
+                 [](const auto& child) { return child->clone(); });
+  return nodes;
 }
 
 /**
@@ -169,7 +158,7 @@ DOM::NodeVector DOM::ElementNode::getChildren() const {
  * @return attributes
  */
 std::string DOM::ElementNode::getAttributes() const {
-    return attributes.print();
+  return attributes.print();
 }
 
 /**
@@ -177,8 +166,8 @@ std::string DOM::ElementNode::getAttributes() const {
  * @return id
  */
 std::string DOM::ElementNode::getId() const {
-    auto id = attributes.find("id");
-    return id != attributes.end() ? id->second : "";
+  auto id = attributes.find("id");
+  return id != attributes.end() ? id->second : "";
 }
 
 /**
@@ -186,22 +175,22 @@ std::string DOM::ElementNode::getId() const {
  * @return classes
  */
 std::vector<std::string> DOM::ElementNode::getClasses() const {
-    auto classes = attributes.find("class");
-    if (classes == attributes.end()) {
-        return {};
-    }
-    std::istringstream iss(classes->second);
+  auto classes = attributes.find("class");
+  if (classes == attributes.end()) {
+    return {};
+  }
+  std::istringstream iss(classes->second);
 
-    return {std::istream_iterator<std::string>{iss},
-            std::istream_iterator<std::string>{}};  // split classes by space
+  return {std::istream_iterator<std::string>{iss},
+          std::istream_iterator<std::string>{}};  // split classes by space
 }
 
 /**
  * Accepts a visitor to the node
  * @param visitor accepted visitor
  */
-void DOM::ElementNode::acceptVisitor(Visitor & visitor) const {
-    visitor.visit(*this);
+void DOM::ElementNode::acceptVisitor(Visitor& visitor) const {
+  visitor.visit(*this);
 }
 
 /**
@@ -209,7 +198,7 @@ void DOM::ElementNode::acceptVisitor(Visitor & visitor) const {
  * @return cloned Node
  */
 DOM::NodePtr DOM::ElementNode::clone() {
-    return NodePtr(new ElementNode(tagName(), attributes, children));
+  return NodePtr(new ElementNode(tagName(), attributes, children));
 }
 
 #endif

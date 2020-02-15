@@ -3,33 +3,30 @@
 #ifndef PARSER_HTML_CPP
 #define PARSER_HTML_CPP
 
-#include "parser/html.hpp"
-
-#include "parser.cpp"
+#include "parser/html.h"
 
 #include <cctype>
+
+#include "parser.cpp"
 
 /**
  * Creates an HTML Parser
  * @param html HTML to parse
  */
-HTMLParser::HTMLParser(std::string html)
-    : Parser<DOM::NodePtr>(std::move(html)) {
-}
+HTMLParser::HTMLParser(std::string html) : Parser<DOM::NodePtr>(std::move(html)) {}
 
 /**
  * Parses the HTML into a DOM tree
  * @return DOM tree
  */
 DOM::NodePtr HTMLParser::evaluate() {
-    auto roots = parseChildren();
+  auto roots = parseChildren();
 
-    if (roots.size() == 1 && roots.front()->is("html")) {
-        return std::move(roots.front());
-    } else {
-        return DOM::NodePtr(
-            new DOM::ElementNode("html", DOM::AttributeMap(), roots));
-    }
+  if (roots.size() == 1 && roots.front()->is("html")) {
+    return std::move(roots.front());
+  } else {
+    return DOM::NodePtr(new DOM::ElementNode("html", DOM::AttributeMap(), roots));
+  }
 }
 
 /**
@@ -37,15 +34,15 @@ DOM::NodePtr HTMLParser::evaluate() {
  * @return Node children
  */
 DOM::NodeVector HTMLParser::parseChildren() {
-    DOM::NodeVector roots;
-    while (true) {
-        consume_whitespace();
-        if (eof() || peek("</")) {
-            break;
-        }
-        roots.push_back(DOM::NodePtr(parseNode()));
+  DOM::NodeVector roots;
+  while (true) {
+    consume_whitespace();
+    if (eof() || peek("</")) {
+      break;
     }
-    return roots;
+    roots.push_back(DOM::NodePtr(parseNode()));
+  }
+  return roots;
 }
 
 /**
@@ -53,13 +50,13 @@ DOM::NodeVector HTMLParser::parseChildren() {
  * @return parsed Node
  */
 DOM::NodePtr HTMLParser::parseNode() {
-    if (peek("<!--")) {
-        return parseCommentNode();
-    } else if (peek("<")) {
-        return parseElementNode();
-    } else {
-        return parseTextNode();
-    }
+  if (peek("<!--")) {
+    return parseCommentNode();
+  } else if (peek("<")) {
+    return parseElementNode();
+  } else {
+    return parseTextNode();
+  }
 }
 
 /**
@@ -67,8 +64,8 @@ DOM::NodePtr HTMLParser::parseNode() {
  * @return Text node
  */
 DOM::NodePtr HTMLParser::parseTextNode() {
-    auto text = build_until([this](char) { return peek("<"); });
-    return DOM::NodePtr(new DOM::TextNode(rtrim(text)));
+  auto text = build_until([this](char) { return peek("<"); });
+  return DOM::NodePtr(new DOM::TextNode(rtrim(text)));
 }
 
 /**
@@ -76,11 +73,11 @@ DOM::NodePtr HTMLParser::parseTextNode() {
  * @return Comment node
  */
 DOM::NodePtr HTMLParser::parseCommentNode() {
-    consume("<!--");
-    auto comment = build_until([this](char) { return peek("-->"); });
-    consume("-->");
+  consume("<!--");
+  auto comment = build_until([this](char) { return peek("-->"); });
+  consume("-->");
 
-    return DOM::NodePtr(new DOM::CommentNode(rtrim(comment)));
+  return DOM::NodePtr(new DOM::CommentNode(rtrim(comment)));
 }
 
 /**
@@ -88,18 +85,18 @@ DOM::NodePtr HTMLParser::parseCommentNode() {
  * @return Element node
  */
 DOM::NodePtr HTMLParser::parseElementNode() {
-    consume("<");
-    auto tagName    = build_until([](char c) { return !std::isalnum(c); });
-    auto attributes = parseAttributes();
-    consume_whitespace(">");
+  consume("<");
+  auto tagName = build_until([](char c) { return !std::isalnum(c); });
+  auto attributes = parseAttributes();
+  consume_whitespace(">");
 
-    auto children = parseChildren();
+  auto children = parseChildren();
 
-    consume("</");
-    consume_whitespace(tagName);
-    consume_whitespace(">");
+  consume("</");
+  consume_whitespace(tagName);
+  consume_whitespace(">");
 
-    return DOM::NodePtr(new DOM::ElementNode(tagName, attributes, children));
+  return DOM::NodePtr(new DOM::ElementNode(tagName, attributes, children));
 }
 
 /**
@@ -107,19 +104,19 @@ DOM::NodePtr HTMLParser::parseElementNode() {
  * @return attributes
  */
 DOM::AttributeMap HTMLParser::parseAttributes() {
-    DOM::AttributeMap attr;
-    while (true) {
-        consume_whitespace();
-        if (eof() || peek(">")) {
-            break;
-        }
-        auto attrName = build_until([](char c) { return !std::isalnum(c); });
-        consume("=\"");
-        auto attrValue = build_until([](char c) { return c == '"'; });
-        consume("\"");
-        attr.insert(attrName, attrValue);
+  DOM::AttributeMap attr;
+  while (true) {
+    consume_whitespace();
+    if (eof() || peek(">")) {
+      break;
     }
-    return attr;
+    auto attrName = build_until([](char c) { return !std::isalnum(c); });
+    consume("=\"");
+    auto attrValue = build_until([](char c) { return c == '"'; });
+    consume("\"");
+    attr.insert(attrName, attrValue);
+  }
+  return attr;
 }
 
 #endif

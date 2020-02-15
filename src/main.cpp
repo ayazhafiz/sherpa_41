@@ -1,37 +1,37 @@
-// The sherpa_41 browser engine, licensed under MIT. (c) hafiz, 2018
-
-#include "layout.hpp"
-#include "style.hpp"
-
-#include "parser/args.hpp"
-#include "parser/css.hpp"
-#include "parser/html.hpp"
-#include "renderer/canvas.hpp"
-#include "visitor/printer.hpp"
+// The sherpa_41 browser engine, licensed under MIT. (c) hafiz, 2019
 
 #include <Magick++.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
+#include "layout.h"
+#include "parser/args.h"
+#include "parser/css.h"
+#include "parser/html.h"
+#include "renderer/canvas.h"
+#include "style.h"
+#include "visitor/printer.h"
+
 /**
- * Prints help menu
+ * Prints usage menu
  */
 void printHelp() {
-    static std::string helpText = R"(
+  static std::string helpText = R"(
 A trivial browser engine.
 
 USAGE: sherpa_41 [options]
 
 OPTIONS:
-	--html                  HTML file to parse (=assets/rainbowBox.html)
-	--css                   CSS file to parse (=assets/rainboxBox.css)
-	-w, --width             Browser width (=800)
-	-h, --height            Browser height (=600)
-	-o, --out               Output file (=output.png)
-	--help                  Show this help screen
+	--html <file>             HTML file to parse (Default: examples/sherpa-webpage.html)
+	--css <file>              CSS file to parse (Default: examples/sherpa-webpage.css)
+	-W, --width <size>        Browser width, in pixels (Default: 2880)
+	-H, --height <size>       Browser height, in pixels (Default: 1620)
+	-o, --out <file>          Output file (Default: output.png)
+	-h, --help                Show this help screen
 )";
-    std::cout << helpText << std::endl;
+  std::cout << helpText << "\n";
 }
 
 /**
@@ -39,102 +39,84 @@ OPTIONS:
  * @param html html file
  * @param css css file
  */
-void getInFiles(std::ifstream & html, std::ifstream & css) {
-    ArgsParser & args         = ArgsParser::instance();
-    auto         htmlFileName = args.getCmdOption("--html");
-    auto         cssFileName  = args.getCmdOption("--css");
-    if (!htmlFileName.empty()) {
-        html = std::ifstream(htmlFileName);
-    }
-    if (!cssFileName.empty()) {
-        css = std::ifstream(cssFileName);
-    }
+void getInFiles(std::ifstream& html, std::ifstream& css) {
+  ArgsParser& args = ArgsParser::instance();
+  auto htmlFileName = args.getCmdOption("--html");
+  auto cssFileName = args.getCmdOption("--css");
+  if (!htmlFileName.empty()) {
+    html = std::ifstream(htmlFileName);
+  }
+  if (!cssFileName.empty()) {
+    css = std::ifstream(cssFileName);
+  }
 }
 
 /**
- * Gets output files from CLI args
- * @param out output file
+ * Gets an argument from the CLI
+ * @param shrt short arg (-a). Empty string if no short arg.
+ * @param lng long arg (--arg). Empty string if no long arg.
+ * @param deflt default value to use. Empty string if no default value.
+ * @return value of argument
  */
-void getOutFiles(std::string & out) {
-    ArgsParser & args           = ArgsParser::instance();
-    auto         outputFileName = args.cmdOptionExists("-o")
-                              ? args.getCmdOption("-o")
-                              : args.getCmdOption("--out");
-    if (!outputFileName.empty()) {
-        out = outputFileName;
+auto getArg(const std::string& shrt = "",
+            const std::string& lng = "",
+            const std::string& deflt = "") -> const std::string& {
+  ArgsParser& args = ArgsParser::instance();
+  try {
+    if (!shrt.empty() && args.cmdOptionExists(shrt)) {
+      return args.getCmdOption(shrt);
+    } else if (!lng.empty() && args.cmdOptionExists(lng)) {
+      return args.getCmdOption(lng);
     }
+  } catch (const std::invalid_argument& exc) {
+    // argument specified but value not, exit on error.
+    std::cout << "ERROR: " << exc.what() << "\n";
+    printHelp();
+    exit(1);
+  }
+  return deflt;
 }
 
-/**
- * Converts a dimension in a CLI arg
- * @param shrt short arg (-a)
- * @param lng long arg (--arg)
- * @param deflt default value
- * @return converted dimension
- */
-uint64_t getDimension(const std::string & shrt,
-                      const std::string & lng,
-                      uint64_t            deflt) {
-    ArgsParser & args = ArgsParser::instance();
-    if (args.cmdOptionExists(shrt)) {
-        return std::stoull(args.getCmdOption(shrt));
-    } else if (args.cmdOptionExists(lng)) {
-        return std::stoull(args.getCmdOption(lng));
-    }
-    return deflt;
-}
+auto main(int argc, char** argv) -> int {
+  ArgsParser& args = ArgsParser::instance(argc, argv);
 
-int main(int argc, char ** argv) {
-    ArgsParser & args = ArgsParser::instance(argc, argv);
+  if (args.cmdOptionExists("-h") || args.cmdOptionExists("--help")) {
+    std::cout << "A trivial browser engine.\n";
+    printHelp();
+    return 0;
+  }
 
-    if (args.cmdOptionExists("--help")) {
-        printHelp();
-        return 0;
-    }
+  std::ifstream htmlFile(getArg("", "--html", "examples/sherpa-webpage.html"));
+  std::ifstream cssFile(getArg("", "--css", "examples/sherpa-webpage.css"));
+  std::string output(getArg("-o", "--out", "output.png"));
 
-    std::ifstream htmlFile("examples/test.html");
-    std::ifstream cssFile("examples/test.css");
-    getInFiles(htmlFile, cssFile);
+  std::stringstream buffer;
+  buffer << htmlFile.rdbuf();
+  HTMLParser htmlParser(buffer.str());
 
-    std::string output("output.png");
-    getOutFiles(output);
+  buffer.clear();
+  buffer.str(std::string());
+  buffer << cssFile.rdbuf();
+  CSSParser cssParser(buffer.str());
 
-    std::stringstream buffer;
-    buffer << htmlFile.rdbuf();
-    HTMLParser htmlParser(buffer.str());  // read HTML
-    buffer.clear();
-    buffer.str(std::string());  // clear buffer
-    buffer << cssFile.rdbuf();
-    CSSParser cssParser(buffer.str());  // read CSS
+  Layout::Rectangle frame(0., 0., std::stof(getArg("-W", "--width", "2880")),
+                          std::stof(getArg("-H", "--height", "1620")));
 
-    Layout::Rectangle browser(0,
-                              0,
-                              getDimension("-w", "--width", 2880),
-                              getDimension("-h", "--height", 1800));
+  auto dom = htmlParser.evaluate();
+  auto stylesheet = cssParser.evaluate();
+  auto styledDom = Style::StyledNode::from(dom, stylesheet);
+  auto paintLayout = Layout::Box::from(styledDom, Layout::BoxDimensions(frame));
 
-    // compute internal representations
-    auto domTree    = htmlParser.evaluate();
-    auto stylesheet = cssParser.evaluate();
-    auto styleTree  = Style::StyledNode::from(domTree, stylesheet);
-    auto layoutTree = Layout::Box::from(styleTree,
-                                        Layout::BoxDimensions(browser));
+  Magick::InitializeMagick(*argv);
 
-    // initialize magick
-    Magick::InitializeMagick(*argv);
+  Canvas canvas(frame, paintLayout);
 
-    // create canvas
-    Canvas canvas(layoutTree, browser);
+  Magick::Image im;
+  im.read(static_cast<uint64_t>(frame.width), static_cast<uint64_t>(frame.height), "RGBA",
+          Magick::CharPixel, canvas.getPixels().data());
 
-    // read in pixel data from Canvas
-    Magick::Image image;
-    image.read(static_cast<uint64_t>(browser.width),
-               static_cast<uint64_t>(browser.height),
-               "RGBA",
-               Magick::CharPixel,
-               canvas.getPixels().data());
+  // Write the image to output
+  im.write(output);
 
-    // Write the image to output
-    image.write(output);
-
-    std::cout << "Output written to " << output << "." << std::endl;
+  std::cout << "Output written to " << output << ".\n";
 }

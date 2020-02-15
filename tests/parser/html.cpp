@@ -1,33 +1,33 @@
 // sherpa_41's HTML Parser test fixture, licensed under MIT. (c) hafiz, 2018
 
-#include "parser/html.hpp"
-
-#include "../util.hpp"
-#include "visitor/printer.hpp"
+#include "parser/html.h"
 
 #include <gtest/gtest.h>
+
+#include "../util.h"
+#include "visitor/printer.h"
 
 class HTMLParserTest : public ::testing::Test {};
 
 TEST_F(HTMLParserTest, RootHTMLTag) {
-    HTMLParser parser("<html></html>");
-    ASSERT_PRINT(parser.evaluate(), R"(
+  HTMLParser parser("<html></html>");
+  ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 </html>
 )");
 }
 
 TEST_F(HTMLParserTest, NoRootHTMLTag) {
-    HTMLParser parser("");
-    ASSERT_PRINT(parser.evaluate(), R"(
+  HTMLParser parser("");
+  ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 </html>
 )");
 }
 
 TEST_F(HTMLParserTest, Text) {
-    HTMLParser parser("Hello, world!");
-    ASSERT_PRINT(parser.evaluate(), R"(
+  HTMLParser parser("Hello, world!");
+  ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 	Hello, world!
 </html>
@@ -35,8 +35,8 @@ TEST_F(HTMLParserTest, Text) {
 }
 
 TEST_F(HTMLParserTest, Comment) {
-    HTMLParser parser("<!--  \t\t\nThis is a <span>\n     comment      -->");
-    ASSERT_PRINT(parser.evaluate(), R"(
+  HTMLParser parser("<!--  \t\t\nThis is a <span>\n     comment      -->");
+  ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 	<!-- This is a <span>
      comment -->
@@ -45,16 +45,16 @@ TEST_F(HTMLParserTest, Comment) {
 }
 
 TEST_F(HTMLParserTest, Attributes) {
-    auto html = R"(
+  auto html = R"(
 <html lang="en" itemtype="schema">
 </html>
 )";
 
-    ASSERT_PRINT(HTMLParser(html).evaluate(), html);
+  ASSERT_PRINT(HTMLParser(html).evaluate(), html);
 }
 
 TEST_F(HTMLParserTest, NestedElements) {
-    auto html = R"(
+  auto html = R"(
 <html lang="en" itemtype="schema">
 	<head>
 		<!-- Titles are mandatory by the HTML spec -->
@@ -76,20 +76,20 @@ TEST_F(HTMLParserTest, NestedElements) {
 </html>
 )";
 
-    ASSERT_PRINT(HTMLParser(html).evaluate(), html);
+  ASSERT_PRINT(HTMLParser(html).evaluate(), html);
 }
 
 TEST_F(HTMLParserTest, TagWhitespace) {
-    HTMLParser parser("<  html       >   </ html     >");
-    ASSERT_PRINT(parser.evaluate(), R"(
+  HTMLParser parser("<  html       >   </ html     >");
+  ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 </html>
 )");
 }
 
 TEST_F(HTMLParserTest, TextWhitespace) {
-    HTMLParser parser("<html>  \n  Hel     lo    \t   </html>");
-    ASSERT_PRINT(parser.evaluate(), R"(
+  HTMLParser parser("<html>  \n  Hel     lo    \t   </html>");
+  ASSERT_PRINT(parser.evaluate(), R"(
 <html>
 	Hel     lo
 </html>

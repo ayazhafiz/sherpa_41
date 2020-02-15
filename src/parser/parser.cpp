@@ -3,7 +3,7 @@
 #ifndef PARSER_CPP
 #define PARSER_CPP
 
-#include "parser/parser.hpp"
+#include "parser/parser.h"
 
 #include <cassert>
 
@@ -12,9 +12,7 @@
  * @param program program to parse
  */
 template <typename EvalType>
-Parser<EvalType>::Parser(std::string program)
-    : program(std::move(program)), ptr(0ULL) {
-}
+Parser<EvalType>::Parser(std::string program) : program(std::move(program)), ptr(0ULL) {}
 
 /**
  * Builds a string of some length
@@ -23,7 +21,7 @@ Parser<EvalType>::Parser(std::string program)
  */
 template <typename EvalType>
 std::string Parser<EvalType>::build(uint64_t len) {
-    return build_until([&len](char) { return len-- == 0; });
+  return build_until([&len](char) { return len-- == 0; });
 }
 
 /**
@@ -32,15 +30,14 @@ std::string Parser<EvalType>::build(uint64_t len) {
  * @return built string
  */
 template <typename EvalType>
-std::string Parser<EvalType>::build_until(
-    Parser<EvalType>::PrefixComparator & predicate) {
-    consume_whitespace();
-    std::string res;
-    while (!eof() && !peek(predicate)) {
-        res += program[ptr];
-        pushPtr();
-    }
-    return res;
+std::string Parser<EvalType>::build_until(Parser<EvalType>::PrefixComparator& predicate) {
+  consume_whitespace();
+  std::string res;
+  while (!eof() && !peek(predicate)) {
+    res += program[ptr];
+    pushPtr();
+  }
+  return res;
 }
 
 /**
@@ -49,9 +46,9 @@ std::string Parser<EvalType>::build_until(
  * @param next characters to ensure
  */
 template <typename EvalType>
-void Parser<EvalType>::consume(const std::string & next) {
-    assert(peek(next));
-    pushPtr(next.length());
+void Parser<EvalType>::consume(const std::string& next) {
+  assert(peek(next));
+  pushPtr(next.length());
 }
 
 /**
@@ -60,11 +57,11 @@ void Parser<EvalType>::consume(const std::string & next) {
  * @param next characters to ensure
  */
 template <typename EvalType>
-void Parser<EvalType>::consume_whitespace(const std::string & next) {
-    while (std::isspace(program[ptr])) {
-        pushPtr();
-    }
-    consume(next);
+void Parser<EvalType>::consume_whitespace(const std::string& next) {
+  while (std::isspace(program[ptr])) {
+    pushPtr();
+  }
+  consume(next);
 }
 
 /**
@@ -73,7 +70,7 @@ void Parser<EvalType>::consume_whitespace(const std::string & next) {
  */
 template <typename EvalType>
 void Parser<EvalType>::pushPtr(uint64_t dist) {
-    ptr += dist;
+  ptr += dist;
 }
 
 /**
@@ -82,8 +79,8 @@ void Parser<EvalType>::pushPtr(uint64_t dist) {
  * @return whether program contains `prefix` next
  */
 template <typename EvalType>
-bool Parser<EvalType>::peek(const std::string & prefix) const {
-    return program.rfind(prefix, ptr) == ptr;
+bool Parser<EvalType>::peek(const std::string& prefix) const {
+  return program.rfind(prefix, ptr) == ptr;
 }
 
 /**
@@ -92,9 +89,8 @@ bool Parser<EvalType>::peek(const std::string & prefix) const {
  * @return whether program prefix satisfies lambda
  */
 template <typename EvalType>
-bool Parser<EvalType>::peek(
-    Parser<EvalType>::PrefixComparator predicate) const {
-    return predicate(program[ptr]);
+bool Parser<EvalType>::peek(Parser<EvalType>::PrefixComparator predicate) const {
+  return predicate(program[ptr]);
 }
 
 /**
@@ -103,7 +99,7 @@ bool Parser<EvalType>::peek(
  */
 template <typename EvalType>
 bool Parser<EvalType>::eof() const {
-    return ptr >= program.length();
+  return ptr >= program.length();
 }
 
 #endif

@@ -3,7 +3,7 @@
 #ifndef STYLE_CPP
 #define STYLE_CPP
 
-#include "style.hpp"
+#include "style.h"
 
 /**
  * Creates a Styled Node
@@ -11,25 +11,19 @@
  * @param props CSS properties to apply
  * @param children styled DOM children
  */
-Style::StyledNode::StyledNode(DOM::NodePtr            node,
-                              Style::PropertyMap      props,
+Style::StyledNode::StyledNode(DOM::NodePtr node,
+                              Style::PropertyMap props,
                               Style::StyledNodeVector children)
-    : node(std::move(node)),
-      props(std::move(props)),
-      children(std::move(children)) {
-}
+    : node(std::move(node)), props(std::move(props)), children(std::move(children)) {}
 
 /**
  * Copy ctor
  * @param rhs StyledNode to copy
  */
-Style::StyledNode::StyledNode(const Style::StyledNode & rhs)
+Style::StyledNode::StyledNode(const Style::StyledNode& rhs)
     : node(rhs.node->clone()), props(), children(rhs.children) {
-    std::for_each(rhs.props.begin(),
-                  rhs.props.end(),
-                  [this](const auto & prop) {
-                      props[prop.first] = prop.second->clone();
-                  });
+  std::for_each(rhs.props.begin(), rhs.props.end(),
+                [this](const auto& prop) { props[prop.first] = prop.second->clone(); });
 }
 
 /**
@@ -37,7 +31,7 @@ Style::StyledNode::StyledNode(const Style::StyledNode & rhs)
  * @return children
  */
 Style::StyledNodeVector Style::StyledNode::getChildren() const {
-    return children;
+  return children;
 }
 
 /**
@@ -46,24 +40,20 @@ Style::StyledNodeVector Style::StyledNode::getChildren() const {
  * @param css style sheet
  * @return root to StyledNode tree
  */
-Style::StyledNode Style::StyledNode::from(const DOM::NodePtr &    domRoot,
-                                          const CSS::StyleSheet & css) {
-    if (auto elem = dynamic_cast<DOM::ElementNode *>(domRoot.get())) {
-        auto             children = elem->getChildren();
-        StyledNodeVector styledChildren;
-        std::transform(children.begin(),
-                       children.end(),
-                       std::back_inserter(styledChildren),
-                       [&css](const auto & child) {
-                           return StyledNode::from(child->clone(), css);
-                       });
+Style::StyledNode Style::StyledNode::from(const DOM::NodePtr& domRoot,
+                                          const CSS::StyleSheet& css) {
+  if (auto elem = dynamic_cast<DOM::ElementNode*>(domRoot.get())) {
+    auto children = elem->getChildren();
+    StyledNodeVector styledChildren;
+    std::transform(
+        children.begin(), children.end(), std::back_inserter(styledChildren),
+        [&css](const auto& child) { return StyledNode::from(child->clone(), css); });
 
-        return StyledNode(domRoot->clone(),
-                          StyledNode::mapStyles(elem, css),
-                          std::move(styledChildren));
-    } else {
-        return StyledNode(domRoot->clone());
-    }
+    return StyledNode(domRoot->clone(), StyledNode::mapStyles(elem, css),
+                      std::move(styledChildren));
+  } else {
+    return StyledNode(domRoot->clone());
+  }
 }
 
 /**
@@ -71,7 +61,7 @@ Style::StyledNode Style::StyledNode::from(const DOM::NodePtr &    domRoot,
  * @return nullptr
  */
 CSS::ValuePtr Style::StyledNode::value() const {
-    return nullptr;
+  return nullptr;
 }
 
 /**
@@ -80,19 +70,18 @@ CSS::ValuePtr Style::StyledNode::value() const {
  * @param css style sheet to apply
  * @return map of styles
  */
-Style::PropertyMap Style::StyledNode::mapStyles(
-    const DOM::ElementNode * const node,
-    const CSS::StyleSheet &        css) {
-    PropertyMap props;
-    auto        rules = matchRules(node, css);
-    std::for_each(rules.begin(), rules.end(), [&props](const auto & rule) {
-        const auto & decls = rule.first;
+Style::PropertyMap Style::StyledNode::mapStyles(const DOM::ElementNode* const node,
+                                                const CSS::StyleSheet& css) {
+  PropertyMap props;
+  auto rules = matchRules(node, css);
+  std::for_each(rules.begin(), rules.end(), [&props](const auto& rule) {
+    const auto& decls = rule.first;
 
-        for (const auto & decl : decls) {
-            props[decl.name] = decl.value->clone();
-        }
-    });
-    return props;
+    for (const auto& decl : decls) {
+      props[decl.name] = decl.value->clone();
+    }
+  });
+  return props;
 }
 
 /**
@@ -101,27 +90,24 @@ Style::PropertyMap Style::StyledNode::mapStyles(
  * @param css style sheet to apply
  * @return set of rules, ordered by increasing specificity
  */
-Style::PriorityRuleSet Style::StyledNode::matchRules(
-    const DOM::ElementNode * const node,
-    const CSS::StyleSheet &        css) {
-    PriorityRuleSet rules;
-    std::for_each(css.begin(), css.end(), [&node, &rules](const auto & rule) {
-        const auto & sels = rule.selectors;
+Style::PriorityRuleSet Style::StyledNode::matchRules(const DOM::ElementNode* const node,
+                                                     const CSS::StyleSheet& css) {
+  PriorityRuleSet rules;
+  std::for_each(css.begin(), css.end(), [&node, &rules](const auto& rule) {
+    const auto& sels = rule.selectors;
 
-        // find first selector that matches the node
-        auto selector = std::
-            find_if(sels.begin(), sels.end(), [&node](const auto & sel) {
-                return StyledNode::selectorMatches(sel, node);
-            });
-
-        // add rule into set if it matches node
-        if (selector != sels.end()) {
-            auto s = selector->specificity();
-            rules.insert(
-                std::make_pair(rule.declarations, selector->specificity()));
-        }
+    // find first selector that matches the node
+    auto selector = std::find_if(sels.begin(), sels.end(), [&node](const auto& sel) {
+      return StyledNode::selectorMatches(sel, node);
     });
-    return rules;
+
+    // add rule into set if it matches node
+    if (selector != sels.end()) {
+      auto s = selector->specificity();
+      rules.insert(std::make_pair(rule.declarations, selector->specificity()));
+    }
+  });
+  return rules;
 }
 
 /**
@@ -130,30 +116,30 @@ Style::PriorityRuleSet Style::StyledNode::matchRules(
  * @param node DOM node to match
  * @return whether selector matches node
  */
-bool Style::StyledNode::selectorMatches(const CSS::Selector &          selector,
-                                        const DOM::ElementNode * const node) {
-    auto   tag      = node->tagName();
-    auto   id       = node->getId();
-    auto   cls      = node->getClasses();
-    auto & checkCls = selector.klass;
+bool Style::StyledNode::selectorMatches(const CSS::Selector& selector,
+                                        const DOM::ElementNode* const node) {
+  auto tag = node->tagName();
+  auto id = node->getId();
+  auto cls = node->getClasses();
+  auto& checkCls = selector.klass;
 
-    if (!selector.tag.empty() && selector.tag != tag) {
+  if (!selector.tag.empty() && selector.tag != tag) {
+    return false;
+  }
+
+  if (!selector.id.empty() && selector.id != id) {
+    return false;
+  }
+
+  if (!checkCls.empty()) {
+    for (const auto& cl : checkCls) {
+      if (std::find(cls.begin(), cls.end(), cl) == cls.end()) {
         return false;
+      }
     }
+  }
 
-    if (!selector.id.empty() && selector.id != id) {
-        return false;
-    }
-
-    if (!checkCls.empty()) {
-        for (const auto & cl : checkCls) {
-            if (std::find(cls.begin(), cls.end(), cl) == cls.end()) {
-                return false;
-            }
-        }
-    }
-
-    return true;  // all selectors accounted for
+  return true;  // all selectors accounted for
 }
 
 #endif
