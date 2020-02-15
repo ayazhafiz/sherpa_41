@@ -27,7 +27,7 @@ using ScoredRule = std::pair<CSS::DeclarationSet, CSS::Specificity>;
 using PriorityRuleSet = std::multiset<ScoredRule, RuleOrder>;
 
 struct RuleOrder {
-  bool operator()(const ScoredRule& a, const ScoredRule& b) const {
+  auto operator()(const ScoredRule& a, const ScoredRule& b) const -> bool {
     return a.second < b.second;
   }
 };
@@ -64,7 +64,7 @@ class StyledNode {
    * @return value of style, or nullptr if DNE
    */
   template <typename... Args>
-  CSS::ValuePtr value(const std::string& style, const Args&... backup) const {
+  auto value(const std::string& style, const Args&... backup) const -> CSS::ValuePtr {
     auto cand = props.find(style);
     if (cand != props.end()) {
       return cand->second->clone();
@@ -83,9 +83,9 @@ class StyledNode {
    * @return value of style, or `deflt` if DNE
    */
   template <typename... Args>
-  CSS::ValuePtr value_or(const std::string& style,
-                         const Args&... backup,
-                         const CSS::Value& deflt) const {
+  auto value_or(const std::string& style,
+                const Args&... backup,
+                const CSS::Value& deflt) const -> CSS::ValuePtr {
     if (auto cand = value(style, backup...)) {
       return cand;
     }
@@ -101,7 +101,8 @@ class StyledNode {
    * @return value of style, or zero if DNE
    */
   template <typename... Args>
-  CSS::ValuePtr value_or_zero(const std::string& style, const Args&... backup) const {
+  auto value_or_zero(const std::string& style, const Args&... backup) const
+      -> CSS::ValuePtr {
     return value_or<std::string>(style, backup..., CSS::UnitValue(0, CSS::px));
   }
 
@@ -109,7 +110,7 @@ class StyledNode {
    * Returns children
    * @return children
    */
-  StyledNodeVector getChildren() const;
+  [[nodiscard]] auto getChildren() const -> StyledNodeVector;
 
   /**
    * Creates a StyledNode tree from a DOM tree and CSS style sheet
@@ -117,14 +118,14 @@ class StyledNode {
    * @param css style sheet
    * @return root to StyledNode tree
    */
-  static StyledNode from(const DOM::NodePtr& domRoot, const CSS::StyleSheet& css);
+  static auto from(const DOM::NodePtr& domRoot, const CSS::StyleSheet& css) -> StyledNode;
 
  private:
   /**
    * `value` base case - no style found, nullptr returned
    * @return nullptr
    */
-  CSS::ValuePtr value() const;
+  [[nodiscard]] auto value() const -> CSS::ValuePtr;
 
   /**
    * Builds the styles for a single DOM node
@@ -132,7 +133,8 @@ class StyledNode {
    * @param css style sheet to apply
    * @return map of styles
    */
-  static PropertyMap mapStyles(const DOM::ElementNode* node, const CSS::StyleSheet& css);
+  static auto mapStyles(const DOM::ElementNode* node, const CSS::StyleSheet& css)
+      -> PropertyMap;
 
   /**
    * Matches css rules to a DOM node
@@ -140,8 +142,8 @@ class StyledNode {
    * @param css style sheet to apply
    * @return set of rules, ordered by increasing specificity
    */
-  static PriorityRuleSet matchRules(const DOM::ElementNode* node,
-                                    const CSS::StyleSheet& css);
+  static auto matchRules(const DOM::ElementNode* node, const CSS::StyleSheet& css)
+      -> PriorityRuleSet;
 
   /**
    * Determines if a selector matches a node
@@ -149,7 +151,8 @@ class StyledNode {
    * @param node DOM node to match
    * @return whether selector matches node
    */
-  static bool selectorMatches(const CSS::Selector& selector, const DOM::ElementNode* node);
+  static auto selectorMatches(const CSS::Selector& selector, const DOM::ElementNode* node)
+      -> bool;
 
   DOM::NodePtr node;
   PropertyMap props;

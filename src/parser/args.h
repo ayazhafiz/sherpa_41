@@ -3,6 +3,8 @@
 #ifndef PARSER_ARGS_HPP
 #define PARSER_ARGS_HPP
 
+#include <algorithm>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -15,7 +17,7 @@ class ArgsParser {
  public:
   ArgsParser(const ArgsParser&) = delete;
 
-  static ArgsParser& instance(int argc = 0, char** argv = 0) {
+  static auto instance(int argc = 0, char** argv = nullptr) -> ArgsParser& {
     if (parser == nullptr) {
       parser = new ArgsParser(argc, argv);
     }
@@ -23,18 +25,18 @@ class ArgsParser {
   }
 
   /// @author iain
-  const std::string& getCmdOption(const std::string& option) const {
+  [[nodiscard]] auto getCmdOption(const std::string& option) const -> const std::string& {
     std::vector<std::string>::const_iterator itr;
     itr = std::find(this->tokens.begin(), this->tokens.end(), option);
     if (itr != this->tokens.end() && ++itr != this->tokens.end()) {
       return *itr;
     }
-    static const std::string empty_string("");
-    return empty_string;
+
+    throw std::invalid_argument("Value for " + option + " not found");
   }
 
   /// @author iain
-  bool cmdOptionExists(const std::string& option) const {
+  [[nodiscard]] auto cmdOptionExists(const std::string& option) const -> bool {
     return std::find(this->tokens.begin(), this->tokens.end(), option) != this->tokens.end();
   }
 

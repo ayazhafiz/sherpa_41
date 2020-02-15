@@ -31,7 +31,7 @@ class Parser {
    * Generic evaluation of the parser
    * @return result of parsing program
    */
-  virtual EvalType evaluate() = 0;
+  virtual auto evaluate() -> EvalType = 0;
 
  protected:
   using PrefixComparator = std::function<bool(char)> const;
@@ -41,14 +41,14 @@ class Parser {
    * @param len length of string to build
    * @return built string
    */
-  std::string build(uint64_t len);
+  auto build(uint64_t len) -> std::string;
 
   /**
    * Builds a string from the program until predicate satisfied
    * @param predicate when to stop building
    * @return built string
    */
-  std::string build_until(PrefixComparator& predicate);
+  auto build_until(PrefixComparator& predicate) -> std::string;
 
   /**
    * Ensures that the next characters are as expected, then pushes
@@ -75,27 +75,27 @@ class Parser {
    * @param prefix characters to match program to
    * @return whether program contains `prefix` next
    */
-  bool peek(const std::string& prefix) const;
+  [[nodiscard]] auto peek(const std::string& prefix) const -> bool;
 
   /**
    * Determines the next character of the program
    * @param predicate lambda to match prefix to
    * @return whether program prefix satisfies lambda
    */
-  bool peek(PrefixComparator predicate) const;
+  [[nodiscard]] auto peek(const PrefixComparator& predicate) const -> bool;
 
   /**
    * Determines if entire program read
    * @return program read?
    */
-  bool eof() const;
+  [[nodiscard]] auto eof() const -> bool;
 
   /**
    * Trim whitespace from right end of string
    * @param str string to trim
    * @return right-trimmed string
    */
-  static inline std::string rtrim(const std::string& str) {
+  static inline auto rtrim(const std::string& str) -> std::string {
     auto res(str);
     res.erase(
         std::find_if(res.rbegin(), res.rend(), [](auto ch) { return !std::isspace(ch); })

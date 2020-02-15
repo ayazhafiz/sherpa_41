@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
+#include <unordered_map>
 
 #include "layout.h"
 #include "parser/args.h"
@@ -14,93 +16,92 @@
 #include "style.h"
 #include "visitor/printer.h"
 
-/**
- * Prints usage menu
- */
-void printHelp() {
-  static std::string helpText = R"(
-A trivial browser engine.
-
-USAGE: sherpa_41 [options]
-
-OPTIONS:
-	--html <file>             HTML file to parse (Default: examples/sherpa-webpage.html)
-	--css <file>              CSS file to parse (Default: examples/sherpa-webpage.css)
-	-W, --width <size>        Browser width, in pixels (Default: 2880)
-	-H, --height <size>       Browser height, in pixels (Default: 1620)
-	-o, --out <file>          Output file (Default: output.png)
-	-h, --help                Show this help screen
-)";
-  std::cout << helpText << "\n";
+auto inline odefault(const std::string& option) -> const std::string& {
+  static std::unordered_map<std::string, std::string> defaults{
+      {"--html", "examples/sherpa-webpage.html"},
+      {"--css", "examples/sherpa-webpage.css"},
+      {"--width", "2880"},
+      {"--height", "1620"},
+      {"--out", "output.png"},
+  };
+  return defaults[option];
 }
 
-/**
- * Gets input files from CLI args
- * @param html html file
- * @param css css file
- */
-void getInFiles(std::ifstream& html, std::ifstream& css) {
-  ArgsParser& args = ArgsParser::instance();
-  auto htmlFileName = args.getCmdOption("--html");
-  auto cssFileName = args.getCmdOption("--css");
-  if (!htmlFileName.empty()) {
-    html = std::ifstream(htmlFileName);
-  }
-  if (!cssFileName.empty()) {
-    css = std::ifstream(cssFileName);
-  }
+auto help() -> std::string {
+  auto deftext = [](const std::string& option) {
+    return "(Default: " + odefault(option) + ")\n";
+  };
+
+  std::stringstream help;
+  help << "USAGE: sherpa_41 [options]\n";
+  help << "\n";
+  help << "OPTIONS:\n";
+  help << "        --html <file>             HTML file to parse " << deftext("--html");
+  help << "        --css <file>              CSS file to parse " << deftext("--css");
+  help << "        -W, --width <size>        Browser width, in pixels "
+       << deftext("--width");
+  help << "        -H, --height <size>       Browser height, in pixels "
+       << deftext("--height");
+  help << "        -o, --out <file>          Output file " << deftext("--out");
+  help << "        -h, --help                Show this help screen";
+
+  return help.str();
 }
 
 /**
  * Gets an argument from the CLI
- * @param shrt short arg (-a). Empty string if no short arg.
- * @param lng long arg (--arg). Empty string if no long arg.
- * @param deflt default value to use. Empty string if no default value.
+ * @param Long long arg (--arg).
+ * @param Short short arg (-a). Empty string if no short arg.
  * @return value of argument
  */
-auto getArg(const std::string& shrt = "",
-            const std::string& lng = "",
-            const std::string& deflt = "") -> const std::string& {
+auto getArg(const std::string& Long, const std::string& Short = "") -> const std::string& {
   ArgsParser& args = ArgsParser::instance();
   try {
-    if (!shrt.empty() && args.cmdOptionExists(shrt)) {
-      return args.getCmdOption(shrt);
-    } else if (!lng.empty() && args.cmdOptionExists(lng)) {
-      return args.getCmdOption(lng);
+    if (args.cmdOptionExists(Long)) {
+      return args.getCmdOption(Long);
+    } else if (!Short.empty() && args.cmdOptionExists(Short)) {
+      return args.getCmdOption(Short);
     }
+
+    auto& Default{odefault(Long)};
+    if (!Default.empty()) {
+      return Default;
+    }
+
+    throw std::invalid_argument("Required option " + Long + " not found");
   } catch (const std::invalid_argument& exc) {
-    // argument specified but value not, exit on error.
-    std::cout << "ERROR: " << exc.what() << "\n";
-    printHelp();
+    // Argument specified but value is not.
+    std::cout << "ERROR: " << exc.what() << "\n\n";
+    std::cout << help() << "\n";
     exit(1);
   }
-  return deflt;
 }
 
 auto main(int argc, char** argv) -> int {
-  ArgsParser& args = ArgsParser::instance(argc, argv);
+  auto& args = ArgsParser::instance(argc, argv);
 
   if (args.cmdOptionExists("-h") || args.cmdOptionExists("--help")) {
-    std::cout << "A trivial browser engine.\n";
-    printHelp();
+    std::cout << "A trivial browser engine.\n\n";
+    std::cout << help() << "\n";
     return 0;
   }
 
-  std::ifstream htmlFile(getArg("", "--html", "examples/sherpa-webpage.html"));
-  std::ifstream cssFile(getArg("", "--css", "examples/sherpa-webpage.css"));
-  std::string output(getArg("-o", "--out", "output.png"));
+  std::ifstream fhtml{getArg("--html")};
+  std::ifstream fcss{getArg("--css")};
+  std::string output{getArg("--out", "-o")};
+  float width{std::stof(getArg("--width", "-W"))};
+  float height{std::stof(getArg("--height", "-H"))};
 
   std::stringstream buffer;
-  buffer << htmlFile.rdbuf();
+  buffer << fhtml.rdbuf();
   HTMLParser htmlParser(buffer.str());
 
   buffer.clear();
   buffer.str(std::string());
-  buffer << cssFile.rdbuf();
+  buffer << fcss.rdbuf();
   CSSParser cssParser(buffer.str());
 
-  Layout::Rectangle frame(0., 0., std::stof(getArg("-W", "--width", "2880")),
-                          std::stof(getArg("-H", "--height", "1620")));
+  Layout::Rectangle frame(0., 0., width, height);
 
   auto dom = htmlParser.evaluate();
   auto stylesheet = cssParser.evaluate();
@@ -112,10 +113,9 @@ auto main(int argc, char** argv) -> int {
   Canvas canvas(frame, paintLayout);
 
   Magick::Image im;
-  im.read(static_cast<uint64_t>(frame.width), static_cast<uint64_t>(frame.height), "RGBA",
+  im.read(static_cast<uint64_t>(width), static_cast<uint64_t>(height), "RGBA",
           Magick::CharPixel, canvas.getPixels().data());
 
-  // Write the image to output
   im.write(output);
 
   std::cout << "Output written to " << output << ".\n";

@@ -34,15 +34,19 @@ matrix:
 
     - name: "Clang Tidy"
       os: linux
-      compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
           packages: ['clang-7', 'libstdc++-7-dev', 'clang-tidy-7']
+      install:
+        - wget http://www.imagemagick.org/download/ImageMagick.tar.gz
+        - tar -xzvf ImageMagick.tar.gz
+        - pushd ImageMagick*/ && ./configure --prefix=/usr && make && sudo make install
+        - popd
       script:
-        - clang-tidy-7 $(find src -not -name "main.cpp" -type f) -p . -- -Iinclude/ -std=c++17
+        - clang-tidy-7 $(find src -type f) -p . -- -std=c++17 -x c++ -Isrc/ $(pkg-config Magick++ --cflags-only-I)
 
-  # Coverage
+    # Coverage
 
     - name: "Coverage (Coveralls)"
       os: linux

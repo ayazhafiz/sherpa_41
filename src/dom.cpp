@@ -22,7 +22,7 @@ void DOM::AttributeMap::insert(const std::string& attribute, const std::string& 
   }
 }
 
-std::string DOM::AttributeMap::print() const {
+auto DOM::AttributeMap::print() const -> std::string {
   if (empty()) {
     return "";
   }
@@ -53,7 +53,7 @@ DOM::Node::~Node() = default;
  * @param cand tag to match
  * @return whether Node is of `cand` type
  */
-bool DOM::Node::is(const std::string& cand) const {
+auto DOM::Node::is(const std::string& cand) const -> bool {
   return tagName() == cand;
 }
 
@@ -61,7 +61,7 @@ bool DOM::Node::is(const std::string& cand) const {
  * Returns the tag name of the Node
  * @return Node tag
  */
-std::string DOM::Node::tagName() const {
+auto DOM::Node::tagName() const -> std::string {
   return tag;
 }
 
@@ -76,7 +76,7 @@ DOM::TextNode::TextNode(std::string text) : Node("TEXT NODE"), text(std::move(te
  * Returns text
  * @return text
  */
-std::string DOM::TextNode::getText() const {
+auto DOM::TextNode::getText() const -> std::string {
   return text;
 }
 
@@ -92,7 +92,7 @@ void DOM::TextNode::acceptVisitor(Visitor& visitor) const {
  * Clone the Text Node to a unique pointer
  * @return cloned Node
  */
-DOM::NodePtr DOM::TextNode::clone() {
+auto DOM::TextNode::clone() -> DOM::NodePtr {
   return NodePtr(new TextNode(text));
 }
 
@@ -107,7 +107,7 @@ DOM::CommentNode::CommentNode(std::string comment)
  * Returns comment
  * @return comment
  */
-std::string DOM::CommentNode::getComment() const {
+auto DOM::CommentNode::getComment() const -> std::string {
   return comment;
 }
 
@@ -123,7 +123,7 @@ void DOM::CommentNode::acceptVisitor(Visitor& visitor) const {
  * Clone the Comment Node to a unique pointer
  * @return cloned Node
  */
-DOM::NodePtr DOM::CommentNode::clone() {
+auto DOM::CommentNode::clone() -> DOM::NodePtr {
   return NodePtr(new CommentNode(comment));
 }
 
@@ -146,7 +146,7 @@ DOM::ElementNode::ElementNode(std::string tag,
  * Returns pointers to children nodes
  * @return children nodes
  */
-DOM::NodeVector DOM::ElementNode::getChildren() const {
+auto DOM::ElementNode::getChildren() const -> DOM::NodeVector {
   NodeVector nodes;
   std::transform(children.begin(), children.end(), std::back_inserter(nodes),
                  [](const auto& child) { return child->clone(); });
@@ -157,7 +157,7 @@ DOM::NodeVector DOM::ElementNode::getChildren() const {
  * Returns pretty-printed attributes
  * @return attributes
  */
-std::string DOM::ElementNode::getAttributes() const {
+auto DOM::ElementNode::getAttributes() const -> std::string {
   return attributes.print();
 }
 
@@ -165,7 +165,7 @@ std::string DOM::ElementNode::getAttributes() const {
  * Returns id of element
  * @return id
  */
-std::string DOM::ElementNode::getId() const {
+auto DOM::ElementNode::getId() const -> std::string {
   auto id = attributes.find("id");
   return id != attributes.end() ? id->second : "";
 }
@@ -174,7 +174,7 @@ std::string DOM::ElementNode::getId() const {
  * Returns classes of element
  * @return classes
  */
-std::vector<std::string> DOM::ElementNode::getClasses() const {
+auto DOM::ElementNode::getClasses() const -> std::vector<std::string> {
   auto classes = attributes.find("class");
   if (classes == attributes.end()) {
     return {};
@@ -197,7 +197,7 @@ void DOM::ElementNode::acceptVisitor(Visitor& visitor) const {
  * Clone the Element Node to a unique pointer
  * @return cloned Node
  */
-DOM::NodePtr DOM::ElementNode::clone() {
+auto DOM::ElementNode::clone() -> DOM::NodePtr {
   return NodePtr(new ElementNode(tagName(), attributes, children));
 }
 

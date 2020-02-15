@@ -7,7 +7,7 @@
 
 #include "css.h"
 
-Layout::DisplayType Layout::stodisplay(const std::string& s) {
+auto Layout::stodisplay(const std::string& s) -> Layout::DisplayType {
   if (s == "block") {
     return Block;
   }
@@ -18,8 +18,8 @@ Layout::DisplayType Layout::stodisplay(const std::string& s) {
   }
 }
 
-Layout::DisplayType Layout::snodetodisplay(const Style::StyledNode& node,
-                                           const std::string& deflt) {
+auto Layout::snodetodisplay(const Style::StyledNode& node, const std::string& deflt)
+    -> Layout::DisplayType {
   return Layout::stodisplay(node.value_or("display", CSS::TextValue(deflt))->print());
 }
 
@@ -38,7 +38,7 @@ Layout::Rectangle::Rectangle(double startX, double startY, double width, double 
  * @param edge edges to expand by
  * @return expanded rectangle
  */
-Layout::Rectangle Layout::Rectangle::expand(const Layout::Edges& edge) const {
+auto Layout::Rectangle::expand(const Layout::Edges& edge) const -> Layout::Rectangle {
   return Rectangle(origin.x - edge.left, origin.y - edge.top, width + edge.left + edge.right,
                    height + edge.top + edge.bottom);
 }
@@ -75,7 +75,7 @@ Layout::BoxDimensions::BoxDimensions(Layout::Rectangle location,
  * Area covered by box and its padding
  * @return area covered
  */
-Layout::Rectangle Layout::BoxDimensions::paddingArea() const {
+auto Layout::BoxDimensions::paddingArea() const -> Layout::Rectangle {
   return Rectangle(origin.x, origin.y, width, height).expand(padding);
 }
 
@@ -83,7 +83,7 @@ Layout::Rectangle Layout::BoxDimensions::paddingArea() const {
  * Area covered by box, padding, and borders
  * @return area covered
  */
-Layout::Rectangle Layout::BoxDimensions::borderArea() const {
+auto Layout::BoxDimensions::borderArea() const -> Layout::Rectangle {
   return paddingArea().expand(border);
 }
 
@@ -91,7 +91,7 @@ Layout::Rectangle Layout::BoxDimensions::borderArea() const {
  * Area covered by box, padding, borders, and margins
  * @return area covered
  */
-Layout::Rectangle Layout::BoxDimensions::marginArea() const {
+auto Layout::BoxDimensions::marginArea() const -> Layout::Rectangle {
   return borderArea().expand(margin);
 }
 
@@ -111,7 +111,7 @@ Layout::Box::Box(Layout::BoxDimensions dimensions, const Layout::BoxVector& chil
  * Returns box dimensions
  * @return dimensions
  */
-Layout::BoxDimensions Layout::Box::getDimensions() const {
+auto Layout::Box::getDimensions() const -> Layout::BoxDimensions {
   return dimensions;
 }
 
@@ -119,7 +119,7 @@ Layout::BoxDimensions Layout::Box::getDimensions() const {
  * Returns box children
  * @return children
  */
-Layout::BoxVector Layout::Box::getChildren() const {
+auto Layout::Box::getChildren() const -> Layout::BoxVector {
   BoxVector boxes;
   std::transform(children.begin(), children.end(), std::back_inserter(boxes),
                  [](const auto& child) { return child->clone(); });
@@ -132,8 +132,8 @@ Layout::BoxVector Layout::Box::getChildren() const {
  * @param window browser window size
  * @return pointer to root of box tree
  */
-Layout::BoxPtr Layout::Box::from(const Style::StyledNode& root,
-                                 Layout::BoxDimensions window) {
+auto Layout::Box::from(const Style::StyledNode& root, Layout::BoxDimensions window)
+    -> Layout::BoxPtr {
   // layout algorithm assumes height is initially zero
   // TODO: Store window height for vmin/vmax/% values
   window.height = 0;
@@ -150,7 +150,7 @@ Layout::BoxPtr Layout::Box::from(const Style::StyledNode& root,
  * @param root styled node root
  * @return pointer to root of box tree
  */
-Layout::BoxPtr Layout::Box::from(const Style::StyledNode& styledRoot) {
+auto Layout::Box::from(const Style::StyledNode& styledRoot) -> Layout::BoxPtr {
   auto display = snodetodisplay(styledRoot);
   if (display == None) {  // display: none; is not included
     return nullptr;
@@ -189,7 +189,7 @@ Layout::AnonymousBox::AnonymousBox(const BoxVector& children)
  * Clones an anonymous box
  * @return cloned box
  */
-Layout::BoxPtr Layout::AnonymousBox::clone() const {
+auto Layout::AnonymousBox::clone() const -> Layout::BoxPtr {
   return BoxPtr(new AnonymousBox(getChildren()));
 }
 
@@ -210,7 +210,7 @@ Layout::StyledBox::StyledBox(Layout::BoxDimensions dimensions,
  * Clones a styled box
  * @return styled box
  */
-Layout::BoxPtr Layout::StyledBox::clone() const {
+auto Layout::StyledBox::clone() const -> Layout::BoxPtr {
   return BoxPtr(new StyledBox(getDimensions(), content, display, getChildren()));
 }
 
@@ -218,7 +218,7 @@ Layout::BoxPtr Layout::StyledBox::clone() const {
  * Returns content
  * @return content of styled node
  */
-Style::StyledNode Layout::StyledBox::getContent() const {
+auto Layout::StyledBox::getContent() const -> Style::StyledNode {
   return content;
 }
 
@@ -378,7 +378,7 @@ void Layout::StyledBox::setHeight() {
  * Get the box an inline node should go into, or a create a new one
  * @return box to put inline node in
  */
-Layout::Box* Layout::StyledBox::getInlineContainer() {
+auto Layout::StyledBox::getInlineContainer() -> Layout::Box* {
   if (display == Inline) {
     return this;
   } else {  // *this is a block display

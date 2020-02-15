@@ -44,7 +44,7 @@ class AttributeMap : public std::map<std::string, std::string> {
    * Pretty-prints attributes
    * @return printed attributes
    */
-  std::string print() const;
+  [[nodiscard]] auto print() const -> std::string;
 
  private:
   std::vector<std::string> order;
@@ -71,13 +71,13 @@ class Node {
    * @param cand tag to match
    * @return whether Node is of `cand` type
    */
-  bool is(const std::string& cand) const;
+  [[nodiscard]] auto is(const std::string& cand) const -> bool;
 
   /**
    * Returns the tag name of the Node
    * @return Node tag
    */
-  std::string tagName() const;
+  [[nodiscard]] auto tagName() const -> std::string;
 
   /**
    * Accepts a visitor to the node
@@ -89,7 +89,7 @@ class Node {
    * Clone the Node to a unique pointer
    * @return cloned Node
    */
-  virtual NodePtr clone() = 0;
+  virtual auto clone() -> NodePtr = 0;
 
  private:
   std::string tag;
@@ -117,7 +117,7 @@ class TextNode : public Node {
    * Returns text
    * @return text
    */
-  std::string getText() const;
+  [[nodiscard]] auto getText() const -> std::string;
 
   /**
    * Accepts a visitor to the node
@@ -130,7 +130,7 @@ class TextNode : public Node {
    * Clone the Text Node to a unique pointer
    * @return cloned Node
    */
-  NodePtr clone() override;
+  auto clone() -> NodePtr override;
 
   std::string text;
 };
@@ -157,7 +157,7 @@ class CommentNode : public Node {
    * Returns comment
    * @return comment
    */
-  std::string getComment() const;
+  [[nodiscard]] auto getComment() const -> std::string;
 
   /**
    * Accepts a visitor to the node
@@ -170,7 +170,7 @@ class CommentNode : public Node {
    * Clone the Comment Node to a unique pointer
    * @return cloned Node
    */
-  NodePtr clone() override;
+  auto clone() -> NodePtr override;
 
   std::string comment;
 };
@@ -201,25 +201,25 @@ class ElementNode : public Node {
    * Returns pointers to children nodes
    * @return children nodes
    */
-  NodeVector getChildren() const;
+  [[nodiscard]] auto getChildren() const -> NodeVector;
 
   /**
    * Returns pretty-printed attributes
    * @return attributes
    */
-  std::string getAttributes() const;
+  [[nodiscard]] auto getAttributes() const -> std::string;
 
   /**
    * Returns id of element
    * @return id
    */
-  std::string getId() const;
+  [[nodiscard]] auto getId() const -> std::string;
 
   /**
    * Returns classes of element
    * @return classes
    */
-  std::vector<std::string> getClasses() const;
+  [[nodiscard]] auto getClasses() const -> std::vector<std::string>;
 
   /**
    * Accepts a visitor to the node
@@ -232,7 +232,7 @@ class ElementNode : public Node {
    * Clone the Element Node to a unique pointer
    * @return cloned Node
    */
-  NodePtr clone() override;
+  auto clone() -> NodePtr override;
 
   AttributeMap attributes;
   NodeVector children;

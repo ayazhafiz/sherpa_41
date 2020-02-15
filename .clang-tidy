@@ -7,4 +7,3 @@ Checks: "-*,
         portability-*,
         readibility-*"
 WarningsAsErrors: '*'
-HeaderFilterRegex: '^include/'

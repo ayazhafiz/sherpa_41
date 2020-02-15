@@ -67,7 +67,7 @@ void Printer::visit(const CSS::StyleSheet& ss) {
  * Returns pretty-printed DOM tree
  * @return DOM tree
  */
-std::string Printer::result() {
+auto Printer::result() -> std::string {
   return tree.str();
 }
 
@@ -75,7 +75,7 @@ std::string Printer::result() {
  * Print tab indent
  * @return stream for chaining
  */
-std::stringstream& Printer::tabs() {
+auto Printer::tabs() -> std::stringstream& {
   tree << std::string(tabIndent, '\t');
   return tree;
 }
@@ -84,7 +84,7 @@ std::stringstream& Printer::tabs() {
  * Print opening tag
  * @return stream for chaining
  */
-std::stringstream& Printer::openTag() {
+auto Printer::openTag() -> std::stringstream& {
   tabs() << "<";
   return tree;
 }
@@ -93,7 +93,7 @@ std::stringstream& Printer::openTag() {
  * Print closing tag
  * @return stream for chaining
  */
-std::string Printer::closeTag() {
+auto Printer::closeTag() -> std::string {
   return ">\n";
 }
 

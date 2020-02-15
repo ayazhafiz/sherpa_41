@@ -30,7 +30,7 @@ Style::StyledNode::StyledNode(const Style::StyledNode& rhs)
  * Returns children
  * @return children
  */
-Style::StyledNodeVector Style::StyledNode::getChildren() const {
+auto Style::StyledNode::getChildren() const -> Style::StyledNodeVector {
   return children;
 }
 
@@ -40,8 +40,8 @@ Style::StyledNodeVector Style::StyledNode::getChildren() const {
  * @param css style sheet
  * @return root to StyledNode tree
  */
-Style::StyledNode Style::StyledNode::from(const DOM::NodePtr& domRoot,
-                                          const CSS::StyleSheet& css) {
+auto Style::StyledNode::from(const DOM::NodePtr& domRoot, const CSS::StyleSheet& css)
+    -> Style::StyledNode {
   if (auto elem = dynamic_cast<DOM::ElementNode*>(domRoot.get())) {
     auto children = elem->getChildren();
     StyledNodeVector styledChildren;
@@ -60,7 +60,7 @@ Style::StyledNode Style::StyledNode::from(const DOM::NodePtr& domRoot,
  * `value` base case - no style found, nullptr returned
  * @return nullptr
  */
-CSS::ValuePtr Style::StyledNode::value() const {
+auto Style::StyledNode::value() const -> CSS::ValuePtr {
   return nullptr;
 }
 
@@ -70,8 +70,8 @@ CSS::ValuePtr Style::StyledNode::value() const {
  * @param css style sheet to apply
  * @return map of styles
  */
-Style::PropertyMap Style::StyledNode::mapStyles(const DOM::ElementNode* const node,
-                                                const CSS::StyleSheet& css) {
+auto Style::StyledNode::mapStyles(const DOM::ElementNode* const node,
+                                  const CSS::StyleSheet& css) -> Style::PropertyMap {
   PropertyMap props;
   auto rules = matchRules(node, css);
   std::for_each(rules.begin(), rules.end(), [&props](const auto& rule) {
@@ -90,8 +90,8 @@ Style::PropertyMap Style::StyledNode::mapStyles(const DOM::ElementNode* const no
  * @param css style sheet to apply
  * @return set of rules, ordered by increasing specificity
  */
-Style::PriorityRuleSet Style::StyledNode::matchRules(const DOM::ElementNode* const node,
-                                                     const CSS::StyleSheet& css) {
+auto Style::StyledNode::matchRules(const DOM::ElementNode* const node,
+                                   const CSS::StyleSheet& css) -> Style::PriorityRuleSet {
   PriorityRuleSet rules;
   std::for_each(css.begin(), css.end(), [&node, &rules](const auto& rule) {
     const auto& sels = rule.selectors;
@@ -116,8 +116,8 @@ Style::PriorityRuleSet Style::StyledNode::matchRules(const DOM::ElementNode* con
  * @param node DOM node to match
  * @return whether selector matches node
  */
-bool Style::StyledNode::selectorMatches(const CSS::Selector& selector,
-                                        const DOM::ElementNode* const node) {
+auto Style::StyledNode::selectorMatches(const CSS::Selector& selector,
+                                        const DOM::ElementNode* const node) -> bool {
   auto tag = node->tagName();
   auto id = node->getId();
   auto cls = node->getClasses();
