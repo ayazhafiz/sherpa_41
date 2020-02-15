@@ -82,7 +82,7 @@ class Parser {
    * @param predicate lambda to match prefix to
    * @return whether program prefix satisfies lambda
    */
-  [[nodiscard]] auto peek(PrefixComparator predicate) const -> bool;
+  [[nodiscard]] auto peek(const PrefixComparator& predicate) const -> bool;
 
   /**
    * Determines if entire program read

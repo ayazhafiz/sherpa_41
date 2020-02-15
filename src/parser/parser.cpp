@@ -20,7 +20,7 @@ Parser<EvalType>::Parser(std::string program) : program(std::move(program)), ptr
  * @return built string
  */
 template <typename EvalType>
-std::string Parser<EvalType>::build(uint64_t len) {
+auto Parser<EvalType>::build(uint64_t len) -> std::string {
   return build_until([&len](char) { return len-- == 0; });
 }
 
@@ -30,7 +30,8 @@ std::string Parser<EvalType>::build(uint64_t len) {
  * @return built string
  */
 template <typename EvalType>
-std::string Parser<EvalType>::build_until(Parser<EvalType>::PrefixComparator& predicate) {
+auto Parser<EvalType>::build_until(Parser<EvalType>::PrefixComparator& predicate)
+    -> std::string {
   consume_whitespace();
   std::string res;
   while (!eof() && !peek(predicate)) {
@@ -79,7 +80,7 @@ void Parser<EvalType>::pushPtr(uint64_t dist) {
  * @return whether program contains `prefix` next
  */
 template <typename EvalType>
-bool Parser<EvalType>::peek(const std::string& prefix) const {
+auto Parser<EvalType>::peek(const std::string& prefix) const -> bool {
   return program.rfind(prefix, ptr) == ptr;
 }
 
@@ -89,7 +90,8 @@ bool Parser<EvalType>::peek(const std::string& prefix) const {
  * @return whether program prefix satisfies lambda
  */
 template <typename EvalType>
-bool Parser<EvalType>::peek(Parser<EvalType>::PrefixComparator predicate) const {
+auto Parser<EvalType>::peek(const Parser<EvalType>::PrefixComparator& predicate) const
+    -> bool {
   return predicate(program[ptr]);
 }
 
@@ -98,7 +100,7 @@ bool Parser<EvalType>::peek(Parser<EvalType>::PrefixComparator predicate) const 
  * @return program read?
  */
 template <typename EvalType>
-bool Parser<EvalType>::eof() const {
+auto Parser<EvalType>::eof() const -> bool {
   return ptr >= program.length();
 }
 

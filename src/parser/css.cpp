@@ -20,7 +20,7 @@ CSSParser::CSSParser(std::string css) : Parser<CSS::StyleSheet>(std::move(css)) 
  * Parses CSS into engine-operable format
  * @return vector of parsed CSS rules
  */
-CSS::StyleSheet CSSParser::evaluate() {
+auto CSSParser::evaluate() -> CSS::StyleSheet {
   CSS::StyleSheet styles;
   while (true) {
     consume_whitespace();
@@ -36,7 +36,7 @@ CSS::StyleSheet CSSParser::evaluate() {
  * Parses a single rule in the style sheet
  * @return parsed Rule
  */
-CSS::Rule CSSParser::parseRule() {
+auto CSSParser::parseRule() -> CSS::Rule {
   // must explicity define order of evaluation
   auto sels = parseSelectors();
   auto decls = parseDeclarations();
@@ -47,7 +47,7 @@ CSS::Rule CSSParser::parseRule() {
  * Parses rule selectors of form `tag#id.class`
  * @return vector of Selectors
  */
-CSS::PrioritySelectorSet CSSParser::parseSelectors() {
+auto CSSParser::parseSelectors() -> CSS::PrioritySelectorSet {
   CSS::PrioritySelectorSet res;
   CSS::Selector selector;
   auto invalid = [this](char c) { return !std::isalnum(c) && !peek("_") && !peek("-"); };
@@ -86,7 +86,7 @@ CSS::PrioritySelectorSet CSSParser::parseSelectors() {
  * Parses rule declarations of form `{ rule: value; }`
  * @return vector of Declarations
  */
-CSS::DeclarationSet CSSParser::parseDeclarations() {
+auto CSSParser::parseDeclarations() -> CSS::DeclarationSet {
   CSS::DeclarationSet declarations;
   consume("{");
   while (!eof()) {
@@ -108,7 +108,7 @@ CSS::DeclarationSet CSSParser::parseDeclarations() {
  * Parses a value, for example `15px` or `rgba(0,0,0,0)`
  * @return pointer to Value
  */
-CSS::ValuePtr CSSParser::parseValue() {
+auto CSSParser::parseValue() -> CSS::ValuePtr {
   auto invalid = [this](char c) { return !std::isalnum(c) && !peek("_") && !peek("-"); };
   auto notFloat = std::not_fn(cisfloat);
 
@@ -129,7 +129,7 @@ CSS::ValuePtr CSSParser::parseValue() {
  * Parses RGB color
  * @return RGB ColorValue
  */
-CSS::ValuePtr CSSParser::parseRGB() {
+auto CSSParser::parseRGB() -> CSS::ValuePtr {
   auto notDigit = std::not_fn(cisdigit);
   bool hasAlpha = peek("rgba");
   hasAlpha ? consume("rgba") : consume("rgb");
@@ -155,7 +155,7 @@ CSS::ValuePtr CSSParser::parseRGB() {
  * Parses Hex color
  * @return Hex to RGB ColorValue
  */
-CSS::ValuePtr CSSParser::parseHex() {
+auto CSSParser::parseHex() -> CSS::ValuePtr {
   consume("#");
   auto hexStr = build_until(std::not_fn(cisalnum));
   auto hex = std::stoul(hexStr, nullptr, 16);
@@ -174,7 +174,7 @@ CSS::ValuePtr CSSParser::parseHex() {
  * Parses Unit
  * @return Unit
  */
-CSS::Unit CSSParser::parseUnit() {
+auto CSSParser::parseUnit() -> CSS::Unit {
   auto raw = build_until(std::not_fn(cisalpha));
   auto rawArr = CSS::UnitRaw();
   return static_cast<CSS::Unit>(std::find(rawArr.begin(), rawArr.end(), raw) -

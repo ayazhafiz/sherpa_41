@@ -19,7 +19,7 @@ HTMLParser::HTMLParser(std::string html) : Parser<DOM::NodePtr>(std::move(html))
  * Parses the HTML into a DOM tree
  * @return DOM tree
  */
-DOM::NodePtr HTMLParser::evaluate() {
+auto HTMLParser::evaluate() -> DOM::NodePtr {
   auto roots = parseChildren();
 
   if (roots.size() == 1 && roots.front()->is("html")) {
@@ -33,7 +33,7 @@ DOM::NodePtr HTMLParser::evaluate() {
  * Parses children of a DOM Node
  * @return Node children
  */
-DOM::NodeVector HTMLParser::parseChildren() {
+auto HTMLParser::parseChildren() -> DOM::NodeVector {
   DOM::NodeVector roots;
   while (true) {
     consume_whitespace();
@@ -49,7 +49,7 @@ DOM::NodeVector HTMLParser::parseChildren() {
  * Parses a single DOM Node
  * @return parsed Node
  */
-DOM::NodePtr HTMLParser::parseNode() {
+auto HTMLParser::parseNode() -> DOM::NodePtr {
   if (peek("<!--")) {
     return parseCommentNode();
   } else if (peek("<")) {
@@ -63,7 +63,7 @@ DOM::NodePtr HTMLParser::parseNode() {
  * Parses text in the DOM
  * @return Text node
  */
-DOM::NodePtr HTMLParser::parseTextNode() {
+auto HTMLParser::parseTextNode() -> DOM::NodePtr {
   auto text = build_until([this](char) { return peek("<"); });
   return DOM::NodePtr(new DOM::TextNode(rtrim(text)));
 }
@@ -72,7 +72,7 @@ DOM::NodePtr HTMLParser::parseTextNode() {
  * Parses a comment in the DOM
  * @return Comment node
  */
-DOM::NodePtr HTMLParser::parseCommentNode() {
+auto HTMLParser::parseCommentNode() -> DOM::NodePtr {
   consume("<!--");
   auto comment = build_until([this](char) { return peek("-->"); });
   consume("-->");
@@ -84,7 +84,7 @@ DOM::NodePtr HTMLParser::parseCommentNode() {
  * Parses a DOM Element
  * @return Element node
  */
-DOM::NodePtr HTMLParser::parseElementNode() {
+auto HTMLParser::parseElementNode() -> DOM::NodePtr {
   consume("<");
   auto tagName = build_until([](char c) { return !std::isalnum(c); });
   auto attributes = parseAttributes();
@@ -103,7 +103,7 @@ DOM::NodePtr HTMLParser::parseElementNode() {
  * Parses Element attributes
  * @return attributes
  */
-DOM::AttributeMap HTMLParser::parseAttributes() {
+auto HTMLParser::parseAttributes() -> DOM::AttributeMap {
   DOM::AttributeMap attr;
   while (true) {
     consume_whitespace();
